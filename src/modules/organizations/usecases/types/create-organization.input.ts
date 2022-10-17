@@ -6,5 +6,10 @@ export class CreateOrganizationInput {
   name: string;
 
   @Field()
+  representantEmail: string;
+
+  @Field()
   businessSegment: string;
+
+  locations?: any[];
 }

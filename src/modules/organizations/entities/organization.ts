@@ -10,11 +10,18 @@ export class Organization {
   @Prop()
   name: string;
 
-  @Prop()
+  @Prop({})
   businessSegment: string;
 
   @Prop()
   businessRepresentantId?: string;
+
+  /**
+   * @todo
+   * atualmente não existe um fluxo de inserção das locations,
+   * temos que criar isso depois;
+   */
+  locations?: any[];
 
   createdAt: Date;
 
