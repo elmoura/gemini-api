@@ -8,13 +8,12 @@ import { OrganizationModule } from '@modules/organizations/organizations.module'
 
 @Module({
   imports: [
+    OrganizationModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src', 'config', 'schema.gql'),
     }),
     MongooseModule.forRoot(Environment.mongodb.url),
-    OrganizationModule,
   ],
-  providers: [],
 })
 export class AppModule {}

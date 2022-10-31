@@ -24,10 +24,15 @@ export class CreateOrganizationUseCase
         email: input.representantEmail,
       });
 
+    const businessRepresentantId = businessRepresentantData._id;
+
     this.organizationDataSource.updateOne(organizationId, {
-      businessRepresentantId: businessRepresentantData._id,
+      businessRepresentantId,
     });
 
-    return organization;
+    return {
+      ...organization,
+      businessRepresentantId,
+    };
   }
 }

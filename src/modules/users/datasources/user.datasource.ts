@@ -11,6 +11,7 @@ export interface IUserInvitationData {
 }
 
 export interface IUserDataSource {
+  findByEmail(email: string): Promise<User | null>;
   createInvitationInstance(
     data: IUserInvitationData,
   ): Promise<IUserForInvitation>;
@@ -22,6 +23,10 @@ export class UserDataSource implements IUserDataSource {
     @InjectModel(User.name)
     private readonly userModel: Model<UserDocument>,
   ) {}
+
+  async findByEmail(email: string): Promise<User | null> {
+    return this.userModel.findOne({ email });
+  }
 
   async createInvitationInstance({
     email,

@@ -5,6 +5,9 @@ import { Organization, OrganizationSchema } from './entities/organization';
 import { OrganizationResolver } from './organization.resolver';
 import { CreateOrganizationUseCase } from './usecases/create-organization.usecase';
 import { OrganizationDataSource } from './datasources/organization.datasource';
+import { CreateUserInvitationUseCase } from '@modules/users/usecases/create-user-invitation.usecase';
+import { EmailService } from '@shared/services/email.service';
+import { UserDataSource } from '@modules/users/datasources/user.datasource';
 
 @Module({
   imports: [
@@ -20,8 +23,11 @@ import { OrganizationDataSource } from './datasources/organization.datasource';
     ]),
   ],
   providers: [
+    EmailService,
+    UserDataSource,
     OrganizationResolver,
     OrganizationDataSource,
+    CreateUserInvitationUseCase,
     CreateOrganizationUseCase,
   ],
 })

@@ -26,5 +26,6 @@ type Mutation {
 
 input CreateOrganizationInput {
   name: String!
+  representantEmail: String!
   businessSegment: String!
 }
