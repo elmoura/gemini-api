@@ -26,7 +26,7 @@ export class CreateOrganizationUseCase
 
     const businessRepresentantId = businessRepresentantData._id;
 
-    this.organizationDataSource.updateOne(organizationId, {
+    await this.organizationDataSource.updateOne(organizationId, {
       businessRepresentantId,
     });
 
