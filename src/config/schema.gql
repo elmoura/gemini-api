@@ -16,12 +16,22 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type AccountConfirmationOutput {
+  _id: String!
+  accountStatus: String!
+}
+
 type Query {
   hello: String!
 }
 
 type Mutation {
+  confirmAccount(input: AccountConfirmationInput!): AccountConfirmationOutput!
   createOrganization(input: CreateOrganizationInput!): OrganizationObj!
+}
+
+input AccountConfirmationInput {
+  userId: String!
 }
 
 input CreateOrganizationInput {

@@ -31,23 +31,21 @@ export class CreateUserInvitationUseCase
     input: CreateUserInvitationInput,
   ): Promise<CreateUserInvitationOutput> {
     const { email } = input;
-    // const userExists = await this.userDataSource.findByEmail(email);
+    const userExists = await this.userDataSource.findByEmail(email);
 
-    // if (userExists) {
-    //   throw new Error('user already exists.');
-    // }
+    if (userExists) {
+      throw new Error('user already exists.');
+    }
 
     const userInvitation = await this.userDataSource.createInvitationInstance(
       input,
     );
 
-    const emailResult = await this.emailService.sendMail({
+    await this.emailService.sendMail({
       to: email,
       subject: 'Você foi convidado para o Chefin!',
       html: renderFile(this.invitationTemplatePath),
     });
-
-    console.log({ emailResult });
 
     return userInvitation;
   }

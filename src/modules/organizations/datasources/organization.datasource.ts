@@ -1,6 +1,6 @@
+import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import { IBaseCollection } from '@shared/interfaces/base-collection';
 import { Organization, OrganizationDocument } from '../entities/organization';
 

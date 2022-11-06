@@ -5,15 +5,17 @@ import { ApolloDriverConfig, ApolloDriver } from '@nestjs/apollo';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Environment } from '@config/env';
 import { OrganizationModule } from '@modules/organizations/organizations.module';
+import { UserModule } from '@modules/users/users.module';
 
 @Module({
   imports: [
-    OrganizationModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src', 'config', 'schema.gql'),
     }),
     MongooseModule.forRoot(Environment.mongodb.url),
+    UserModule,
+    OrganizationModule,
   ],
 })
 export class AppModule {}

@@ -11,10 +11,12 @@ export interface IUserInvitationData {
 }
 
 export interface IUserDataSource {
+  findById(userId: string): Promise<User | null>;
   findByEmail(email: string): Promise<User | null>;
   createInvitationInstance(
     data: IUserInvitationData,
   ): Promise<IUserForInvitation>;
+  updateOne(userId: string, payload: Partial<User>): Promise<boolean>;
 }
 
 @Injectable()
@@ -23,6 +25,10 @@ export class UserDataSource implements IUserDataSource {
     @InjectModel(User.name)
     private readonly userModel: Model<UserDocument>,
   ) {}
+
+  async findById(userId: string): Promise<User | null> {
+    return this.userModel.findById(userId);
+  }
 
   async findByEmail(email: string): Promise<User | null> {
     return this.userModel.findOne({ email });
@@ -37,5 +43,10 @@ export class UserDataSource implements IUserDataSource {
       organizationId,
       accountStatus: AccountStatuses.PENDING,
     });
+  }
+
+  async updateOne(userId: string, payload: Partial<User>): Promise<boolean> {
+    const result = await this.userModel.updateOne({ _id: userId }, payload);
+    return result.modifiedCount > 0;
   }
 }
