@@ -1,3 +1,4 @@
+import { join } from 'path';
 import { renderFile } from 'pug';
 import { Injectable } from '@nestjs/common';
 import { IBaseUseCase } from '@shared/interfaces/base-use-case';
@@ -5,7 +6,7 @@ import { EmailService } from '@shared/services/email.service';
 import { UserDataSource } from '../datasources/user.datasource';
 import { CreateUserInvitationInput } from './dto/create-user-invitation.input';
 import { CreateUserInvitationOutput } from './dto/create-user-invitation.output';
-import { join } from 'path';
+import { UserAlreadyExistsError } from '../errors/user-already-exists';
 
 @Injectable()
 export class CreateUserInvitationUseCase
@@ -34,7 +35,7 @@ export class CreateUserInvitationUseCase
     const userExists = await this.userDataSource.findByEmail(email);
 
     if (userExists) {
-      throw new Error('user already exists.');
+      throw new UserAlreadyExistsError();
     }
 
     const userInvitation = await this.userDataSource.createInvitationInstance(

@@ -18,7 +18,15 @@ scalar DateTime
 
 type AccountConfirmationOutput {
   _id: String!
+  organizationId: String!
   accountStatus: String!
+  firstName: String!
+  lastName: String!
+  email: String!
+  phoneNumber: String
+  password: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type Query {
@@ -31,7 +39,11 @@ type Mutation {
 }
 
 input AccountConfirmationInput {
-  userId: String!
+  _id: String!
+  firstName: String!
+  lastName: String!
+  phoneNumber: String
+  password: String!
 }
 
 input CreateOrganizationInput {

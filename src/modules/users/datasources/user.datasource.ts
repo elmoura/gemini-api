@@ -16,7 +16,7 @@ export interface IUserDataSource {
   createInvitationInstance(
     data: IUserInvitationData,
   ): Promise<IUserForInvitation>;
-  updateOne(userId: string, payload: Partial<User>): Promise<boolean>;
+  updateOne(userId: string, payload: Partial<User>): Promise<User>;
 }
 
 @Injectable()
@@ -45,8 +45,7 @@ export class UserDataSource implements IUserDataSource {
     });
   }
 
-  async updateOne(userId: string, payload: Partial<User>): Promise<boolean> {
-    const result = await this.userModel.updateOne({ _id: userId }, payload);
-    return result.modifiedCount > 0;
+  async updateOne(userId: string, payload: Partial<User>): Promise<User> {
+    return this.userModel.findOneAndUpdate({ _id: userId }, payload);
   }
 }
