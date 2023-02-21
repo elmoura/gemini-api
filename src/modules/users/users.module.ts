@@ -5,6 +5,8 @@ import { User, UserSchema } from './entities/user';
 import { UserDataSource } from './datasources/user.datasource';
 import { AccountConfirmationUseCase } from './usecases/account-confirmation.usecase';
 import { CryptoService } from '@shared/services/crypto.service';
+import { CreateUserInvitationUseCase } from './usecases/create-user-invitation.usecase';
+import { EmailService } from '@shared/services/email.service';
 
 @Module({
   imports: [
@@ -16,9 +18,11 @@ import { CryptoService } from '@shared/services/crypto.service';
     ]),
   ],
   providers: [
+    EmailService,
     CryptoService,
     UserResolver,
     UserDataSource,
+    CreateUserInvitationUseCase,
     AccountConfirmationUseCase,
   ],
   exports: [],

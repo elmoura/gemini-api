@@ -46,6 +46,8 @@ export class UserDataSource implements IUserDataSource {
   }
 
   async updateOne(userId: string, payload: Partial<User>): Promise<User> {
-    return this.userModel.findOneAndUpdate({ _id: userId }, payload);
+    return this.userModel.findOneAndUpdate({ _id: userId }, payload, {
+      new: true,
+    });
   }
 }

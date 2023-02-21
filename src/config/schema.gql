@@ -24,7 +24,15 @@ type AccountConfirmationOutput {
   lastName: String!
   email: String!
   phoneNumber: String
-  password: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type CreateUserInvitationOutput {
+  _id: String!
+  organizationId: String!
+  email: String!
+  accountStatus: String!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -34,8 +42,14 @@ type Query {
 }
 
 type Mutation {
+  createUserInvitation(input: CreateUserInvitationInput!): CreateUserInvitationOutput!
   confirmAccount(input: AccountConfirmationInput!): AccountConfirmationOutput!
   createOrganization(input: CreateOrganizationInput!): OrganizationObj!
+}
+
+input CreateUserInvitationInput {
+  organizationId: String!
+  email: String!
 }
 
 input AccountConfirmationInput {

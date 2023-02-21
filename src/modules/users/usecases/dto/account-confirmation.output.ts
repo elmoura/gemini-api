@@ -26,9 +26,6 @@ export class AccountConfirmationOutput implements Omit<User, 'password'> {
   phoneNumber: string;
 
   @Field()
-  password: string;
-
-  @Field()
   createdAt: Date;
 
   @Field()
