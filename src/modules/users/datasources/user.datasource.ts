@@ -31,7 +31,8 @@ export class UserDataSource implements IUserDataSource {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return this.userModel.findOne({ email });
+    const user = (await this.userModel.findOne({ email })).toJSON();
+    return user;
   }
 
   async createInvitationInstance({

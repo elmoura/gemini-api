@@ -37,8 +37,21 @@ type CreateUserInvitationOutput {
   updatedAt: DateTime!
 }
 
-type LoginUserOutput {
+type UserAuthData {
   accessToken: String!
+}
+
+type LoginUserOutput {
+  _id: String!
+  auth: UserAuthData!
+  organizationId: String!
+  firstName: String!
+  lastName: String!
+  accountStatus: String!
+  email: String!
+  phoneNumber: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type Query {

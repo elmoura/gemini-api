@@ -7,4 +7,4 @@ interface ICategoryDataSource {
 }
 
 @Injectable()
-export class CategoryDataSource implements ICategoryDataSource {}
+export class CategoryDataSource {}
