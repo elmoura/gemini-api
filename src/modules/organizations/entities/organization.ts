@@ -10,7 +10,7 @@ export class Organization {
   @Prop()
   name: string;
 
-  @Prop({})
+  @Prop()
   businessSegment: string;
 
   @Prop()
