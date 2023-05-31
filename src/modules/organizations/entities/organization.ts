@@ -1,5 +1,6 @@
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { OrganizationLocation } from './organization-location';
 
 export type OrganizationDocument = Organization & Document;
 
@@ -16,12 +17,12 @@ export class Organization {
   @Prop()
   businessRepresentantId?: string;
 
-  /**
-   * @todo
-   * atualmente não existe um fluxo de inserção das locations,
-   * temos que criar isso depois;
-   */
-  locations?: any[];
+  @Prop({
+    type: [
+      { type: mongoose.Schema.Types.ObjectId, ref: OrganizationLocation.name },
+    ],
+  })
+  locations?: OrganizationLocation[];
 
   createdAt: Date;
 

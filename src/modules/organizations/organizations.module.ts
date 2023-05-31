@@ -8,17 +8,27 @@ import { OrganizationDataSource } from './datasources/organization.datasource';
 import { CreateUserInvitationUseCase } from '@modules/users/usecases/create-user-invitation.usecase';
 import { EmailService } from '@shared/services/email.service';
 import { UserDataSource } from '@modules/users/datasources/user.datasource';
+import {
+  OrganizationLocation,
+  OrganizationLocationSchema,
+} from './entities/organization-location';
+import { CreateOrganizationLocationUseCase } from './usecases/create-organization-location.usecase';
+import { OrganizationLocationDataSource } from './datasources/organization-location.datasource';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       {
+        name: User.name,
+        schema: UserSchema,
+      },
+      {
         name: Organization.name,
         schema: OrganizationSchema,
       },
       {
-        name: User.name,
-        schema: UserSchema,
+        name: OrganizationLocation.name,
+        schema: OrganizationLocationSchema,
       },
     ]),
   ],
@@ -27,8 +37,10 @@ import { UserDataSource } from '@modules/users/datasources/user.datasource';
     UserDataSource,
     OrganizationResolver,
     OrganizationDataSource,
+    OrganizationLocationDataSource,
     CreateUserInvitationUseCase,
     CreateOrganizationUseCase,
+    CreateOrganizationLocationUseCase,
   ],
 })
 export class OrganizationModule {}
