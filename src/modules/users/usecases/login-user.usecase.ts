@@ -38,6 +38,11 @@ export class LoginUserUseCase
       organizationId: user.organizationId,
     };
 
-    return this.tokenService.generate(tokenPayload);
+    const { accessToken } = this.tokenService.generate(tokenPayload);
+
+    return {
+      auth: { accessToken },
+      ...user,
+    };
   }
 }

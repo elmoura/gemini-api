@@ -23,7 +23,7 @@ export class AccountConfirmationOutput implements Omit<User, 'password'> {
   email: string;
 
   @Field({ nullable: true })
-  phoneNumber: string;
+  phoneNumber?: string;
 
   @Field()
   createdAt: Date;

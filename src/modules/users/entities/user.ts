@@ -27,7 +27,7 @@ export class User implements IUserForInvitation {
   password: string;
 
   @Prop()
-  phoneNumber: string;
+  phoneNumber?: string;
 
   createdAt: Date;
 

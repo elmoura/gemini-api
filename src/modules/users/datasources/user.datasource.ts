@@ -12,7 +12,10 @@ export interface IUserInvitationData {
 
 export interface IUserDataSource {
   findById(userId: string): Promise<User | null>;
-  findByEmail(email: string): Promise<User | null>;
+  findByEmail(
+    email: string,
+    params?: { returnPassword: boolean },
+  ): Promise<User | null>;
   createInvitationInstance(
     data: IUserInvitationData,
   ): Promise<IUserForInvitation>;
@@ -30,8 +33,19 @@ export class UserDataSource implements IUserDataSource {
     return this.userModel.findById(userId);
   }
 
-  async findByEmail(email: string): Promise<User | null> {
-    return this.userModel.findOne({ email });
+  async findByEmail(
+    email: string,
+    params: { returnPassword: boolean } = { returnPassword: false },
+  ): Promise<User | null> {
+    const user = await this.userModel.findOne({ email });
+
+    const result = user ? user.toObject() : null;
+
+    if (result && !params.returnPassword) {
+      result.password = undefined;
+    }
+
+    return result;
   }
 
   async createInvitationInstance({

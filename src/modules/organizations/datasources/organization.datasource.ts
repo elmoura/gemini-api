@@ -25,7 +25,8 @@ export class OrganizationDataSource implements IOrganizationDataSource {
   async createOne(
     input: Omit<Organization, keyof IBaseCollection>,
   ): Promise<Organization> {
-    return (await this.orgModel.create(input)).toObject();
+    const createdOrg = await this.orgModel.create(input);
+    return createdOrg.toObject();
   }
 
   async updateOne(

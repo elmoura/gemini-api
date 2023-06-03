@@ -1,6 +1,6 @@
 import { Environment } from '@config/env';
 import { Injectable } from '@nestjs/common';
-import { sign, verify, Jwt, decode } from 'jsonwebtoken';
+import { sign, verify, Jwt, decode, JwtPayload } from 'jsonwebtoken';
 
 export interface GenerateTokenPayload {
   userId: string;
@@ -11,11 +11,15 @@ interface GenerateTokenResult {
   accessToken: string;
 }
 
+export type TokenData = GenerateTokenPayload & JwtPayload;
+
 interface ITokenService {
   isTokenValid(token: string): boolean;
-  decode(token: string): GenerateTokenPayload & Jwt;
+  decode(token: string): TokenData;
   generate(params: GenerateTokenPayload): GenerateTokenResult;
 }
+
+const TOKEN_EXPIRATION_TIME_IN_MS = 24 * 60 * 60 * 1000; // 1 day
 
 @Injectable()
 export class TokenService implements ITokenService {
@@ -31,7 +35,11 @@ export class TokenService implements ITokenService {
   }
 
   generate(payload: GenerateTokenPayload): GenerateTokenResult {
-    return { accessToken: sign(payload, this.secret) };
+    return {
+      accessToken: sign(payload, this.secret, {
+        expiresIn: TOKEN_EXPIRATION_TIME_IN_MS,
+      }),
+    };
   }
 
   decode(token: string): GenerateTokenPayload & Jwt {
