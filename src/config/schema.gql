@@ -68,7 +68,20 @@ type LoginUserOutput {
   updatedAt: DateTime!
 }
 
+type GetUserOutput {
+  _id: String!
+  organizationId: String!
+  accountStatus: String!
+  firstName: String!
+  lastName: String!
+  email: String!
+  phoneNumber: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
 type Query {
+  me: GetUserOutput!
   hello: String!
 }
 

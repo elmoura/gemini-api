@@ -9,6 +9,7 @@ import { CreateUserInvitationUseCase } from './usecases/create-user-invitation.u
 import { EmailService } from '@shared/services/email.service';
 import { TokenService } from '@shared/services/token.service';
 import { LoginUserUseCase } from './usecases/login-user.usecase';
+import { GetUserUseCase } from './usecases/get-user/get-user.usecase';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { LoginUserUseCase } from './usecases/login-user.usecase';
     CryptoService,
     UserResolver,
     UserDataSource,
+    GetUserUseCase,
     LoginUserUseCase,
     CreateUserInvitationUseCase,
     AccountConfirmationUseCase,
