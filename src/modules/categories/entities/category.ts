@@ -1,8 +1,10 @@
-import { Prop, Schema } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
+
+export type CategoryDocument = Category & Document;
 
 @Schema({ timestamps: true })
 export class Category {
-  @Prop()
   _id: string;
 
   @Prop()
@@ -12,9 +14,11 @@ export class Category {
   name: string;
 
   @Prop()
-  description: string;
+  description?: string;
 
   createdAt: Date;
 
   updatedAt: Date;
 }
+
+export const CategorySchema = SchemaFactory.createForClass(Category);

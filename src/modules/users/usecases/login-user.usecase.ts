@@ -20,7 +20,9 @@ export class LoginUserUseCase
   ) {}
 
   async execute(input: LoginUserInput): Promise<LoginUserOutput> {
-    const user = await this.userDataSource.findByEmail(input.email);
+    const user = await this.userDataSource.findByEmail(input.email, {
+      returnPassword: true,
+    });
 
     if (!user) {
       throw new UnauthorizedException();

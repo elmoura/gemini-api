@@ -19,8 +19,6 @@ interface ITokenService {
   generate(params: GenerateTokenPayload): GenerateTokenResult;
 }
 
-const TOKEN_EXPIRATION_TIME_IN_MS = 24 * 60 * 60 * 1000; // 1 day
-
 @Injectable()
 export class TokenService implements ITokenService {
   private readonly secret: string;
@@ -36,9 +34,7 @@ export class TokenService implements ITokenService {
 
   generate(payload: GenerateTokenPayload): GenerateTokenResult {
     return {
-      accessToken: sign(payload, this.secret, {
-        expiresIn: TOKEN_EXPIRATION_TIME_IN_MS,
-      }),
+      accessToken: sign(payload, this.secret, { expiresIn: '3 days' }),
     };
   }
 

@@ -80,6 +80,14 @@ type GetUserOutput {
   updatedAt: DateTime!
 }
 
+type Category {
+  _id: String!
+  name: String!
+  description: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
 type Query {
   me: GetUserOutput!
   hello: String!
@@ -91,6 +99,7 @@ type Mutation {
   login(input: LoginUserInput!): LoginUserOutput!
   createOrganization(input: CreateOrganizationInput!): OrganizationObj!
   createOrgLocation(input: CreateOrganizationLocationInput!): OrganizationLocationObj!
+  createCategory(input: CreateCategoryInput!): Category!
 }
 
 input CreateUserInvitationInput {
@@ -126,4 +135,9 @@ input CreateOrganizationLocationInput {
   number: String!
   complement: String
   postalCode: String!
+}
+
+input CreateCategoryInput {
+  name: String!
+  description: String
 }

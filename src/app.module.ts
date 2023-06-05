@@ -8,6 +8,7 @@ import { OrganizationModule } from '@modules/organizations/organizations.module'
 import { UserModule } from '@modules/users/users.module';
 import { AuthGuard } from '@shared/guards/auth.guard';
 import { TokenService } from '@shared/services/token.service';
+import { CategoryModule } from '@modules/categories/category.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { TokenService } from '@shared/services/token.service';
     MongooseModule.forRoot(Environment.mongodb.url),
     UserModule,
     OrganizationModule,
+    CategoryModule,
   ],
   providers: [AuthGuard, TokenService],
 })
