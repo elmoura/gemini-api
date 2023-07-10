@@ -5,6 +5,8 @@ import { IBaseCollection } from '@shared/interfaces/base-collection';
 import { Organization, OrganizationDocument } from '../entities/organization';
 
 interface IOrganizationDataSource {
+  findById(organizationId: string): Promise<Organization | null>;
+
   createOne(
     input: Omit<Organization, keyof IBaseCollection>,
   ): Promise<Organization>;
@@ -21,6 +23,11 @@ export class OrganizationDataSource implements IOrganizationDataSource {
     @InjectModel(Organization.name)
     private readonly orgModel: Model<OrganizationDocument>,
   ) {}
+
+  async findById(organizationId: string): Promise<Organization | null> {
+    const result = await this.orgModel.findById(organizationId);
+    return result.toObject();
+  }
 
   async createOne(
     input: Omit<Organization, keyof IBaseCollection>,

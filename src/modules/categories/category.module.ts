@@ -1,10 +1,15 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { TokenService } from '@shared/services/token.service';
+import {
+  Organization,
+  OrganizationSchema,
+} from '@modules/organizations/entities/organization';
+import { OrganizationDataSource } from '@modules/organizations/datasources/organization.datasource';
 import { Category, CategorySchema } from './entities/category';
+import { CategoryResolver } from './category.resolver';
 import { CreateCategoryUseCase } from './usecases/create-category.usecase';
 import { CategoryDataSource } from './datasources/category.datasource';
-import { CategoryResolver } from './category.resolver';
-import { TokenService } from '@shared/services/token.service';
 
 @Module({
   imports: [
@@ -13,6 +18,10 @@ import { TokenService } from '@shared/services/token.service';
         name: Category.name,
         schema: CategorySchema,
       },
+      {
+        name: Organization.name,
+        schema: OrganizationSchema,
+      },
     ]),
   ],
   providers: [
@@ -20,6 +29,7 @@ import { TokenService } from '@shared/services/token.service';
     CategoryResolver,
     CategoryDataSource,
     CreateCategoryUseCase,
+    OrganizationDataSource,
   ],
 })
 export class CategoryModule {}
