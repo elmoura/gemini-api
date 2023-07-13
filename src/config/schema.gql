@@ -88,18 +88,39 @@ type Category {
   updatedAt: DateTime!
 }
 
+type Product {
+  _id: String!
+  isActive: Boolean!
+  name: String!
+  description: String
+  originalPrice: Float!
+  promotionalPrice: Float
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
 type Query {
   me: GetUserOutput!
   hello: String!
 }
 
 type Mutation {
+  createProduct(input: CreateProductInput!): Product!
   createUserInvitation(input: CreateUserInvitationInput!): CreateUserInvitationOutput!
   confirmAccount(input: AccountConfirmationInput!): AccountConfirmationOutput!
   login(input: LoginUserInput!): LoginUserOutput!
   createOrganization(input: CreateOrganizationInput!): OrganizationObj!
   createOrgLocation(input: CreateOrganizationLocationInput!): OrganizationLocationObj!
   createCategory(input: CreateCategoryInput!): Category!
+}
+
+input CreateProductInput {
+  name: String!
+  description: String
+  isActive: Boolean!
+  originalPrice: Float!
+  promotionalPrice: Float
+  categoryIds: [String]
 }
 
 input CreateUserInvitationInput {

@@ -1,6 +1,6 @@
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
-import { AuthGuard } from '@shared/guards/auth.guard';
+import { AuthGuard } from '@modules/auth/auth.guard';
 import { CurrentUser, CurrentUserData } from '@shared/decorators/current-user';
 import { AccountConfirmationUseCase } from './usecases/account-confirmation.usecase';
 import { CreateUserInvitationUseCase } from './usecases/create-user-invitation.usecase';

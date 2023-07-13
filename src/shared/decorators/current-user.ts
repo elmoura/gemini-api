@@ -1,6 +1,6 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
-import { TokenData } from '@shared/services/token.service';
+import { TokenData } from '@modules/auth/services/token.service';
 
 export class CurrentUserData implements TokenData {
   userId: string;

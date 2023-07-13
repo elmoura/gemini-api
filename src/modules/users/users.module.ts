@@ -7,7 +7,7 @@ import { AccountConfirmationUseCase } from './usecases/account-confirmation.usec
 import { CryptoService } from '@shared/services/crypto.service';
 import { CreateUserInvitationUseCase } from './usecases/create-user-invitation.usecase';
 import { EmailService } from '@shared/services/email.service';
-import { TokenService } from '@shared/services/token.service';
+import { TokenService } from '@modules/auth/services/token.service';
 import { LoginUserUseCase } from './usecases/login-user.usecase';
 import { GetUserUseCase } from './usecases/get-user/get-user.usecase';
 

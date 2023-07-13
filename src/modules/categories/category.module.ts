@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { TokenService } from '@shared/services/token.service';
+import { TokenService } from '@modules/auth/services/token.service';
 import {
   Organization,
   OrganizationSchema,

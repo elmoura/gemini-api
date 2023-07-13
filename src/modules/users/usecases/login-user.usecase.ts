@@ -4,7 +4,7 @@ import { CryptoService } from '@shared/services/crypto.service';
 import {
   GenerateTokenPayload,
   TokenService,
-} from '@shared/services/token.service';
+} from '@modules/auth/services/token.service';
 import { UserDataSource } from '../datasources/user.datasource';
 import { LoginUserInput } from './dto/login-user.input';
 import { LoginUserOutput } from './dto/login-user.output';

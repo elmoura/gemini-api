@@ -37,6 +37,6 @@ export class CreateProductInput
 
   @IsArray()
   @IsOptional()
-  @Field({ nullable: true })
+  @Field(() => [String], { nullable: 'itemsAndList' })
   categoryIds?: string[];
 }
