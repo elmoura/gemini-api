@@ -5,12 +5,17 @@ import { ProductObj } from './usecases/dto/product.object';
 import { CurrentUser, CurrentUserData } from '@shared/decorators/current-user';
 import { CreateProductInput } from './usecases/dto/create-product.input';
 import { CreateProductUseCase } from './usecases/create-product.usecase';
+import { UploadProductImagesOutput } from './usecases/dto/upload-product-image.output';
+import { UploadProductImagesUseCase } from './usecases/upload-product-images.usecase';
 
 @Resolver()
+@UseGuards(AuthGuard)
 export class ProductResolver {
-  constructor(private createProductUseCase: CreateProductUseCase) {}
+  constructor(
+    private createProductUseCase: CreateProductUseCase,
+    private uploadProductImagesUseCase: UploadProductImagesUseCase,
+  ) {}
 
-  @UseGuards(AuthGuard)
   @Mutation(() => ProductObj)
   async createProduct(
     @CurrentUser() user: CurrentUserData,
@@ -19,4 +24,7 @@ export class ProductResolver {
     const { organizationId } = user;
     return this.createProductUseCase.execute({ organizationId, ...input });
   }
+
+  @Mutation(() => UploadProductImagesOutput)
+  uploadProductImages(): Promise<UploadProductImagesOutput> {}
 }
