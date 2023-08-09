@@ -7,6 +7,7 @@ import { CreateProductInput } from './usecases/dto/create-product.input';
 import { CreateProductUseCase } from './usecases/create-product.usecase';
 import { UploadProductImagesOutput } from './usecases/dto/upload-product-image.output';
 import { UploadProductImagesUseCase } from './usecases/upload-product-images.usecase';
+import { UploadProductImagesInput } from './usecases/dto/upload-product-images.input';
 
 @Resolver()
 @UseGuards(AuthGuard)
@@ -26,5 +27,13 @@ export class ProductResolver {
   }
 
   @Mutation(() => UploadProductImagesOutput)
-  uploadProductImages(): Promise<UploadProductImagesOutput> {}
+  uploadProductImages(
+    @CurrentUser() user: CurrentUserData,
+    @Args('input') input: UploadProductImagesInput,
+  ): Promise<UploadProductImagesOutput> {
+    return this.uploadProductImagesUseCase.execute({
+      organizationId: user.organizationId,
+      ...input,
+    });
+  }
 }

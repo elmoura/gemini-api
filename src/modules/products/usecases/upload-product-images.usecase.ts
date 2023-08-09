@@ -6,6 +6,7 @@ import { UploadProductImagesInput } from './dto/upload-product-images.input';
 import { ProductDataSource } from '../datasources/product.datasource';
 import { ProductDontExistError } from './errors/product-dont-exist';
 import { UploadProductImagesOutput } from './dto/upload-product-image.output';
+import { IOrganizationData } from '@shared/interfaces/organization-data';
 
 /**
  * @observation
@@ -14,7 +15,11 @@ import { UploadProductImagesOutput } from './dto/upload-product-image.output';
  */
 @Injectable()
 export class UploadProductImagesUseCase
-  implements IBaseUseCase<UploadProductImagesInput, UploadProductImagesOutput>
+  implements
+    IBaseUseCase<
+      UploadProductImagesInput & IOrganizationData,
+      UploadProductImagesOutput
+    >
 {
   constructor(
     private productDataSource: ProductDataSource,
@@ -23,7 +28,7 @@ export class UploadProductImagesUseCase
   ) {}
 
   async execute(
-    input: UploadProductImagesInput,
+    input: UploadProductImagesInput & IOrganizationData,
   ): Promise<UploadProductImagesOutput> {
     const { productId, organizationId } = input;
 
@@ -33,8 +38,10 @@ export class UploadProductImagesUseCase
       throw new ProductDontExistError(productId);
     }
 
+    const productFiles = await Promise.all(input.files);
+
     const createdImages = await Promise.all(
-      input.files.map(async (file, index) => {
+      productFiles.map(async (file, index) => {
         const fileKey = this.createFileKey({
           productId,
           organizationId,
