@@ -99,6 +99,17 @@ type Product {
   updatedAt: DateTime!
 }
 
+type CustomerObj {
+  _id: String!
+  organizationId: String!
+  firstName: String!
+  lastName: String!
+  email: String!
+  phone: String!
+  updatedAt: DateTime!
+  createdAt: DateTime!
+}
+
 type Query {
   me: GetUserOutput!
   hello: String!
@@ -112,6 +123,7 @@ type Mutation {
   createOrganization(input: CreateOrganizationInput!): OrganizationObj!
   createOrgLocation(input: CreateOrganizationLocationInput!): OrganizationLocationObj!
   createCategory(input: CreateCategoryInput!): Category!
+  createCustomer(input: CreateCustomerInput!): CustomerObj!
 }
 
 input CreateProductInput {
@@ -161,4 +173,13 @@ input CreateOrganizationLocationInput {
 input CreateCategoryInput {
   name: String!
   description: String
+}
+
+input CreateCustomerInput {
+  organizationId: String!
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
+  phone: String!
 }

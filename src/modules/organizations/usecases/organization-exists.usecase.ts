@@ -10,7 +10,9 @@ export class OrganizationExistsUseCase
   constructor(private organizationDataSource: OrganizationDataSource) {}
 
   async execute({ organizationId }: OrganizationExistsInput): Promise<boolean> {
-    const organization = this.organizationDataSource.findById(organizationId);
+    const organization = await this.organizationDataSource.findById(
+      organizationId,
+    );
 
     return Boolean(organization);
   }

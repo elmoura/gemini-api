@@ -26,7 +26,7 @@ export class OrganizationDataSource implements IOrganizationDataSource {
 
   async findById(organizationId: string): Promise<Organization | null> {
     const result = await this.orgModel.findById(organizationId);
-    return result.toObject();
+    return result && result.toObject();
   }
 
   async createOne(

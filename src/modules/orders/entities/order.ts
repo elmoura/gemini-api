@@ -31,7 +31,8 @@ export class Order {
   /**
    * @todo
    */
-  customer: {
+  // pode nao precisar em casos de pedidos presenciais
+  customer?: {
     customerId: string;
     // name
     // phone
