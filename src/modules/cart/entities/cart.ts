@@ -8,9 +8,6 @@ export type CartDocument = Cart & Document;
 export class Cart {
   _id: string;
 
-  // em que mesa esse carrinho esta sendo servido?
-  // criar ligaçao com mesa pro fluxo presencial
-
   @Prop()
   organizationId: string;
 
