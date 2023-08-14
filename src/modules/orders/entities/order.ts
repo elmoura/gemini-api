@@ -1,4 +1,5 @@
 import { Product } from '@modules/products/entities/product';
+import { Customer } from '@modules/customers/entities/customer';
 
 export class Order {
   _id: string;
@@ -28,16 +29,5 @@ export class Order {
   // seria isso o cart?
   items: Product[];
 
-  /**
-   * @todo
-   */
-  // pode nao precisar em casos de pedidos presenciais
-  customer?: {
-    customerId: string;
-    // name
-    // phone
-    // email
-
-    // customerDeliveryAddressId?: string
-  };
+  customer?: Customer;
 }
