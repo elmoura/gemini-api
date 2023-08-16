@@ -9,11 +9,29 @@ import { CreateUserInvitationUseCase } from './usecases/create-user-invitation.u
 import { EmailService } from '@shared/services/email.service';
 import { TokenService } from '@modules/auth/services/token.service';
 import { LoginUserUseCase } from './usecases/login-user.usecase';
-import { GetUserUseCase } from './usecases/get-user/get-user.usecase';
+import { GetUserUseCase } from './usecases/get-user.usecase';
+import { SetUserLocationUseCase } from './usecases/set-user-location.usecase';
+import {
+  Organization,
+  OrganizationSchema,
+} from '@modules/organizations/entities/organization';
+import {
+  OrganizationLocation,
+  OrganizationLocationSchema,
+} from '@modules/organizations/entities/organization-location';
+import { OrganizationLocationDataSource } from '@modules/organizations/datasources/organization-location.datasource';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
+      {
+        name: Organization.name,
+        schema: OrganizationSchema,
+      },
+      {
+        name: OrganizationLocation.name,
+        schema: OrganizationLocationSchema,
+      },
       {
         name: User.name,
         schema: UserSchema,
@@ -28,6 +46,8 @@ import { GetUserUseCase } from './usecases/get-user/get-user.usecase';
     UserDataSource,
     GetUserUseCase,
     LoginUserUseCase,
+    OrganizationLocationDataSource,
+    SetUserLocationUseCase,
     CreateUserInvitationUseCase,
     AccountConfirmationUseCase,
   ],

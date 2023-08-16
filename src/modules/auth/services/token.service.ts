@@ -5,6 +5,7 @@ import { sign, verify, Jwt, decode, JwtPayload } from 'jsonwebtoken';
 export interface GenerateTokenPayload {
   userId: string;
   organizationId: string;
+  locationId?: string;
 }
 
 interface GenerateTokenResult {

@@ -11,23 +11,32 @@ import { CreateUserInvitationOutput } from './usecases/dto/create-user-invitatio
 import { LoginUserInput } from './usecases/dto/login-user.input';
 import { LoginUserOutput } from './usecases/dto/login-user.output';
 import { LoginUserUseCase } from './usecases/login-user.usecase';
-import { GetUserOutput } from './usecases/get-user/dto/get-user.output';
-import { GetUserUseCase } from './usecases/get-user/get-user.usecase';
+import { GetUserOutput } from './usecases/dto/get-user.output';
+import { GetUserUseCase } from './usecases/get-user.usecase';
+import { SetUserLocationOutput } from './usecases/dto/set-user-location.output';
+import { SetUserLocationInput } from './usecases/dto/set-user-location.input';
+import { SetUserLocationUseCase } from './usecases/set-user-location.usecase';
 
 @Resolver()
 export class UserResolver {
   constructor(
     private getUserUseCase: GetUserUseCase,
     private loginUserUseCase: LoginUserUseCase,
+    private setUserLocationUseCase: SetUserLocationUseCase,
     private creatUserInvitationUseCase: CreateUserInvitationUseCase,
     private accountConfirmationUseCase: AccountConfirmationUseCase,
   ) {}
 
+  @UseGuards(AuthGuard)
   @Mutation(() => CreateUserInvitationOutput)
   async createUserInvitation(
+    @CurrentUser() currentUserData: CurrentUserData,
     @Args('input') input: CreateUserInvitationInput,
   ): Promise<CreateUserInvitationOutput> {
-    return this.creatUserInvitationUseCase.execute(input);
+    return this.creatUserInvitationUseCase.execute({
+      ...input,
+      organizationId: currentUserData.organizationId,
+    });
   }
 
   @Mutation(() => AccountConfirmationOutput)
@@ -35,6 +44,15 @@ export class UserResolver {
     @Args('input') input: AccountConfirmationInput,
   ): Promise<AccountConfirmationOutput> {
     return this.accountConfirmationUseCase.execute(input);
+  }
+
+  @UseGuards(AuthGuard)
+  @Mutation(() => SetUserLocationOutput)
+  async setUserLocation(
+    @Args('input') input: SetUserLocationInput,
+    @CurrentUser() currentUserData: CurrentUserData,
+  ): Promise<SetUserLocationOutput> {
+    return this.setUserLocationUseCase.execute(input, currentUserData);
   }
 
   @Mutation(() => LoginUserOutput)

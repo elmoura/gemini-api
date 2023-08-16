@@ -3,6 +3,7 @@ import { renderFile } from 'pug';
 import { Injectable } from '@nestjs/common';
 import { IBaseUseCase } from '@shared/interfaces/base-use-case';
 import { EmailService } from '@shared/services/email.service';
+import { IOrganizationData } from '@shared/interfaces/organization-data';
 import { UserDataSource } from '../datasources/user.datasource';
 import { CreateUserInvitationInput } from './dto/create-user-invitation.input';
 import { CreateUserInvitationOutput } from './dto/create-user-invitation.output';
@@ -11,7 +12,10 @@ import { UserAlreadyExistsError } from '../errors/user-already-exists';
 @Injectable()
 export class CreateUserInvitationUseCase
   implements
-    IBaseUseCase<CreateUserInvitationInput, CreateUserInvitationOutput>
+    IBaseUseCase<
+      CreateUserInvitationInput & IOrganizationData,
+      CreateUserInvitationOutput
+    >
 {
   private readonly invitationTemplatePath: string;
 
@@ -29,7 +33,7 @@ export class CreateUserInvitationUseCase
   }
 
   async execute(
-    input: CreateUserInvitationInput,
+    input: CreateUserInvitationInput & IOrganizationData,
   ): Promise<CreateUserInvitationOutput> {
     const { email } = input;
     const userExists = await this.userDataSource.findByEmail(email);

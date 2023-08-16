@@ -35,7 +35,7 @@ export class LoginUserUseCase
       throw new UnauthorizedException();
     }
 
-    const tokenPayload: GenerateTokenPayload = {
+    const tokenPayload: Omit<GenerateTokenPayload, 'locationId'> = {
       userId: user._id,
       organizationId: user.organizationId,
     };
