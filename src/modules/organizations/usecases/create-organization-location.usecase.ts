@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { IBaseUseCase } from '@shared/interfaces/base-use-case';
+import { IOrganizationData } from '@shared/interfaces/organization-data';
 import { CreateOrganizationLocationInput } from './types/create-organization-location.input';
 import { OrganizationLocationObj } from './types/organization-location.object';
 import { OrganizationLocationDataSource } from '../datasources/organization-location.datasource';
-import { IOrganizationData } from '@shared/interfaces/organization-data';
 
 @Injectable()
 export class CreateOrganizationLocationUseCase

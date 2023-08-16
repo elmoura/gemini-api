@@ -1,8 +1,8 @@
-import { OrganizationLocation } from '@modules/organizations/entities/organization-location';
+import { IsOptional, IsString } from 'class-validator';
 import { Field, InputType } from '@nestjs/graphql';
+import { OrganizationLocation } from '@modules/organizations/entities/organization-location';
 import { IBaseCollection } from '@shared/interfaces/base-collection';
 import { IOrganizationData } from '@shared/interfaces/organization-data';
-import { IsOptional, IsString } from 'class-validator';
 
 @InputType()
 export class CreateOrganizationLocationInput

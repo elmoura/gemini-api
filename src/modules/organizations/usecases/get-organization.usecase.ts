@@ -1,9 +1,9 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { GetOrganizationInput } from './types/get-organization.input';
+import { CurrentUserData } from '@shared/decorators/current-user';
 import { Organization } from '../entities/organization';
+import { GetOrganizationInput } from './types/get-organization.input';
 import { OrganizationDataSource } from '../datasources/organization.datasource';
 import { OrganizationLocationDataSource } from '../datasources/organization-location.datasource';
-import { CurrentUserData } from '@shared/decorators/current-user';
 
 @Injectable()
 export class GetOrganizationUseCase {
