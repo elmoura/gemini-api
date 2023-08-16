@@ -6,6 +6,7 @@ import { OrganizationLocation } from '../entities/organization-location';
 
 interface IOrganizationLocationDataSource {
   findById(locationId: string): Promise<OrganizationLocation | null>;
+  findLocationsByOrgId(organizationId: string): Promise<OrganizationLocation[]>;
   createOne(
     payload: Omit<OrganizationLocation, keyof IBaseCollection>,
   ): Promise<OrganizationLocation>;
@@ -32,5 +33,11 @@ export class OrganizationLocationDataSource
     );
 
     return createdLocation.toObject();
+  }
+
+  async findLocationsByOrgId(
+    organizationId: string,
+  ): Promise<OrganizationLocation[]> {
+    return this.organizationLocationModel.find({ organizationId });
   }
 }
