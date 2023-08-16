@@ -7,6 +7,10 @@ import { OrganizationLocation } from '../entities/organization-location';
 interface IOrganizationLocationDataSource {
   findById(locationId: string): Promise<OrganizationLocation | null>;
   findLocationsByOrgId(organizationId: string): Promise<OrganizationLocation[]>;
+  findOrgLocationByIds(
+    organizationId: string,
+    locationId: string,
+  ): Promise<OrganizationLocation>;
   createOne(
     payload: Omit<OrganizationLocation, keyof IBaseCollection>,
   ): Promise<OrganizationLocation>;
@@ -23,6 +27,16 @@ export class OrganizationLocationDataSource
 
   async findById(locationId: string): Promise<OrganizationLocation | null> {
     return this.organizationLocationModel.findById(locationId);
+  }
+
+  async findOrgLocationByIds(
+    organizationId: string,
+    locationId: string,
+  ): Promise<OrganizationLocation> {
+    return this.organizationLocationModel.findOne({
+      _id: locationId,
+      organizationId,
+    });
   }
 
   async createOne(

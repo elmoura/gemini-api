@@ -81,6 +81,10 @@ type GetUserOutput {
   updatedAt: DateTime!
 }
 
+type SetUserLocationOutput {
+  newAccessToken: String!
+}
+
 type Category {
   _id: String!
   name: String!
@@ -124,6 +128,7 @@ type Mutation {
   createProduct(input: CreateProductInput!): Product!
   createUserInvitation(input: CreateUserInvitationInput!): CreateUserInvitationOutput!
   confirmAccount(input: AccountConfirmationInput!): AccountConfirmationOutput!
+  setUserLocation(input: SetUserLocationInput!): SetUserLocationOutput!
   login(input: LoginUserInput!): LoginUserOutput!
   createOrganization(input: CreateOrganizationInput!): OrganizationObj!
   createOrganizationLocation(input: CreateOrganizationLocationInput!): OrganizationLocationObj!
@@ -141,7 +146,6 @@ input CreateProductInput {
 }
 
 input CreateUserInvitationInput {
-  organizationId: String!
   email: String!
 }
 
@@ -151,6 +155,10 @@ input AccountConfirmationInput {
   lastName: String!
   phoneNumber: String
   password: String!
+}
+
+input SetUserLocationInput {
+  locationId: String!
 }
 
 input LoginUserInput {
