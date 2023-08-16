@@ -1,16 +1,14 @@
 import { OrganizationLocation } from '@modules/organizations/entities/organization-location';
 import { Field, InputType } from '@nestjs/graphql';
 import { IBaseCollection } from '@shared/interfaces/base-collection';
+import { IOrganizationData } from '@shared/interfaces/organization-data';
 import { IsOptional, IsString } from 'class-validator';
 
 @InputType()
 export class CreateOrganizationLocationInput
-  implements Omit<OrganizationLocation, keyof IBaseCollection>
+  implements
+    Omit<OrganizationLocation, keyof IBaseCollection | keyof IOrganizationData>
 {
-  @Field()
-  @IsString()
-  organizationId: string;
-
   @IsString()
   @IsOptional()
   @Field({ nullable: true })

@@ -7,6 +7,7 @@ import { CreateOrganizationUseCase } from './usecases/create-organization.usecas
 import { OrganizationDataSource } from './datasources/organization.datasource';
 import { CreateUserInvitationUseCase } from '@modules/users/usecases/create-user-invitation.usecase';
 import { EmailService } from '@shared/services/email.service';
+import { AuthModule } from '@modules/auth/auth.module';
 import { UserDataSource } from '@modules/users/datasources/user.datasource';
 import {
   OrganizationLocation,
@@ -14,9 +15,11 @@ import {
 } from './entities/organization-location';
 import { CreateOrganizationLocationUseCase } from './usecases/create-organization-location.usecase';
 import { OrganizationLocationDataSource } from './datasources/organization-location.datasource';
+import { GetOrganizationUseCase } from './usecases/get-organization.usecase';
 
 @Module({
   imports: [
+    AuthModule,
     MongooseModule.forFeature([
       {
         name: User.name,
@@ -38,6 +41,7 @@ import { OrganizationLocationDataSource } from './datasources/organization-locat
     OrganizationResolver,
     OrganizationDataSource,
     OrganizationLocationDataSource,
+    GetOrganizationUseCase,
     CreateUserInvitationUseCase,
     CreateOrganizationUseCase,
     CreateOrganizationLocationUseCase,
