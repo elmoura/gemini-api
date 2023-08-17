@@ -12,11 +12,14 @@ export class OrganizationLocationExistsUseCase
   ) {}
 
   async execute({
+    organizationId,
     locationId,
   }: OrganizationLocationExistsInput): Promise<boolean> {
-    const location = await this.organizationLocationDataSource.findById(
-      locationId,
-    );
+    const location =
+      await this.organizationLocationDataSource.findByOrgAndLocationId(
+        organizationId,
+        locationId,
+      );
 
     return Boolean(location);
   }
