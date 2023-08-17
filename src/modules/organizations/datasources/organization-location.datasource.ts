@@ -5,6 +5,10 @@ import { IBaseCollection } from '@shared/interfaces/base-collection';
 import { OrganizationLocation } from '../entities/organization-location';
 
 interface IOrganizationLocationDataSource {
+  findByOrgAndLocationId(
+    organizationId: string,
+    locationId: string,
+  ): Promise<OrganizationLocation | null>;
   findById(locationId: string): Promise<OrganizationLocation | null>;
   findLocationsByOrgId(organizationId: string): Promise<OrganizationLocation[]>;
   findOrgLocationByIds(
@@ -24,6 +28,16 @@ export class OrganizationLocationDataSource
     @InjectModel(OrganizationLocation.name)
     private organizationLocationModel: Model<OrganizationLocation>,
   ) {}
+
+  async findByOrgAndLocationId(
+    organizationId: string,
+    locationId: string,
+  ): Promise<OrganizationLocation | null> {
+    return this.organizationLocationModel.findOne({
+      _id: locationId,
+      organizationId,
+    });
+  }
 
   async findById(locationId: string): Promise<OrganizationLocation | null> {
     return this.organizationLocationModel.findById(locationId);

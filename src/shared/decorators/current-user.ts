@@ -5,6 +5,7 @@ import { TokenData } from '@modules/auth/services/token.service';
 export class CurrentUserData implements TokenData {
   userId: string;
   organizationId: string;
+  locationId: string;
   exp?: number;
   iat?: number;
 }
