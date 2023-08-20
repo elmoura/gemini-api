@@ -153,6 +153,7 @@ input CreateProductInput {
   isActive: Boolean!
   originalPrice: Float!
   promotionalPrice: Float
+  isPromotionalPriceEnabled: Boolean
   categoryIds: [String]
 }
 

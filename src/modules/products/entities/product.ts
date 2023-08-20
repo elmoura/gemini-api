@@ -20,6 +20,9 @@ export class Product {
   description?: string;
 
   @Prop()
+  isPromotionalPriceEnabled?: boolean;
+
+  @Prop()
   originalPrice: number;
 
   @Prop()
