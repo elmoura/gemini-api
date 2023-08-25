@@ -97,6 +97,8 @@ export class CreateTableOrderUseCase
         productPrice,
         quantity: product.quantity,
         total: productPrice * product.quantity,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
     });
   }

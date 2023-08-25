@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { TableOrderItem } from './table-order-item';
+import { TableOrderItem, TableOrderItemSchema } from './table-order-item';
 import { Document } from 'mongoose';
 import { Table } from './table';
 import {
@@ -52,7 +52,7 @@ export class TableOrder {
   @Prop({ type: TableOrderPayment })
   payment: TableOrderPayment;
 
-  @Prop()
+  @Prop({ type: [TableOrderItemSchema] })
   items: TableOrderItem[];
 
   createdAt: Date;

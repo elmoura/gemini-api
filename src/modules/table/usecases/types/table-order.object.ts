@@ -73,6 +73,12 @@ class TableOrderItemObj implements TableOrderItem {
 
   @Field()
   total: number;
+
+  @Field()
+  createdAt: Date;
+
+  @Field()
+  updatedAt: Date;
 }
 
 registerEnumType(TableOrderStatuses, { name: 'TableOrderStatuses' });

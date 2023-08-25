@@ -15,6 +15,10 @@ import { TableOrderDataSource } from './datasources/table-order.datasource';
 import { TableOrderResolver } from './table-order.resolver';
 import { ProductDataSource } from '@modules/products/datasources/product.datasource';
 import { Product, ProductSchema } from '@modules/products/entities/product';
+import {
+  TableOrderItem,
+  TableOrderItemSchema,
+} from './entities/table-order-item';
 
 /**
  * @description
@@ -33,6 +37,10 @@ import { Product, ProductSchema } from '@modules/products/entities/product';
       {
         name: TableOrder.name,
         schema: TableOrderSchema,
+      },
+      {
+        name: TableOrderItem.name,
+        schema: TableOrderItemSchema,
       },
       {
         name: Product.name,

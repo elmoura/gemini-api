@@ -161,6 +161,8 @@ type TableOrderItemObj {
   discount: Float!
   productPrice: Float!
   total: Float!
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type TableOrderObj {
