@@ -23,7 +23,8 @@ export class ProductDataSource implements IProductDataSource {
   }
 
   async findManyByIds(productIds: string[]): Promise<Product[]> {
-    return this.productModel.find({ _id: productIds });
+    const result = await this.productModel.find({ _id: productIds });
+    return result.map((item) => item.toObject());
   }
 
   async createOne(

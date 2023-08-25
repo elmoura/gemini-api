@@ -30,7 +30,7 @@ class TableInfo implements Pick<Table, '_id' | 'identifier'> {
   identifier: string;
 }
 
-@Schema()
+@Schema({ timestamps: true })
 export class TableOrder {
   _id: string;
 

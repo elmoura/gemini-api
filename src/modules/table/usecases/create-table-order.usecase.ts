@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { IBaseUseCase } from '@shared/interfaces/base-use-case';
 import {
   CreateTableOrderInput,
@@ -38,6 +38,9 @@ export class CreateTableOrderUseCase
   async execute(
     input: CreateTableOrderInput & CurrentUserData,
   ): Promise<TableOrder> {
+    if (!input.organizationId || !input.locationId)
+      throw new UnauthorizedException();
+
     const table = await this.tableDataSource.findByTableAndOrgId(
       input.tableId,
       input.organizationId,

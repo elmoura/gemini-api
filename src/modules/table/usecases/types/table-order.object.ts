@@ -24,6 +24,12 @@ class OrderPriceInfo implements TableOrderPricing {
   discount: number;
 }
 
+registerEnumType(TableOrderPaymentStatuses, {
+  name: 'TableOrderPaymentStatuses',
+});
+
+registerEnumType(PaymentMethods, { name: 'PaymentMethods' });
+
 @ObjectType()
 class OrderPaymentInfo implements TableOrderPayment {
   @Field()
@@ -35,7 +41,7 @@ class OrderPaymentInfo implements TableOrderPayment {
   @Field(() => TableOrderPaymentStatuses)
   paymentStatus: TableOrderPaymentStatuses;
 
-  @Field(() => PaymentMethods)
+  @Field(() => PaymentMethods, { nullable: true })
   method?: PaymentMethods;
 
   @Field()
@@ -94,7 +100,7 @@ export class TableOrderObj implements TableOrder {
   @Field(() => OrderPaymentInfo)
   payment: OrderPaymentInfo;
 
-  @Field(() => TableOrderItemObj)
+  @Field(() => [TableOrderItemObj])
   items: TableOrderItemObj[];
 
   @Field()
