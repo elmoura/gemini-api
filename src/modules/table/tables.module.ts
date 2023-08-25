@@ -9,6 +9,16 @@ import { Table, TableSchema } from './entities/table';
 import { TableDataSource } from './datasources/table.datasource';
 import { CreateTableUseCase } from './usecases/create-table.usecase';
 import { ListLocationTablesUseCase } from './usecases/list-location-tables.usecase';
+import { CreateTableOrderUseCase } from './usecases/create-table-order.usecase';
+import { TableOrder, TableOrderSchema } from './entities/table-order';
+import { TableOrderDataSource } from './datasources/table-order.datasource';
+import { TableOrderResolver } from './table-order.resolver';
+import { ProductDataSource } from '@modules/products/datasources/product.datasource';
+import { Product, ProductSchema } from '@modules/products/entities/product';
+import {
+  TableOrderItem,
+  TableOrderItemSchema,
+} from './entities/table-order-item';
 
 /**
  * @description
@@ -22,12 +32,30 @@ import { ListLocationTablesUseCase } from './usecases/list-location-tables.useca
   imports: [
     AuthModule,
     OrganizationEntitiesModule,
-    MongooseModule.forFeature([{ name: Table.name, schema: TableSchema }]),
+    MongooseModule.forFeature([
+      { name: Table.name, schema: TableSchema },
+      {
+        name: TableOrder.name,
+        schema: TableOrderSchema,
+      },
+      {
+        name: TableOrderItem.name,
+        schema: TableOrderItemSchema,
+      },
+      {
+        name: Product.name,
+        schema: ProductSchema,
+      },
+    ]),
   ],
   providers: [
     TablesResolver,
+    TableOrderResolver,
     TableDataSource,
+    TableOrderDataSource,
+    ProductDataSource,
     CreateTableUseCase,
+    CreateTableOrderUseCase,
     ListLocationTablesUseCase,
     OrganizationExistsUseCase,
     OrganizationLocationExistsUseCase,

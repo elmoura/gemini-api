@@ -1,21 +1,41 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { TableOrderItem } from './table-order-item';
+import { TableOrderItem, TableOrderItemSchema } from './table-order-item';
 import { Document } from 'mongoose';
 import { Table } from './table';
+import {
+  TableOrderPaymentStatuses,
+  TableOrderStatuses,
+} from '../enums/table-order-statuses';
+import { PaymentMethods } from '@shared/enums/payment-methods';
 
 export type TableOrderDocument = TableOrder & Document;
 
-export enum TableOrderStatuses {
-  IN_ATTENDANCE = 'em atendimento',
-  FINISHED = 'finalizado',
+export class TableOrderPricing {
+  total: number;
+  fees: number;
+  discount: number;
 }
 
-@Schema()
+export class TableOrderPayment {
+  total: number;
+  paidAmount: number;
+  paymentStatus: TableOrderPaymentStatuses;
+  method?: PaymentMethods;
+  instalments?: number;
+}
+
+class TableInfo implements Pick<Table, '_id' | 'identifier'> {
+  _id: string;
+
+  identifier: string;
+}
+
+@Schema({ timestamps: true })
 export class TableOrder {
   _id: string;
 
-  @Prop()
-  table: Pick<Table, '_id' | 'identifier'>;
+  @Prop({ type: TableInfo })
+  table: TableInfo;
 
   @Prop()
   organizationId: string;
@@ -26,7 +46,13 @@ export class TableOrder {
   @Prop()
   status: TableOrderStatuses;
 
-  @Prop()
+  @Prop({ type: TableOrderPricing })
+  pricing: TableOrderPricing;
+
+  @Prop({ type: TableOrderPayment })
+  payment: TableOrderPayment;
+
+  @Prop({ type: [TableOrderItemSchema] })
   items: TableOrderItem[];
 
   createdAt: Date;

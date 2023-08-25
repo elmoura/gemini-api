@@ -35,6 +35,11 @@ export class CreateProductInput
   @Field({ nullable: true })
   promotionalPrice?: number;
 
+  @IsBoolean()
+  @IsOptional()
+  @Field({ nullable: true })
+  isPromotionalPriceEnabled?: boolean;
+
   @IsArray()
   @IsOptional()
   @Field(() => [String], { nullable: 'itemsAndList' })

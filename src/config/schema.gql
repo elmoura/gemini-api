@@ -124,6 +124,65 @@ type TableObj {
   updatedAt: DateTime!
 }
 
+type OrderPriceInfo {
+  total: Float!
+  fees: Float!
+  discount: Float!
+}
+
+type OrderPaymentInfo {
+  total: Float!
+  paidAmount: Float!
+  paymentStatus: TableOrderPaymentStatuses!
+  method: PaymentMethods
+  instalments: Float!
+}
+
+enum TableOrderPaymentStatuses {
+  PENDING
+  PAID
+}
+
+enum PaymentMethods {
+  PIX
+  CASH
+  CREDIT_CARD
+  DEBIT_CARD
+}
+
+type TableInfo {
+  _id: String!
+  identifier: String!
+}
+
+type TableOrderItemObj {
+  quantity: Float!
+  productId: String!
+  discount: Float!
+  productPrice: Float!
+  total: Float!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type TableOrderObj {
+  _id: String!
+  organizationId: String!
+  locationId: String!
+  status: TableOrderStatuses!
+  table: TableInfo!
+  pricing: OrderPriceInfo!
+  payment: OrderPaymentInfo!
+  items: [TableOrderItemObj!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum TableOrderStatuses {
+  IN_ATTENDANCE
+  FINISHED
+}
+
 type Query {
   me: GetUserOutput!
   getOrganization(input: GetOrganizationInput!): OrganizationObj!
@@ -145,6 +204,7 @@ type Mutation {
   createCategory(input: CreateCategoryInput!): Category!
   createCustomer(input: CreateCustomerInput!): CustomerObj!
   createTable(input: CreateTableInput!): TableObj!
+  createTableOrder(input: CreateTableOrderInput!): TableOrderObj!
 }
 
 input CreateProductInput {
@@ -153,6 +213,7 @@ input CreateProductInput {
   isActive: Boolean!
   originalPrice: Float!
   promotionalPrice: Float
+  isPromotionalPriceEnabled: Boolean
   categoryIds: [String]
 }
 
@@ -209,4 +270,14 @@ input CreateCustomerInput {
 
 input CreateTableInput {
   identifier: String!
+}
+
+input CreateTableOrderInput {
+  tableId: String!
+  items: [TableOrderItemInput!]!
+}
+
+input TableOrderItemInput {
+  productId: String!
+  quantity: Float!
 }
