@@ -183,14 +183,29 @@ enum TableOrderStatuses {
   FINISHED
 }
 
+type ListTableOrdersOutput {
+  limit: Float!
+  offset: Float!
+  ordersCount: Float!
+  orders: [TableOrderObj!]!
+}
+
 type Query {
   me: GetUserOutput!
   getOrganization(input: GetOrganizationInput!): OrganizationObj!
   listLocationTables: [TableObj!]!
+  listTableOrders(input: ListTableOrdersInput!): ListTableOrdersOutput!
 }
 
 input GetOrganizationInput {
   organizationId: String!
+}
+
+input ListTableOrdersInput {
+  limit: Float
+  offset: Float
+  status: TableOrderStatuses
+  creationDate: String
 }
 
 type Mutation {
