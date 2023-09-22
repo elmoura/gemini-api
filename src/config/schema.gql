@@ -220,6 +220,7 @@ type Mutation {
   createCustomer(input: CreateCustomerInput!): CustomerObj!
   createTable(input: CreateTableInput!): TableObj!
   createTableOrder(input: CreateTableOrderInput!): TableOrderObj!
+  addTableOrderItems(input: AddTableOrderItemsInput!): TableOrderObj!
 }
 
 input CreateProductInput {
@@ -295,4 +296,9 @@ input CreateTableOrderInput {
 input TableOrderItemInput {
   productId: String!
   quantity: Float!
+}
+
+input AddTableOrderItemsInput {
+  tableOrderId: String!
+  items: [TableOrderItemInput!]!
 }

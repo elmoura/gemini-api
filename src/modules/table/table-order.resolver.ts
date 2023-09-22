@@ -8,6 +8,8 @@ import { CreateTableOrderInput } from './usecases/types/create-table-order.input
 import { ListTableOrdersOutput } from './usecases/types/list-table-orders.output';
 import { ListTableOrdersUseCase } from './usecases/list-table-orders.usecase';
 import { ListTableOrdersInput } from './usecases/types/list-table-orders.input';
+import { AddTableOrderItemsInput } from './usecases/types/add-table-order-items.input';
+import { AddTableOrderItemsUseCase } from './usecases/add-table-order-items.usecase';
 
 @Resolver()
 @UseGuards(AuthGuard)
@@ -15,6 +17,7 @@ export class TableOrderResolver {
   constructor(
     private listTableOrdersUseCase: ListTableOrdersUseCase,
     private createTableOrderUseCase: CreateTableOrderUseCase,
+    private addTableOrderItemsUseCase: AddTableOrderItemsUseCase,
   ) {}
 
   @Mutation(() => TableOrderObj)
@@ -34,6 +37,17 @@ export class TableOrderResolver {
     @CurrentUser() currentUserData: CurrentUserData,
   ): Promise<ListTableOrdersOutput> {
     return this.listTableOrdersUseCase.execute({
+      ...input,
+      ...currentUserData,
+    });
+  }
+
+  @Mutation(() => TableOrderObj)
+  async addTableOrderItems(
+    @Args('input') input: AddTableOrderItemsInput,
+    @CurrentUser() currentUserData: CurrentUserData,
+  ): Promise<TableOrderObj> {
+    return this.addTableOrderItemsUseCase.execute({
       ...input,
       ...currentUserData,
     });

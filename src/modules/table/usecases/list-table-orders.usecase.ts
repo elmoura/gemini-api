@@ -4,7 +4,6 @@ import { CurrentUserData } from '@shared/decorators/current-user';
 import { ListTableOrdersInput } from './types/list-table-orders.input';
 import { ListTableOrdersOutput } from './types/list-table-orders.output';
 import { TableOrderDataSource } from '../datasources/table-order.datasource';
-import { TableOrderStatuses } from '../enums/table-order-statuses';
 
 @Injectable()
 export class ListTableOrdersUseCase

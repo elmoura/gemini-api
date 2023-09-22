@@ -1,29 +1,19 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { IBaseUseCase } from '@shared/interfaces/base-use-case';
+import { CurrentUserData } from '@shared/decorators/current-user';
+import { ProductDataSource } from '@modules/products/datasources/product.datasource';
+import { TableOrder } from '../entities/table-order';
 import {
   CreateTableOrderInput,
   TableOrderItemInput,
 } from './types/create-table-order.input';
-import {
-  TableOrderPayment,
-  TableOrderPricing,
-  TableOrder,
-} from '../entities/table-order';
 import { TableOrderDataSource } from '../datasources/table-order.datasource';
-import { ProductDataSource } from '@modules/products/datasources/product.datasource';
-import { TableOrderItem } from '../entities/table-order-item';
-import { Product } from '@modules/products/entities/product';
-import {
-  TableOrderPaymentStatuses,
-  TableOrderStatuses,
-} from '../enums/table-order-statuses';
+import { TableOrderStatuses } from '../enums/table-order-statuses';
 import { TableDataSource } from '../datasources/table.datasource';
+import { formatOrderItems } from '../helpers/format-order-items';
+import { formatPricingInfo } from '../helpers/format-order-princing-info';
+import { formatPaymentInfo } from '../helpers/format-order-payment-info';
 import { TableNotFoundException } from '../errors/table-not-found';
-import { CurrentUserData } from '@shared/decorators/current-user';
-
-interface IProductWithQuantity extends Product {
-  quantity: number;
-}
 
 @Injectable()
 export class CreateTableOrderUseCase
@@ -63,9 +53,14 @@ export class CreateTableOrderUseCase
       quantity: itemsMapById[product._id].quantity,
     }));
 
-    const items = this.formatOrderitems(orderProductsWithQuantities);
-    const payment = this.formatPaymentInfo(items);
-    const pricing = this.formatPricingInfo(items);
+    const items = formatOrderItems(orderProductsWithQuantities);
+
+    const paidAmount = 0;
+    const instalments = 0;
+    const payment = formatPaymentInfo(items, paidAmount, instalments);
+
+    const fees = 0;
+    const pricing = formatPricingInfo(items, fees);
 
     return this.tableOrderDataSource.createOne({
       organizationId: input.organizationId,
@@ -79,49 +74,5 @@ export class CreateTableOrderUseCase
       pricing,
       payment,
     });
-  }
-
-  private formatOrderitems(products: IProductWithQuantity[]): TableOrderItem[] {
-    return products.map((product) => {
-      const productPrice = product.isPromotionalPriceEnabled
-        ? product.promotionalPrice
-        : product.originalPrice;
-
-      const discount = product.originalPrice - productPrice;
-
-      // add createdAt updatedAt
-      // https://stackoverflow.com/questions/64385442/add-timestamp-to-a-new-subdocument-or-subschema-in-mongoose
-      return {
-        productId: product._id,
-        discount,
-        productPrice,
-        quantity: product.quantity,
-        total: productPrice * product.quantity,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-    });
-  }
-
-  private formatPaymentInfo(items: TableOrderItem[]): TableOrderPayment {
-    const total = items.reduce((accum, item) => accum + item.total, 0);
-
-    return {
-      total,
-      paidAmount: 0,
-      instalments: 0,
-      paymentStatus: TableOrderPaymentStatuses.PENDING,
-    };
-  }
-
-  private formatPricingInfo(items: TableOrderItem[]): TableOrderPricing {
-    const total = items.reduce((accum, item) => accum + item.total, 0);
-    const discount = items.reduce((accum, item) => accum + item.discount, 0);
-
-    return {
-      total,
-      discount,
-      fees: 0,
-    };
   }
 }
