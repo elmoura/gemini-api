@@ -20,6 +20,7 @@ import {
   TableOrderItemSchema,
 } from './entities/table-order-item';
 import { ListTableOrdersUseCase } from './usecases/list-table-orders.usecase';
+import { AddTableOrderItemsUseCase } from './usecases/add-table-order-items.usecase';
 
 /**
  * @description
@@ -58,6 +59,7 @@ import { ListTableOrdersUseCase } from './usecases/list-table-orders.usecase';
     CreateTableUseCase,
     CreateTableOrderUseCase,
     ListTableOrdersUseCase,
+    AddTableOrderItemsUseCase,
     ListLocationTablesUseCase,
     OrganizationExistsUseCase,
     OrganizationLocationExistsUseCase,

@@ -1,7 +1,7 @@
 import { Field, InputType } from '@nestjs/graphql';
+import { Type } from 'class-transformer';
 import { IsArray, IsInt, Validate, ValidateNested } from 'class-validator';
 import { IsObjectId } from '@shared/validations/is-object-id';
-import { Type } from 'class-transformer';
 
 @InputType()
 export class TableOrderItemInput {
