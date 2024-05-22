@@ -35,6 +35,10 @@ export class CreateTableOrderUseCase
     private tableOrderDataSource: TableOrderDataSource,
   ) {}
 
+  /**
+   * @todo Adicionar validações mais especificas: descontos
+   * Adicionar adicionais do pedido
+   */
   async execute(
     input: CreateTableOrderInput & CurrentUserData,
   ): Promise<TableOrder> {
