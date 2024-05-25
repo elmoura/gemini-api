@@ -1,7 +1,7 @@
-import { TableOrderStatuses } from '@modules/table/enums/table-order-statuses';
 import { Field, InputType } from '@nestjs/graphql';
 import { OrderOptions } from '@shared/interfaces/pagination-options';
 import { IsDateString, IsInt, IsOptional, IsString } from 'class-validator';
+import { TableOrderStatuses } from '../../enums/table-order-statuses';
 
 @InputType()
 export class ListTableOrdersInput {

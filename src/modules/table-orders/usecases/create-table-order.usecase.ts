@@ -1,9 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { IBaseUseCase } from '@shared/interfaces/base-use-case';
-import {
-  CreateTableOrderInput,
-  TableOrderItemInput,
-} from './types/create-table-order.input';
+import { CreateTableOrderInput } from './types/create-table-order.input';
 import {
   TableOrderPayment,
   TableOrderPricing,
@@ -17,13 +14,10 @@ import {
   TableOrderPaymentStatuses,
   TableOrderStatuses,
 } from '../enums/table-order-statuses';
-import { TableDataSource } from '../datasources/table.datasource';
-import { TableNotFoundException } from '../errors/table-not-found';
+import { TableDataSource } from '../../table/datasources/table.datasource';
+import { TableNotFoundException } from '../../table/errors/table-not-found';
 import { CurrentUserData } from '@shared/decorators/current-user';
-
-interface IProductWithQuantity extends Product {
-  quantity: number;
-}
+import { formatOrderItem } from '../utils/format-order-item';
 
 @Injectable()
 export class CreateTableOrderUseCase
@@ -52,22 +46,25 @@ export class CreateTableOrderUseCase
 
     if (!table) throw new TableNotFoundException();
 
-    const productIds = [];
-    const itemsMapById: Record<string, TableOrderItemInput> = {};
-
-    input.items.forEach((item) => {
-      productIds.push(item.productId);
-      itemsMapById[item.productId] = item;
-    });
-
+    const productIds = input.items.map((item) => item.productId);
     const products = await this.productDataSource.findManyByIds(productIds);
 
-    const orderProductsWithQuantities = products.map((product) => ({
-      ...product,
-      quantity: itemsMapById[product._id].quantity,
-    }));
+    const productsMapById: Record<string, Product> = {};
+    products.forEach((product) => {
+      productsMapById[product._id] = product;
+    });
 
-    const items = this.formatOrderitems(orderProductsWithQuantities);
+    // possiblitar q exista mais de um item do mesmo id
+    // outro registro do mesmo produto diferenciado por: observação, adicionais
+    const items = input.items.map((item) =>
+      formatOrderItem(
+        {
+          quantity: item.quantity,
+          observation: item.observation,
+        },
+        productsMapById[item.productId],
+      ),
+    );
     const payment = this.formatPaymentInfo(items);
     const pricing = this.formatPricingInfo(items);
 
@@ -82,28 +79,6 @@ export class CreateTableOrderUseCase
       items,
       pricing,
       payment,
-    });
-  }
-
-  private formatOrderitems(products: IProductWithQuantity[]): TableOrderItem[] {
-    return products.map((product) => {
-      const productPrice = product.isPromotionalPriceEnabled
-        ? product.promotionalPrice
-        : product.originalPrice;
-
-      const discount = product.originalPrice - productPrice;
-
-      // add createdAt updatedAt
-      // https://stackoverflow.com/questions/64385442/add-timestamp-to-a-new-subdocument-or-subschema-in-mongoose
-      return {
-        productId: product._id,
-        discount,
-        productPrice,
-        quantity: product.quantity,
-        total: productPrice * product.quantity,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
     });
   }
 

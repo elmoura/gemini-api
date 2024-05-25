@@ -126,7 +126,7 @@ type TableObj {
 
 type OrderPriceInfo {
   total: Float!
-  fees: Float!
+  fees: Float
   discount: Float!
 }
 
@@ -156,10 +156,12 @@ type TableInfo {
 }
 
 type TableOrderItemObj {
+  _id: String!
   quantity: Float!
   productId: String!
   discount: Float!
   productPrice: Float!
+  observation: String
   total: Float!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -220,6 +222,7 @@ type Mutation {
   createCustomer(input: CreateCustomerInput!): CustomerObj!
   createTable(input: CreateTableInput!): TableObj!
   createTableOrder(input: CreateTableOrderInput!): TableOrderObj!
+  addTableOrderItem(input: AddTableOrderItemInput!): TableOrderObj!
 }
 
 input CreateProductInput {
@@ -295,4 +298,10 @@ input CreateTableOrderInput {
 input TableOrderItemInput {
   productId: String!
   quantity: Float!
+  observation: String
+}
+
+input AddTableOrderItemInput {
+  tableOrderId: String!
+  items: [TableOrderItemInput!]!
 }

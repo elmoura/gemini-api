@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { TableOrderItem, TableOrderItemSchema } from './table-order-item';
 import { Document } from 'mongoose';
-import { Table } from './table';
+import { Table } from '../../table/entities/table';
 import {
   TableOrderPaymentStatuses,
   TableOrderStatuses,

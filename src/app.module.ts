@@ -11,6 +11,7 @@ import { ProductModule } from '@modules/products/product.module';
 import { AuthModule } from '@modules/auth/auth.module';
 import { CustomersModule } from '@modules/customers/customers.module';
 import { TablesModule } from '@modules/table/tables.module';
+import { TableOrdersModule } from '@modules/table-orders/table-orders.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { TablesModule } from '@modules/table/tables.module';
     CategoryModule,
     CustomersModule,
     TablesModule,
+    TableOrdersModule,
   ],
   providers: [],
 })

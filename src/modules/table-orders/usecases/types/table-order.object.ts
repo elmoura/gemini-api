@@ -3,12 +3,12 @@ import {
   TableOrderPricing,
   TableOrderPayment,
   TableOrder,
-} from '@modules/table/entities/table-order';
-import { TableOrderItem } from '@modules/table/entities/table-order-item';
+} from '@modules/table-orders/entities/table-order';
+import { TableOrderItem } from '../../entities/table-order-item';
 import {
   TableOrderStatuses,
   TableOrderPaymentStatuses,
-} from '@modules/table/enums/table-order-statuses';
+} from '../../enums/table-order-statuses';
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { PaymentMethods } from '@shared/enums/payment-methods';
 
@@ -17,7 +17,7 @@ class OrderPriceInfo implements TableOrderPricing {
   @Field()
   total: number;
 
-  @Field()
+  @Field({ nullable: true })
   fees: number;
 
   @Field()
@@ -60,6 +60,9 @@ class TableInfo implements Pick<Table, '_id' | 'identifier'> {
 @ObjectType()
 class TableOrderItemObj implements TableOrderItem {
   @Field()
+  _id: string;
+
+  @Field()
   quantity: number;
 
   @Field()
@@ -70,6 +73,9 @@ class TableOrderItemObj implements TableOrderItem {
 
   @Field()
   productPrice: number;
+
+  @Field({ nullable: true })
+  observation?: string;
 
   @Field()
   total: number;

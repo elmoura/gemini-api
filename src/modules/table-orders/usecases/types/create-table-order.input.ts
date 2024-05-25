@@ -1,5 +1,12 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsArray, IsInt, Validate, ValidateNested } from 'class-validator';
+import {
+  IsArray,
+  IsInt,
+  IsOptional,
+  IsString,
+  Validate,
+  ValidateNested,
+} from 'class-validator';
 import { IsObjectId } from '@shared/validations/is-object-id';
 import { Type } from 'class-transformer';
 
@@ -12,6 +19,11 @@ export class TableOrderItemInput {
   @Field()
   @IsInt()
   quantity: number;
+
+  @IsString()
+  @IsOptional()
+  @Field({ nullable: true })
+  observation?: string;
 
   // aditionals
 }

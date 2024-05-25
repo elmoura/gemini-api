@@ -1,18 +1,21 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
 import { AuthGuard } from '@modules/auth/auth.guard';
 import { CurrentUser, CurrentUserData } from '@shared/decorators/current-user';
+import { AddTableOrderItemUseCase } from './usecases/add-table-order-item.usecase';
+import { AddTableOrderItemInput } from './usecases/types/add-table-order.input';
 import { CreateTableOrderUseCase } from './usecases/create-table-order.usecase';
-import { TableOrderObj } from './usecases/types/table-order.object';
 import { CreateTableOrderInput } from './usecases/types/create-table-order.input';
 import { ListTableOrdersOutput } from './usecases/types/list-table-orders.output';
 import { ListTableOrdersUseCase } from './usecases/list-table-orders.usecase';
 import { ListTableOrdersInput } from './usecases/types/list-table-orders.input';
+import { TableOrderObj } from './usecases/types/table-order.object';
 
 @Resolver()
 @UseGuards(AuthGuard)
-export class TableOrderResolver {
+export class TableOrdersResolver {
   constructor(
+    private addTableOrderItemUseCase: AddTableOrderItemUseCase,
     private listTableOrdersUseCase: ListTableOrdersUseCase,
     private createTableOrderUseCase: CreateTableOrderUseCase,
   ) {}
@@ -36,6 +39,17 @@ export class TableOrderResolver {
     return this.listTableOrdersUseCase.execute({
       ...input,
       ...currentUserData,
+    });
+  }
+
+  @Mutation(() => TableOrderObj)
+  addTableOrderItem(
+    @Args('input') input: AddTableOrderItemInput,
+    @CurrentUser() currentUserData: CurrentUserData,
+  ): Promise<TableOrderObj> {
+    return this.addTableOrderItemUseCase.execute({
+      ...input,
+      organizationId: currentUserData.organizationId,
     });
   }
 }

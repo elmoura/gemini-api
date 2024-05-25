@@ -2,6 +2,8 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema({ timestamps: true })
 export class TableOrderItem {
+  _id: string;
+
   @Prop()
   quantity: number;
 
@@ -16,6 +18,9 @@ export class TableOrderItem {
 
   @Prop()
   total: number;
+
+  @Prop()
+  observation?: string;
 
   // productAdditionals?: [];
 

@@ -9,17 +9,8 @@ import { Table, TableSchema } from './entities/table';
 import { TableDataSource } from './datasources/table.datasource';
 import { CreateTableUseCase } from './usecases/create-table.usecase';
 import { ListLocationTablesUseCase } from './usecases/list-location-tables.usecase';
-import { CreateTableOrderUseCase } from './usecases/create-table-order.usecase';
-import { TableOrder, TableOrderSchema } from './entities/table-order';
-import { TableOrderDataSource } from './datasources/table-order.datasource';
-import { TableOrderResolver } from './table-order.resolver';
+import { TableOrderDataSource } from '../table-orders/datasources/table-order.datasource';
 import { ProductDataSource } from '@modules/products/datasources/product.datasource';
-import { Product, ProductSchema } from '@modules/products/entities/product';
-import {
-  TableOrderItem,
-  TableOrderItemSchema,
-} from './entities/table-order-item';
-import { ListTableOrdersUseCase } from './usecases/list-table-orders.usecase';
 
 /**
  * @description
@@ -33,31 +24,12 @@ import { ListTableOrdersUseCase } from './usecases/list-table-orders.usecase';
   imports: [
     AuthModule,
     OrganizationEntitiesModule,
-    MongooseModule.forFeature([
-      { name: Table.name, schema: TableSchema },
-      {
-        name: TableOrder.name,
-        schema: TableOrderSchema,
-      },
-      {
-        name: TableOrderItem.name,
-        schema: TableOrderItemSchema,
-      },
-      {
-        name: Product.name,
-        schema: ProductSchema,
-      },
-    ]),
+    MongooseModule.forFeature([{ name: Table.name, schema: TableSchema }]),
   ],
   providers: [
     TablesResolver,
-    TableOrderResolver,
     TableDataSource,
-    TableOrderDataSource,
-    ProductDataSource,
     CreateTableUseCase,
-    CreateTableOrderUseCase,
-    ListTableOrdersUseCase,
     ListLocationTablesUseCase,
     OrganizationExistsUseCase,
     OrganizationLocationExistsUseCase,

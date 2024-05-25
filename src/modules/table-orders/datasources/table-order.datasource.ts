@@ -8,6 +8,7 @@ import {
   IPaginationOptions,
 } from '@shared/interfaces/pagination-options';
 import { TableOrderStatuses } from '../enums/table-order-statuses';
+import { DeepPartial } from '@shared/utils/deep-partial';
 
 interface IListTableOrdersFilters extends IPaginationOptions {
   status?: TableOrderStatuses;
@@ -20,6 +21,12 @@ interface ITableOrderDataSource {
     locationId: string,
     filters: IListTableOrdersFilters,
   ): Promise<TableOrder[]>;
+  findById(tableOrderId: string, organizationId: string): Promise<TableOrder>;
+  updateOne(
+    orderId: string,
+    organizationId: string,
+    data: DeepPartial<TableOrder>,
+  ): Promise<boolean>;
 }
 
 @Injectable()
@@ -28,6 +35,18 @@ export class TableOrderDataSource implements ITableOrderDataSource {
     @InjectModel(TableOrder.name)
     private tableOrderModel: Model<TableOrderDocument>,
   ) {}
+
+  async findById(
+    tableOrderId: string,
+    organizationId: string,
+  ): Promise<TableOrder> {
+    const tableOrder = await this.tableOrderModel.findOne({
+      _id: tableOrderId,
+      organizationId,
+    });
+
+    return tableOrder.toObject();
+  }
 
   async listByLocationAndFilters(
     locationId: string,
@@ -51,5 +70,18 @@ export class TableOrderDataSource implements ITableOrderDataSource {
   ): Promise<TableOrder> {
     const order = await this.tableOrderModel.create(data);
     return order.toObject();
+  }
+
+  async updateOne(
+    orderId: string,
+    organizationId: string,
+    data: DeepPartial<TableOrder>,
+  ): Promise<boolean> {
+    const result = await this.tableOrderModel.updateOne(
+      { _id: orderId, organizationId },
+      data,
+    );
+
+    return result.matchedCount > 0;
   }
 }
