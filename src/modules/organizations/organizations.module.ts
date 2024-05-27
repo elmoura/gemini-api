@@ -10,6 +10,7 @@ import { UserDataSource } from '@modules/users/datasources/user.datasource';
 import { CreateOrganizationLocationUseCase } from './usecases/create-organization-location.usecase';
 import { GetOrganizationUseCase } from './usecases/get-organization.usecase';
 import { OrganizationEntitiesModule } from './organization-entities.module';
+import { ListOrganizationLocationsUseCase } from './usecases/list-organization-locations.usecase';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { OrganizationEntitiesModule } from './organization-entities.module';
     UserDataSource,
     OrganizationResolver,
     GetOrganizationUseCase,
+    ListOrganizationLocationsUseCase,
     CreateUserInvitationUseCase,
     CreateOrganizationUseCase,
     CreateOrganizationLocationUseCase,

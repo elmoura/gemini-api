@@ -10,6 +10,8 @@ import { CurrentUser, CurrentUserData } from '@shared/decorators/current-user';
 import { GetOrganizationUseCase } from './usecases/get-organization.usecase';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@modules/auth/auth.guard';
+import { ListOrganizationLocationsUseCase } from './usecases/list-organization-locations.usecase';
+import { ListOrganizationLocationsInput } from './usecases/types/list-organization-locations.input';
 
 @Resolver()
 export class OrganizationResolver {
@@ -17,6 +19,7 @@ export class OrganizationResolver {
     private getOrganizationUseCase: GetOrganizationUseCase,
     private createOrganizationUseCase: CreateOrganizationUseCase,
     private createOrganizationLocationUseCase: CreateOrganizationLocationUseCase,
+    private listOrganizationLocationsUseCase: ListOrganizationLocationsUseCase,
   ) {}
 
   @UseGuards(AuthGuard)
@@ -45,5 +48,13 @@ export class OrganizationResolver {
       ...input,
       organizationId: currentUserData.organizationId,
     });
+  }
+
+  @UseGuards(AuthGuard)
+  @Query(() => [OrganizationLocationObj])
+  async listOrganizationLocations(
+    @Args('input') input: ListOrganizationLocationsInput,
+  ): Promise<OrganizationLocationObj[]> {
+    return this.listOrganizationLocationsUseCase.execute(input);
   }
 }

@@ -195,11 +195,16 @@ type ListTableOrdersOutput {
 type Query {
   me: GetUserOutput!
   getOrganization(input: GetOrganizationInput!): OrganizationObj!
+  listOrganizationLocations(input: ListOrganizationLocationsInput!): [OrganizationLocationObj!]!
   listLocationTables: [TableObj!]!
   listTableOrders(input: ListTableOrdersInput!): ListTableOrdersOutput!
 }
 
 input GetOrganizationInput {
+  organizationId: String!
+}
+
+input ListOrganizationLocationsInput {
   organizationId: String!
 }
 
