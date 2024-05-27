@@ -33,7 +33,8 @@ export class AddTableOrderItemUseCase
         const equalOrderItem = order.items.find(
           (orderItem) =>
             newItem.productId === orderItem.productId &&
-            newItem.observation === orderItem.observation,
+            newItem.observation.toLowerCase().trim() ===
+              orderItem.observation.toLowerCase().trim(),
         );
 
         // item já existe no pedido?
