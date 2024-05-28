@@ -20,6 +20,8 @@ import {
   OrganizationSchema,
 } from '@modules/organizations/entities/organization';
 import { AuthModule } from '@modules/auth/auth.module';
+import { ListProductsUseCase } from './usecases/list-products.usecase';
+import { OrganizationExistsUseCase } from '@modules/organizations/usecases/organization-exists.usecase';
 
 /**
  * @todo
@@ -56,6 +58,8 @@ import { AuthModule } from '@modules/auth/auth.module';
     ProductCategoryDataSource,
     CreateProductUseCase,
     OrganizationDataSource,
+    OrganizationExistsUseCase,
+    ListProductsUseCase,
   ],
 })
 export class ProductModule {}

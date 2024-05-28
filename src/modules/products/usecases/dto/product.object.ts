@@ -24,6 +24,9 @@ export class ProductObj implements Product {
   @Field({ nullable: true })
   promotionalPrice?: number;
 
+  @Field({ nullable: true })
+  isPromotionalPriceEnabled?: boolean;
+
   // @Field(() => InsertProductCategoryOutput)
   categories?: Partial<InsertProductCategoryOutput>[];
 

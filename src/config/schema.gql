@@ -107,8 +107,16 @@ type Product {
   description: String
   originalPrice: Float!
   promotionalPrice: Float
+  isPromotionalPriceEnabled: Boolean
   createdAt: DateTime!
   updatedAt: DateTime!
+}
+
+type ListProductsOutput {
+  count: Float!
+  limit: Float!
+  offset: Float!
+  data: [Product!]!
 }
 
 type CustomerObj {
@@ -200,12 +208,18 @@ type ListTableOrdersOutput {
 }
 
 type Query {
+  listProducts(input: ListProductsInput!): ListProductsOutput!
   me: GetUserOutput!
   getOrganization(input: GetOrganizationInput!): OrganizationObj!
   listOrganizationLocations(input: ListOrganizationLocationsInput!): [OrganizationLocationObj!]!
   listCategories(input: ListCategoriesInput!): ListCategoriesOutput!
   listLocationTables: [TableObj!]!
   listTableOrders(input: ListTableOrdersInput!): ListTableOrdersOutput!
+}
+
+input ListProductsInput {
+  limit: Float
+  offset: Float
 }
 
 input GetOrganizationInput {

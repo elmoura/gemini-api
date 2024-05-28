@@ -19,7 +19,7 @@ export class Product {
   @Prop()
   description?: string;
 
-  @Prop()
+  @Prop({ default: false })
   isPromotionalPriceEnabled?: boolean;
 
   @Prop()
