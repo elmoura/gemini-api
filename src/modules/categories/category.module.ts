@@ -5,14 +5,17 @@ import {
   Organization,
   OrganizationSchema,
 } from '@modules/organizations/entities/organization';
-import { OrganizationDataSource } from '@modules/organizations/datasources/organization.datasource';
 import { Category, CategorySchema } from './entities/category';
 import { CategoryResolver } from './category.resolver';
 import { CreateCategoryUseCase } from './usecases/create-category.usecase';
 import { CategoryDataSource } from './datasources/category.datasource';
+import { OrganizationExistsUseCase } from '@modules/organizations/usecases/organization-exists.usecase';
+import { OrganizationEntitiesModule } from '@modules/organizations/organization-entities.module';
+import { ListCategoriesUseCase } from './usecases/list-categories.usecase';
 
 @Module({
   imports: [
+    OrganizationEntitiesModule,
     MongooseModule.forFeature([
       {
         name: Category.name,
@@ -29,7 +32,8 @@ import { CategoryDataSource } from './datasources/category.datasource';
     CategoryResolver,
     CategoryDataSource,
     CreateCategoryUseCase,
-    OrganizationDataSource,
+    OrganizationExistsUseCase,
+    ListCategoriesUseCase,
   ],
 })
 export class CategoryModule {}

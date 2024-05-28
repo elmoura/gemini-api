@@ -93,6 +93,13 @@ type Category {
   updatedAt: DateTime!
 }
 
+type ListCategoriesOutput {
+  count: Float!
+  limit: Float!
+  offset: Float!
+  data: [Category!]!
+}
+
 type Product {
   _id: String!
   isActive: Boolean!
@@ -196,6 +203,7 @@ type Query {
   me: GetUserOutput!
   getOrganization(input: GetOrganizationInput!): OrganizationObj!
   listOrganizationLocations(input: ListOrganizationLocationsInput!): [OrganizationLocationObj!]!
+  listCategories(input: ListCategoriesInput!): ListCategoriesOutput!
   listLocationTables: [TableObj!]!
   listTableOrders(input: ListTableOrdersInput!): ListTableOrdersOutput!
 }
@@ -206,6 +214,11 @@ input GetOrganizationInput {
 
 input ListOrganizationLocationsInput {
   organizationId: String!
+}
+
+input ListCategoriesInput {
+  limit: Float
+  offset: Float
 }
 
 input ListTableOrdersInput {
