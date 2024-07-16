@@ -6,9 +6,8 @@ import { ProductObj } from './dto/product.object';
 import { CreateProductInput } from './dto/create-product.input';
 import { OrganizationDataSource } from '@modules/organizations/datasources/organization.datasource';
 import { OrganizationNotFoundException } from '@modules/organizations/errors/organization-not-found.exception';
-import { ProductCategoryDataSource } from '../datasources/product-category.datasource';
-import { ProductCategory } from '../entities/product-category';
 import { CategoryDataSource } from '@modules/categories/datasources/category.datasource';
+import { CategoryNotFoundException } from '../errors/category-not-found.exception';
 
 @Injectable()
 export class CreateProductUseCase
@@ -18,7 +17,6 @@ export class CreateProductUseCase
     private productDataSource: ProductDataSource,
     private categoryDataSoruce: CategoryDataSource,
     private organizationDataSource: OrganizationDataSource,
-    private productCategoryDataSource: ProductCategoryDataSource,
   ) {}
 
   async execute(
@@ -32,47 +30,16 @@ export class CreateProductUseCase
       throw new OrganizationNotFoundException();
     }
 
-    const createdProduct = await this.productDataSource.createOne(input);
+    const { categoryId } = input;
 
-    let createdProductCategories = [];
+    if (categoryId) {
+      const categoryExists = await this.categoryDataSoruce.findById(categoryId);
 
-    if (input?.categoryIds?.length > 0) {
-      createdProductCategories = await Promise.all(
-        input.categoryIds.map(async (categoryId) =>
-          this.createProductCategory({
-            categoryId,
-            productId: createdProduct._id,
-            organizationId: input.organizationId,
-          }),
-        ),
-      );
-
-      createdProductCategories = createdProductCategories.filter(
-        (productCategory) => productCategory,
-      );
+      if (!categoryExists) throw new CategoryNotFoundException(categoryId);
     }
 
-    return {
-      ...createdProduct,
-      categories: createdProductCategories,
-    };
-  }
+    const createdProduct = await this.productDataSource.createOne(input);
 
-  async createProductCategory(data: {
-    productId: string;
-    categoryId: string;
-    organizationId: string;
-  }): Promise<ProductCategory> {
-    const { categoryId, organizationId, productId } = data;
-
-    const categoryExists = this.categoryDataSoruce.findById(categoryId);
-
-    if (!categoryExists) return;
-
-    return this.productCategoryDataSource.createOne({
-      categoryId,
-      organizationId,
-      productId,
-    });
+    return createdProduct;
   }
 }
