@@ -9,12 +9,7 @@ import {
   Category,
   CategorySchema,
 } from '@modules/categories/entities/category';
-import {
-  ProductCategory,
-  ProductCategorySchema,
-} from './entities/product-category';
 import { CategoryDataSource } from '@modules/categories/datasources/category.datasource';
-import { ProductCategoryDataSource } from './datasources/product-category.datasource';
 import {
   Organization,
   OrganizationSchema,
@@ -28,7 +23,6 @@ import { OrganizationExistsUseCase } from '@modules/organizations/usecases/organ
  * Talvez no futuro seria legal adicionar complementos aos produtos.
  * Ex.: Lanche com +1 hamburguer adicional, complementos pro lanche, etc.
  */
-
 @Module({
   imports: [
     AuthModule,
@@ -45,17 +39,12 @@ import { OrganizationExistsUseCase } from '@modules/organizations/usecases/organ
         name: Category.name,
         schema: CategorySchema,
       },
-      {
-        name: ProductCategory.name,
-        schema: ProductCategorySchema,
-      },
     ]),
   ],
   providers: [
     ProductResolver,
     ProductDataSource,
     CategoryDataSource,
-    ProductCategoryDataSource,
     CreateProductUseCase,
     OrganizationDataSource,
     OrganizationExistsUseCase,

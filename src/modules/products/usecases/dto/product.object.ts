@@ -1,6 +1,5 @@
 import { Product } from '@modules/products/entities/product';
 import { Field, ObjectType } from '@nestjs/graphql';
-import { InsertProductCategoryOutput } from './insert-product-category.output';
 
 @ObjectType('Product')
 export class ProductObj implements Product {
@@ -27,8 +26,8 @@ export class ProductObj implements Product {
   @Field({ nullable: true })
   isPromotionalPriceEnabled?: boolean;
 
-  // @Field(() => InsertProductCategoryOutput)
-  categories?: Partial<InsertProductCategoryOutput>[];
+  @Field({ nullable: true })
+  categoryId?: string;
 
   @Field()
   createdAt: Date;
