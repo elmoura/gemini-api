@@ -12,6 +12,7 @@ import { AuthModule } from '@modules/auth/auth.module';
 import { CustomersModule } from '@modules/customers/customers.module';
 import { TablesModule } from '@modules/table/tables.module';
 import { TableOrdersModule } from '@modules/table-orders/table-orders.module';
+import { MenuModule } from '@modules/menu/menu.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { TableOrdersModule } from '@modules/table-orders/table-orders.module';
     CustomersModule,
     TablesModule,
     TableOrdersModule,
+    MenuModule,
   ],
   providers: [],
 })

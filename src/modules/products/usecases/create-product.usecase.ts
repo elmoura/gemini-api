@@ -62,12 +62,12 @@ export class CreateProductUseCase
     productId: string;
     categoryId: string;
     organizationId: string;
-  }): Promise<ProductCategory> {
+  }): Promise<ProductCategory | false> {
     const { categoryId, organizationId, productId } = data;
 
     const categoryExists = this.categoryDataSoruce.findById(categoryId);
 
-    if (!categoryExists) return;
+    if (!categoryExists) return false;
 
     return this.productCategoryDataSource.createOne({
       categoryId,

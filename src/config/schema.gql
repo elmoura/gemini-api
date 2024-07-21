@@ -207,6 +207,19 @@ type ListTableOrdersOutput {
   orders: [TableOrderObj!]!
 }
 
+type CategoriesWithProducts {
+  _id: String!
+  name: String!
+  description: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  products: [Product!]!
+}
+
+type MenuObj {
+  categories: [CategoriesWithProducts!]!
+}
+
 type Query {
   listProducts(input: ListProductsInput!): ListProductsOutput!
   me: GetUserOutput!
@@ -215,6 +228,7 @@ type Query {
   listCategories(input: ListCategoriesInput!): ListCategoriesOutput!
   listLocationTables: [TableObj!]!
   listTableOrders(input: ListTableOrdersInput!): ListTableOrdersOutput!
+  getMenu(input: GetMenuInput!): MenuObj!
 }
 
 input ListProductsInput {
@@ -240,6 +254,10 @@ input ListTableOrdersInput {
   offset: Float
   status: TableOrderStatuses
   creationDate: String
+}
+
+input GetMenuInput {
+  organizationId: String!
 }
 
 type Mutation {
