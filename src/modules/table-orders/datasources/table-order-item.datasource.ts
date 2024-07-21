@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { TableOrderItem } from '../entities/table-order-item';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { ObjectId } from 'mongodb';
 import { TableOrder } from '../entities/table-order';
 
 interface ITableOrderItemDataSource {
@@ -12,6 +11,7 @@ interface ITableOrderItemDataSource {
     data: Partial<TableOrderItem>,
   ): Promise<boolean>;
   pushItem(orderId: string, item: Partial<TableOrderItem>): Promise<boolean>;
+  removeItem(orderId: string, itemId: string): Promise<boolean>;
 }
 
 @Injectable()
@@ -50,6 +50,19 @@ export class TableOrderItemDataSource implements ITableOrderItemDataSource {
       },
       {
         $set: setData,
+      },
+    );
+
+    return result.matchedCount > 0;
+  }
+
+  async removeItem(orderId: string, itemId: string): Promise<boolean> {
+    const result = await this.tableOrderModel.updateOne(
+      { _id: orderId },
+      {
+        $pull: {
+          items: { _id: itemId },
+        },
       },
     );
 

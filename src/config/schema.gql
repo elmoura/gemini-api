@@ -108,6 +108,7 @@ type Product {
   originalPrice: Float!
   promotionalPrice: Float
   isPromotionalPriceEnabled: Boolean
+  categoryId: String
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -273,6 +274,8 @@ type Mutation {
   createTable(input: CreateTableInput!): TableObj!
   createTableOrder(input: CreateTableOrderInput!): TableOrderObj!
   addTableOrderItem(input: AddTableOrderItemInput!): TableOrderObj!
+  removeTableOrderItem(input: RemoveTableOrderItemInput!): TableOrderObj!
+  finishTableOrder(input: FinishTableOrderInput!): TableOrderObj!
 }
 
 input CreateProductInput {
@@ -282,7 +285,7 @@ input CreateProductInput {
   originalPrice: Float!
   promotionalPrice: Float
   isPromotionalPriceEnabled: Boolean
-  categoryIds: [String]
+  categoryId: String
 }
 
 input CreateUserInvitationInput {
@@ -354,4 +357,21 @@ input TableOrderItemInput {
 input AddTableOrderItemInput {
   tableOrderId: String!
   items: [TableOrderItemInput!]!
+}
+
+input RemoveTableOrderItemInput {
+  tableOrderId: String!
+  itemId: String!
+}
+
+input FinishTableOrderInput {
+  tableOrderId: String!
+  payServiceTax: Boolean!
+  payment: TableOrderPaymentInput!
+}
+
+input TableOrderPaymentInput {
+  instalments: Float!
+  method: PaymentMethods!
+  paymentStatus: TableOrderPaymentStatuses!
 }

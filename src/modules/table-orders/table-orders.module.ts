@@ -16,6 +16,8 @@ import { Table, TableSchema } from '@modules/table/entities/table';
 import { TableDataSource } from '@modules/table/datasources/table.datasource';
 import { TableOrderItemDataSource } from './datasources/table-order-item.datasource';
 import { AuthModule } from '@modules/auth/auth.module';
+import { RemoveTableOrderItemUseCase } from './usecases/remove-table-order-item.usecase';
+import { FinishTableOrderUseCase } from './usecases/finish-table-order.usecase';
 
 @Module({
   imports: [
@@ -48,6 +50,8 @@ import { AuthModule } from '@modules/auth/auth.module';
     ListTableOrdersUseCase,
     CreateTableOrderUseCase,
     AddTableOrderItemUseCase,
+    RemoveTableOrderItemUseCase,
+    FinishTableOrderUseCase,
   ],
 })
 export class TableOrdersModule {}

@@ -59,6 +59,8 @@ export class AddTableOrderItemUseCase
             newItem.productId,
           );
 
+          // if(!product)
+
           const formatedItem = formatOrderItem(newItem, product);
           return this.tableOrderItemDataSource.pushItem(
             tableOrderId,
@@ -74,6 +76,7 @@ export class AddTableOrderItemUseCase
       organizationId,
     );
 
+    // isolar para uma função
     let newTotal = 0;
     let totalDiscount = 0;
     orderWithNewItems.items.forEach((item) => {
@@ -98,4 +101,6 @@ export class AddTableOrderItemUseCase
       organizationId,
     );
   }
+
+  // private addTableOrderItem() {}
 }
