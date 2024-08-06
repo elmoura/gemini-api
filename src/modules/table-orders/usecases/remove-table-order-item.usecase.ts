@@ -37,11 +37,8 @@ export class RemoveTableOrderItemUseCase
       );
     }
 
-    // validar se o itemId existe no pedido
-    console.log(tableOrder);
-
     let itemToRemoveIndex = -1;
-    tableOrder.items.find((item, index) => {
+    const orderItem = tableOrder.items.find((item, index) => {
       const itemMatched = item._id.toString() === itemId;
 
       if (itemMatched) itemToRemoveIndex = index;
@@ -51,22 +48,33 @@ export class RemoveTableOrderItemUseCase
 
     if (itemToRemoveIndex < 0) throw new InvalidItemId();
 
-    // receber quantidade
+    if (input.quantity && input.quantity >= orderItem.quantity) {
+      // remove from array
+      await this.tableOrderItemDataSource.removeItem(tableOrderId, itemId);
 
-    // se a quantidade de remoções for a quantidade de itens
-    // apaga o item do array
+      tableOrder.items = tableOrder.items.splice(itemToRemoveIndex, 1);
+    } else {
+      const targetQuantity = orderItem.quantity - input.quantity;
+      const targetPrice = orderItem.productPrice * targetQuantity;
+      const updatedOrderItem = {
+        ...orderItem,
+        quantity: targetQuantity,
+        total: targetPrice,
+      };
 
-    // caso contrario, apenas diminui a quantidade do item
+      // updates quantity
+      await this.tableOrderItemDataSource.updateItem(
+        tableOrderId,
+        itemId,
+        updatedOrderItem,
+      );
 
-    await this.tableOrderItemDataSource.removeItem(tableOrderId, itemId);
-
-    tableOrder.items = tableOrder.items.splice(itemToRemoveIndex, 1);
+      tableOrder.items[itemToRemoveIndex] = updatedOrderItem;
+    }
 
     const pricing = calculateTableOrderPrice(tableOrder, {
       payServiceTax: false,
     });
-
-    console.log(pricing);
 
     await this.tableOrderDataSource.updateOne(tableOrderId, organizationId, {
       payment: {

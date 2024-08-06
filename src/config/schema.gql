@@ -362,6 +362,7 @@ input AddTableOrderItemInput {
 input RemoveTableOrderItemInput {
   tableOrderId: String!
   itemId: String!
+  quantity: Float
 }
 
 input FinishTableOrderInput {
