@@ -7,6 +7,8 @@ import { AddTableOrderItemInput } from './types/add-table-order.input';
 import { TableOrderNotFoundException } from '../errors/table-order-not-found';
 import { formatOrderItem } from '../utils/format-order-item';
 import { TableOrderItemDataSource } from '../datasources/table-order-item.datasource';
+import { calculateTableOrderPrice } from '../utils/calculate-order-price';
+import { InvalidProductId } from '../errors/invalid-product-id';
 
 @Injectable()
 export class AddTableOrderItemUseCase
@@ -54,12 +56,13 @@ export class AddTableOrderItemUseCase
             },
           );
         } else {
-          // adiciona item no pedido
           const product = await this.productDataSource.findById(
             newItem.productId,
           );
 
-          // if(!product)
+          if (!product || product.organizationId !== organizationId) {
+            throw new InvalidProductId(newItem.productId);
+          }
 
           const formatedItem = formatOrderItem(newItem, product);
           return this.tableOrderItemDataSource.pushItem(
@@ -70,29 +73,25 @@ export class AddTableOrderItemUseCase
       }),
     );
 
-    // soma todos novos valores e coloca novo valor no pedido
     const orderWithNewItems = await this.tableOrderDataSource.findById(
       tableOrderId,
       organizationId,
     );
 
-    // isolar para uma função
-    let newTotal = 0;
-    let totalDiscount = 0;
-    orderWithNewItems.items.forEach((item) => {
-      totalDiscount += item.discount * item.quantity || 0;
-      newTotal += item.total;
+    // soma todos novos valores e coloca novo valor no pedido
+    const pricing = calculateTableOrderPrice(orderWithNewItems, {
+      payServiceTax: false,
     });
 
     await this.tableOrderDataSource.updateOne(tableOrderId, organizationId, {
       pricing: {
-        ...orderWithNewItems.pricing,
-        discount: totalDiscount,
-        total: newTotal,
+        discount: pricing.discount,
+        total: pricing.total,
+        fees: pricing.fees,
       },
       payment: {
         ...orderWithNewItems.payment,
-        total: newTotal,
+        total: pricing.total,
       },
     });
 
