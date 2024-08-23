@@ -20,14 +20,19 @@ export class GetMenuUseCase implements IBaseUseCase<GetMenuInput, MenuObj> {
 
     if (!orgExists) throw new OrganizationNotFoundException();
 
-    const categories = await this.menuDataSource.getByOrganization(
-      organizationId,
-    );
+    const menu = await this.menuDataSource.getByOrganization(organizationId);
 
-    console.log(categories);
+    console.log(menu);
 
+    // pipeline
+
+    // lookup
+    // products
+    // product.categoryId === categoryId
+
+    // paginated response
     return {
-      categories,
+      categories: menu,
     };
   }
 }

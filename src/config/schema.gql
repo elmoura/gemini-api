@@ -263,6 +263,7 @@ input GetMenuInput {
 
 type Mutation {
   createProduct(input: CreateProductInput!): Product!
+  updateProduct(input: UpdateProductInput!): Product!
   createUserInvitation(input: CreateUserInvitationInput!): CreateUserInvitationOutput!
   confirmAccount(input: AccountConfirmationInput!): AccountConfirmationOutput!
   setUserLocation(input: SetUserLocationInput!): SetUserLocationOutput!
@@ -286,6 +287,17 @@ input CreateProductInput {
   promotionalPrice: Float
   isPromotionalPriceEnabled: Boolean
   categoryId: String
+}
+
+input UpdateProductInput {
+  _id: String!
+  categoryId: String
+  name: String
+  originalPrice: Float
+  promotionalPrice: Float
+  description: String
+  isActive: Boolean
+  isPromotionalPriceEnabled: Boolean
 }
 
 input CreateUserInvitationInput {
