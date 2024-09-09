@@ -28,9 +28,6 @@ export class Product {
   @Prop()
   promotionalPrice?: number;
 
-  @Prop()
-  categoryId?: string;
-
   createdAt: Date;
 
   updatedAt: Date;

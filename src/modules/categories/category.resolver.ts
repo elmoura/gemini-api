@@ -8,6 +8,10 @@ import { CurrentUser, CurrentUserData } from '@shared/decorators/current-user';
 import { ListCategoriesOutput } from './usecases/types/list-categories.output';
 import { ListCategoriesInput } from './usecases/types/list-categories.input';
 import { ListCategoriesUseCase } from './usecases/list-categories.usecase';
+import { FindCategoryInput } from './usecases/types/find-category.input';
+import { FindCategoryUseCase } from './usecases/find-category.usecase';
+import { UpdateCategoryUseCase } from './usecases/update-category.usecase';
+import { UpdateCategoryInput } from './usecases/types/update-category.input';
 
 @Resolver()
 @UseGuards(AuthGuard)
@@ -15,6 +19,8 @@ export class CategoryResolver {
   constructor(
     private createCategoryUseCase: CreateCategoryUseCase,
     private listCategoriesUseCase: ListCategoriesUseCase,
+    private findCategoryUseCase: FindCategoryUseCase,
+    private updateCategoryUseCase: UpdateCategoryUseCase,
   ) {}
 
   @Mutation(() => CategoryObj)
@@ -23,8 +29,8 @@ export class CategoryResolver {
     @Args('input') input: CreateCategoryInput,
   ): Promise<CategoryObj> {
     return this.createCategoryUseCase.execute({
-      organizationId: user.organizationId,
       ...input,
+      ...user,
     });
   }
 
@@ -35,7 +41,29 @@ export class CategoryResolver {
   ): Promise<ListCategoriesOutput> {
     return this.listCategoriesUseCase.execute({
       ...input,
-      organizationId: user.organizationId,
+      ...user,
+    });
+  }
+
+  @Query(() => CategoryObj)
+  async findCategory(
+    @CurrentUser() user: CurrentUserData,
+    @Args('input') input: FindCategoryInput,
+  ): Promise<CategoryObj> {
+    return this.findCategoryUseCase.execute({
+      ...input,
+      ...user,
+    });
+  }
+
+  @Mutation(() => CategoryObj)
+  async updateCategory(
+    @CurrentUser() user: CurrentUserData,
+    @Args('input') input: UpdateCategoryInput,
+  ): Promise<CategoryObj> {
+    return this.updateCategoryUseCase.execute({
+      ...input,
+      ...user,
     });
   }
 }

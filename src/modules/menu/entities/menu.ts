@@ -2,12 +2,13 @@ import { Category } from '@modules/categories/entities/category';
 import { Product } from '@modules/products/entities/product';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { MenuTypes } from '../enums/menu-types';
 
 export type MenuDocument = Menu & Document;
 
 type CategoryWithProducts = Category & {
-  products: Product[]
-}
+  products: Product[];
+};
 
 @Schema({ timestamps: true })
 export class Menu {
@@ -17,7 +18,10 @@ export class Menu {
   organizationId: string;
 
   @Prop()
-  locationId: string
+  locationId: string;
+
+  @Prop()
+  type: MenuTypes[];
 
   @Prop()
   isActive: boolean;
@@ -28,10 +32,11 @@ export class Menu {
   @Prop()
   description?: string;
 
-  // @Prop()
-  // categories: CategoryWithProducts[]
+  @Prop()
+  categoryIds: string[];
 
-  categoryIds?: string[]
+  @Prop()
+  categories?: CategoryWithProducts[];
 
   createdAt: Date;
 

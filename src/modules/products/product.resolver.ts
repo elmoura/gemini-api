@@ -8,8 +8,8 @@ import { CreateProductUseCase } from './usecases/create-product.usecase';
 import { ListProductsUseCase } from './usecases/list-products.usecase';
 import { ListProductsOutput } from './usecases/dto/list-products.output';
 import { ListProductsInput } from './usecases/dto/list-products.input';
-import { UpdateProductUsecase } from './usecases/update-product/update-product.usecase';
-import { UpdateProductInput } from './usecases/update-product/dto/update-product.input';
+import { UpdateProductUsecase } from './usecases/update-product.usecase';
+import { UpdateProductInput } from './usecases/dto/update-product.input';
 
 @Resolver()
 @UseGuards(AuthGuard)

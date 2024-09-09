@@ -18,11 +18,6 @@ export class UpdateProductInput implements Partial<Product> {
   organizationId: string;
 
   @Field({ nullable: true })
-  @IsOptional()
-  @Validate(IsObjectId)
-  categoryId?: string;
-
-  @Field({ nullable: true })
   @IsString()
   @IsOptional()
   name?: string;

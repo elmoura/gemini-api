@@ -26,9 +26,6 @@ export class ProductObj implements Product {
   @Field({ nullable: true })
   isPromotionalPriceEnabled?: boolean;
 
-  @Field({ nullable: true })
-  categoryId?: string;
-
   @Field()
   createdAt: Date;
 

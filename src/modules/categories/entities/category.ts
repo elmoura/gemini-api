@@ -11,10 +11,16 @@ export class Category {
   organizationId: string;
 
   @Prop()
+  locationId: string;
+
+  @Prop()
   name: string;
 
   @Prop()
   description?: string;
+
+  @Prop()
+  productIds: string[];
 
   createdAt: Date;
 

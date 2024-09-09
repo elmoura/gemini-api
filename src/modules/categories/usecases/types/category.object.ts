@@ -6,13 +6,19 @@ export class CategoryObj implements Omit<Category, 'organizationId'> {
   @Field()
   _id: string;
 
+  organizationId: string;
+
+  @Field()
+  locationId: string;
+
   @Field()
   name: string;
 
   @Field({ nullable: true })
   description?: string;
 
-  organizationId: string;
+  @Field(() => [String])
+  productIds: string[];
 
   @Field()
   createdAt: Date;

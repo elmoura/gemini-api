@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { MenuResolver } from './menu.resolver';
+// import { MenuResolver } from './menu.resolver';
 import { MenuDataSource } from './datasources/menu.datasource';
-import { GetMenuUseCase } from './usecases/get-menu.usecase';
+// import { GetMenuUseCase } from './usecases/get-menu.usecase';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
   Category,
@@ -26,9 +26,9 @@ import { OrganizationEntitiesModule } from '@modules/organizations/organization-
     ]),
   ],
   providers: [
-    MenuResolver,
+    // MenuResolver,
     MenuDataSource,
-    GetMenuUseCase,
+    // GetMenuUseCase,
     OrganizationExistsUseCase,
   ],
 })

@@ -5,20 +5,25 @@ import { OrganizationNotFoundException } from '@modules/organizations/errors/org
 import { CategoryDataSource } from '../datasources/category.datasource';
 import { CreateCategoryInput } from './types/create-category.input';
 import { CategoryObj } from './types/category.object';
-import { IOrganizationData } from '@shared/interfaces/organization-data';
+import { CategoryProductsValidation } from '../validations/category-products-validation';
+import { InvalidProductIdsException } from '../errors/invalid-product-ids.exception';
+import { LocationNotSetException } from '@shared/errors/location-not-set.exception';
 
 @Injectable()
 export class CreateCategoryUseCase
-  implements IBaseUseCase<CreateCategoryInput & IOrganizationData, CategoryObj>
+  implements IBaseUseCase<CreateCategoryInput, CategoryObj>
 {
   constructor(
     private categoryDataSource: CategoryDataSource,
     private organizationDataSource: OrganizationDataSource,
+    private categoryProductsValidation: CategoryProductsValidation,
   ) {}
 
-  async execute(
-    input: CreateCategoryInput & IOrganizationData,
-  ): Promise<CategoryObj> {
+  async execute(input: CreateCategoryInput): Promise<CategoryObj> {
+    if (!input.locationId) {
+      throw new LocationNotSetException();
+    }
+
     const organizationExists = await this.organizationDataSource.findById(
       input.organizationId,
     );
@@ -27,6 +32,21 @@ export class CreateCategoryUseCase
       throw new OrganizationNotFoundException();
     }
 
-    return this.categoryDataSource.createOne(input);
+    if (input.productIds?.length > 0) {
+      const { invalidProductIds } =
+        await this.categoryProductsValidation.execute({
+          organizationId: input.organizationId,
+          productIds: input.productIds,
+        });
+
+      if (invalidProductIds.length > 0) {
+        throw new InvalidProductIdsException(invalidProductIds);
+      }
+    }
+
+    return this.categoryDataSource.createOne({
+      ...input,
+      productIds: input.productIds || [],
+    });
   }
 }

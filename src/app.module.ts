@@ -29,7 +29,7 @@ import { MenuModule } from '@modules/menu/menu.module';
     CustomersModule,
     TablesModule,
     TableOrdersModule,
-    MenuModule,
+    // MenuModule,
   ],
   providers: [],
 })

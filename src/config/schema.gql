@@ -87,8 +87,10 @@ type SetUserLocationOutput {
 
 type Category {
   _id: String!
+  locationId: String!
   name: String!
   description: String
+  productIds: [String!]!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -108,7 +110,6 @@ type Product {
   originalPrice: Float!
   promotionalPrice: Float
   isPromotionalPriceEnabled: Boolean
-  categoryId: String
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -208,28 +209,15 @@ type ListTableOrdersOutput {
   orders: [TableOrderObj!]!
 }
 
-type CategoriesWithProducts {
-  _id: String!
-  name: String!
-  description: String
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  products: [Product!]!
-}
-
-type MenuObj {
-  categories: [CategoriesWithProducts!]!
-}
-
 type Query {
   listProducts(input: ListProductsInput!): ListProductsOutput!
   me: GetUserOutput!
   getOrganization(input: GetOrganizationInput!): OrganizationObj!
   listOrganizationLocations(input: ListOrganizationLocationsInput!): [OrganizationLocationObj!]!
   listCategories(input: ListCategoriesInput!): ListCategoriesOutput!
+  findCategory(input: FindCategoryInput!): Category!
   listLocationTables: [TableObj!]!
   listTableOrders(input: ListTableOrdersInput!): ListTableOrdersOutput!
-  getMenu(input: GetMenuInput!): MenuObj!
 }
 
 input ListProductsInput {
@@ -250,15 +238,15 @@ input ListCategoriesInput {
   offset: Float
 }
 
+input FindCategoryInput {
+  _id: String!
+}
+
 input ListTableOrdersInput {
   limit: Float
   offset: Float
   status: TableOrderStatuses
   creationDate: String
-}
-
-input GetMenuInput {
-  organizationId: String!
 }
 
 type Mutation {
@@ -271,6 +259,7 @@ type Mutation {
   createOrganization(input: CreateOrganizationInput!): OrganizationObj!
   createOrganizationLocation(input: CreateOrganizationLocationInput!): OrganizationLocationObj!
   createCategory(input: CreateCategoryInput!): Category!
+  updateCategory(input: UpdateCategoryInput!): Category!
   createCustomer(input: CreateCustomerInput!): CustomerObj!
   createTable(input: CreateTableInput!): TableObj!
   createTableOrder(input: CreateTableOrderInput!): TableOrderObj!
@@ -286,12 +275,10 @@ input CreateProductInput {
   originalPrice: Float!
   promotionalPrice: Float
   isPromotionalPriceEnabled: Boolean
-  categoryId: String
 }
 
 input UpdateProductInput {
   _id: String!
-  categoryId: String
   name: String
   originalPrice: Float
   promotionalPrice: Float
@@ -340,6 +327,15 @@ input CreateOrganizationLocationInput {
 input CreateCategoryInput {
   name: String!
   description: String
+  productIds: [String!]
+}
+
+input UpdateCategoryInput {
+  _id: String!
+  name: String
+  description: String
+  productsToAdd: [String!]
+  productsToRemove: [String!]
 }
 
 input CreateCustomerInput {

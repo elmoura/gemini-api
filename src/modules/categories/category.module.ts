@@ -12,6 +12,11 @@ import { CategoryDataSource } from './datasources/category.datasource';
 import { OrganizationExistsUseCase } from '@modules/organizations/usecases/organization-exists.usecase';
 import { OrganizationEntitiesModule } from '@modules/organizations/organization-entities.module';
 import { ListCategoriesUseCase } from './usecases/list-categories.usecase';
+import { CategoryProductsValidation } from './validations/category-products-validation';
+import { UpdateCategoryUseCase } from './usecases/update-category.usecase';
+import { FindCategoryUseCase } from './usecases/find-category.usecase';
+import { Product, ProductSchema } from '@modules/products/entities/product';
+import { ProductDataSource } from '@modules/products/datasources/product.datasource';
 
 @Module({
   imports: [
@@ -22,6 +27,10 @@ import { ListCategoriesUseCase } from './usecases/list-categories.usecase';
         schema: CategorySchema,
       },
       {
+        name: Product.name,
+        schema: ProductSchema,
+      },
+      {
         name: Organization.name,
         schema: OrganizationSchema,
       },
@@ -29,11 +38,15 @@ import { ListCategoriesUseCase } from './usecases/list-categories.usecase';
   ],
   providers: [
     TokenService,
+    ProductDataSource,
     CategoryResolver,
     CategoryDataSource,
     CreateCategoryUseCase,
     OrganizationExistsUseCase,
     ListCategoriesUseCase,
+    CategoryProductsValidation,
+    UpdateCategoryUseCase,
+    FindCategoryUseCase,
   ],
 })
 export class CategoryModule {}
