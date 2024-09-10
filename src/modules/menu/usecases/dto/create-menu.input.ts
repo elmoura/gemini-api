@@ -21,27 +21,28 @@ export class CreateMenuInput
 
   locationId: string;
 
-  @Field(() => MenuTypes)
-  @IsEnum(MenuTypes)
+  @IsArray()
+  @IsEnum(MenuTypes, { each: true })
+  @Field(() => [MenuTypes])
   type: MenuTypes[];
 
-  @Field()
   @IsBoolean()
   @IsOptional()
+  @Field({ nullable: true })
   isActive?: boolean;
 
   @Field()
   @IsString()
   name: string;
 
-  @Field()
   @IsOptional()
   @IsString()
+  @Field({ nullable: true })
   description?: string;
 
   @IsArray()
   @IsOptional()
-  @Field({ nullable: true })
+  @Field(() => [String], { nullable: true })
   @Validate(IsObjectId, { each: true })
   categoryIds?: string[];
 }

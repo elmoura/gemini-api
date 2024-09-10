@@ -35,7 +35,6 @@ export class Menu {
   @Prop()
   categoryIds: string[];
 
-  @Prop()
   categories?: CategoryWithProducts[];
 
   createdAt: Date;

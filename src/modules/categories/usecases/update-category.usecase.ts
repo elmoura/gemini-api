@@ -19,9 +19,9 @@ export class UpdateCategoryUseCase
 
   async execute(input: UpdateCategoryInput): Promise<CategoryObj> {
     const {
+      _id,
       organizationId,
       locationId,
-      _id,
       productsToAdd = [],
       productsToRemove = [],
     } = input;

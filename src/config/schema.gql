@@ -209,6 +209,34 @@ type ListTableOrdersOutput {
   orders: [TableOrderObj!]!
 }
 
+type CategoryWithProducts {
+  _id: String!
+  locationId: String!
+  name: String!
+  description: String
+  productIds: [String!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  products: [Product!]!
+}
+
+type MenuObj {
+  _id: String!
+  isActive: Boolean
+  locationId: String!
+  type: [MenuTypes!]!
+  name: String!
+  description: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  categories: [CategoryWithProducts!]!
+}
+
+enum MenuTypes {
+  DELIVERY
+  SERVICE
+}
+
 type Query {
   listProducts(input: ListProductsInput!): ListProductsOutput!
   me: GetUserOutput!
@@ -266,6 +294,7 @@ type Mutation {
   addTableOrderItem(input: AddTableOrderItemInput!): TableOrderObj!
   removeTableOrderItem(input: RemoveTableOrderItemInput!): TableOrderObj!
   finishTableOrder(input: FinishTableOrderInput!): TableOrderObj!
+  createMenu(input: CreateMenuInput!): MenuObj!
 }
 
 input CreateProductInput {
@@ -383,4 +412,12 @@ input TableOrderPaymentInput {
   instalments: Float!
   method: PaymentMethods!
   paymentStatus: TableOrderPaymentStatuses!
+}
+
+input CreateMenuInput {
+  type: [MenuTypes!]!
+  isActive: Boolean
+  name: String!
+  description: String
+  categoryIds: [String!]
 }

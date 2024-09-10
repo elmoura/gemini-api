@@ -10,9 +10,16 @@ import {
 import { Product, ProductSchema } from '@modules/products/entities/product';
 import { OrganizationExistsUseCase } from '@modules/organizations/usecases/organization-exists.usecase';
 import { OrganizationEntitiesModule } from '@modules/organizations/organization-entities.module';
+import { MenuCategoriesValidation } from './validations/menu-categories.validation';
+import { MenuResolver } from './menu.resolver';
+import { CreateMenuUseCase } from './usecases/create-menu.usecase';
+import { Menu, MenuSchema } from './entities/menu';
+import { CategoryDataSource } from '@modules/categories/datasources/category.datasource';
+import { AuthModule } from '@modules/auth/auth.module';
 
 @Module({
   imports: [
+    AuthModule,
     OrganizationEntitiesModule,
     MongooseModule.forFeature([
       {
@@ -23,11 +30,18 @@ import { OrganizationEntitiesModule } from '@modules/organizations/organization-
         name: Product.name,
         schema: ProductSchema,
       },
+      {
+        name: Menu.name,
+        schema: MenuSchema,
+      },
     ]),
   ],
   providers: [
-    // MenuResolver,
+    MenuResolver,
     MenuDataSource,
+    CategoryDataSource,
+    CreateMenuUseCase,
+    MenuCategoriesValidation,
     // GetMenuUseCase,
     OrganizationExistsUseCase,
   ],

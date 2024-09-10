@@ -32,13 +32,13 @@ export class MenuObj implements Partial<Menu> {
   @Field()
   _id: string;
 
-  @Field()
-  isActive: boolean;
+  @Field({ nullable: true })
+  isActive?: boolean;
 
   @Field()
   locationId: string;
 
-  @Field(() => MenuTypes)
+  @Field(() => [MenuTypes])
   type: MenuTypes[];
 
   @Field()
