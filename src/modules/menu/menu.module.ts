@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
-// import { MenuResolver } from './menu.resolver';
 import { MenuDataSource } from './datasources/menu.datasource';
-// import { GetMenuUseCase } from './usecases/get-menu.usecase';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
   Category,
@@ -16,6 +14,7 @@ import { CreateMenuUseCase } from './usecases/create-menu.usecase';
 import { Menu, MenuSchema } from './entities/menu';
 import { CategoryDataSource } from '@modules/categories/datasources/category.datasource';
 import { AuthModule } from '@modules/auth/auth.module';
+import { GetLocationMenusUseCase } from './usecases/get-menu.usecase';
 
 @Module({
   imports: [
@@ -42,7 +41,7 @@ import { AuthModule } from '@modules/auth/auth.module';
     CategoryDataSource,
     CreateMenuUseCase,
     MenuCategoriesValidation,
-    // GetMenuUseCase,
+    GetLocationMenusUseCase,
     OrganizationExistsUseCase,
   ],
 })

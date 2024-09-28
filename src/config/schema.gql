@@ -246,6 +246,7 @@ type Query {
   findCategory(input: FindCategoryInput!): Category!
   listLocationTables: [TableObj!]!
   listTableOrders(input: ListTableOrdersInput!): ListTableOrdersOutput!
+  getLocationMenu: [MenuObj!]!
 }
 
 input ListProductsInput {

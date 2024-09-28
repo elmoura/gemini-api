@@ -1,14 +1,18 @@
-import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { MenuObj } from './usecases/dto/menu.object';
 import { CreateMenuUseCase } from './usecases/create-menu.usecase';
 import { CreateMenuInput } from './usecases/dto/create-menu.input';
 import { CurrentUser, CurrentUserData } from '@shared/decorators/current-user';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@modules/auth/auth.guard';
+import { GetLocationMenusUseCase } from './usecases/get-menu.usecase';
 
 @Resolver()
 export class MenuResolver {
-  constructor(private createMenuUseCase: CreateMenuUseCase) {}
+  constructor(
+    private createMenuUseCase: CreateMenuUseCase,
+    private getLocationMenusUseCase: GetLocationMenusUseCase,
+  ) {}
 
   @UseGuards(AuthGuard)
   @Mutation(() => MenuObj)
@@ -16,10 +20,18 @@ export class MenuResolver {
     @CurrentUser() user: CurrentUserData,
     @Args('input') input: CreateMenuInput,
   ): Promise<MenuObj> {
-    console.log({ user });
-
     return this.createMenuUseCase.execute({
       ...input,
+      ...user,
+    });
+  }
+
+  @UseGuards(AuthGuard)
+  @Query(() => [MenuObj])
+  async getLocationMenu(
+    @CurrentUser() user: CurrentUserData,
+  ): Promise<MenuObj[]> {
+    return this.getLocationMenusUseCase.execute({
       ...user,
     });
   }
