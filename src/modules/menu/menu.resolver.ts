@@ -28,7 +28,7 @@ export class MenuResolver {
 
   @UseGuards(AuthGuard)
   @Query(() => [MenuObj])
-  async getLocationMenu(
+  async getLocationMenus(
     @CurrentUser() user: CurrentUserData,
   ): Promise<MenuObj[]> {
     return this.getLocationMenusUseCase.execute({

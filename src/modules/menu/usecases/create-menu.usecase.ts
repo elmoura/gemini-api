@@ -7,6 +7,7 @@ import { OrganizationDataSource } from '@modules/organizations/datasources/organ
 import { OrganizationNotFoundException } from '@modules/organizations/errors/organization-not-found.exception';
 import { MenuCategoriesValidation } from '../validations/menu-categories.validation';
 import { InvalidCategoryIdsException } from '../errors/invalid-category-ids.exeception';
+import { toObjectId } from '@shared/utils/to-object-id';
 
 @Injectable()
 export class CreateMenuUseCase
@@ -40,10 +41,14 @@ export class CreateMenuUseCase
       }
     }
 
+    const categoryIds = input.categoryIds
+      ? input.categoryIds.map((id) => toObjectId(id))
+      : [];
+
     const createdMenu = await this.menuDataSource.create({
       ...input,
+      categoryIds,
       isActive: input.isActive || true,
-      categoryIds: input.categoryIds || [],
     });
 
     const result = (await this.menuDataSource.findById({

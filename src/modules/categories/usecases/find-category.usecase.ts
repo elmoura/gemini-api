@@ -6,6 +6,7 @@ import { OrganizationNotFoundException } from '@modules/organizations/errors/org
 import { FindCategoryInput } from './types/find-category.input';
 import { CategoryObj } from './types/category.object';
 import { CategoryNotFoundException } from '../errors/category-not-found.exception';
+import { objectIdArrayToStrings } from '@shared/utils/to-object-id';
 
 @Injectable()
 export class FindCategoryUseCase
@@ -35,6 +36,9 @@ export class FindCategoryUseCase
       throw new CategoryNotFoundException(_id);
     }
 
-    return category;
+    return {
+      ...category,
+      productIds: objectIdArrayToStrings(category.productIds),
+    };
   }
 }

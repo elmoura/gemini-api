@@ -1,7 +1,8 @@
+import { ObjectId } from 'mongodb';
+import { Document } from 'mongoose';
 import { Category } from '@modules/categories/entities/category';
 import { Product } from '@modules/products/entities/product';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
 import { MenuTypes } from '../enums/menu-types';
 
 export type MenuDocument = Menu & Document;
@@ -33,7 +34,7 @@ export class Menu {
   description?: string;
 
   @Prop()
-  categoryIds: string[];
+  categoryIds: ObjectId[];
 
   categories?: CategoryWithProducts[];
 

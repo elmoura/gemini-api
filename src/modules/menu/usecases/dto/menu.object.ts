@@ -23,12 +23,14 @@ class CategoryWithProducts extends CategoryObj {
   @Field()
   updatedAt: Date;
 
-  @Field(() => [ProductObj])
+  productIds: string[];
+
+  @Field(() => [ProductObj], { nullable: true })
   products: ProductObj[];
 }
 
 @ObjectType()
-export class MenuObj implements Partial<Menu> {
+export class MenuObj implements Partial<Omit<Menu, 'categories'>> {
   @Field()
   _id: string;
 

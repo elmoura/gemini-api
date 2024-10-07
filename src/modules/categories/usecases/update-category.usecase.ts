@@ -7,6 +7,10 @@ import { InvalidProductIdsException } from '../errors/invalid-product-ids.except
 import { UpdateCategoryInput } from './types/update-category.input';
 import { CategoryNotFoundException } from '../errors/category-not-found.exception';
 import { RepeatedProductIdsException } from '../errors/repeated-product-ids.exception';
+import {
+  idArrayToObjectId,
+  objectIdArrayToStrings,
+} from '@shared/utils/to-object-id';
 
 @Injectable()
 export class UpdateCategoryUseCase
@@ -54,14 +58,14 @@ export class UpdateCategoryUseCase
     if (productsToAdd.length) {
       await this.categoryDataSource.addProductsToCategory({
         _id,
-        productIds: productsToAdd,
+        productIds: idArrayToObjectId(productsToAdd),
       });
     }
 
     if (productsToRemove.length) {
       await this.categoryDataSource.removeProductsFromCategory({
         _id,
-        productIds: productsToRemove,
+        productIds: idArrayToObjectId(productsToRemove),
       });
     }
 
@@ -72,10 +76,15 @@ export class UpdateCategoryUseCase
       });
     }
 
-    return this.categoryDataSource.findById({
+    const updatedCategory = await this.categoryDataSource.findById({
       _id,
       locationId,
     });
+
+    return {
+      ...updatedCategory,
+      productIds: objectIdArrayToStrings(updatedCategory.productIds),
+    };
   }
 
   private validateProductIds(input: UpdateCategoryInput): void {

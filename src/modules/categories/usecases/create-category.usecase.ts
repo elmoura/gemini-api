@@ -8,6 +8,10 @@ import { CategoryObj } from './types/category.object';
 import { CategoryProductsValidation } from '../validations/category-products-validation';
 import { InvalidProductIdsException } from '../errors/invalid-product-ids.exception';
 import { LocationNotSetException } from '@shared/errors/location-not-set.exception';
+import {
+  idArrayToObjectId,
+  objectIdArrayToStrings,
+} from '@shared/utils/to-object-id';
 
 @Injectable()
 export class CreateCategoryUseCase
@@ -44,9 +48,18 @@ export class CreateCategoryUseCase
       }
     }
 
-    return this.categoryDataSource.createOne({
+    const productIds = input.productIds
+      ? idArrayToObjectId(input.productIds)
+      : [];
+
+    const category = await this.categoryDataSource.createOne({
       ...input,
-      productIds: input.productIds || [],
+      productIds,
     });
+
+    return {
+      ...category,
+      productIds: objectIdArrayToStrings(category.productIds),
+    };
   }
 }

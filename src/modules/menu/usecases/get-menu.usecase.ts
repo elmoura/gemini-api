@@ -25,26 +25,11 @@ export class GetLocationMenusUseCase
 
     if (!orgExists) throw new OrganizationNotFoundException();
 
-    const menu = await this.menuDataSource.getByOrganization(
-      {
-        organizationId,
-        locationId,
-      },
-      {
-        showCategories: true,
-        showProducts: false,
-      },
-    );
+    const menu = await this.menuDataSource.getByOrganization({
+      organizationId,
+      locationId,
+    });
 
-    console.log(menu);
-
-    // pipeline
-
-    // lookup
-    // products
-    // product.categoryId === categoryId
-
-    // paginated response
-    return menu as unknown as MenuObj[];
+    return menu as MenuObj[];
   }
 }

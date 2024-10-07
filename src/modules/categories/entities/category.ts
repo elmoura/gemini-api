@@ -1,5 +1,6 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { ObjectId } from 'mongodb';
 import { Document } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 export type CategoryDocument = Category & Document;
 
@@ -20,7 +21,7 @@ export class Category {
   description?: string;
 
   @Prop()
-  productIds: string[];
+  productIds: ObjectId[];
 
   createdAt: Date;
 

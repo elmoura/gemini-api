@@ -2,7 +2,9 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { Category } from '@modules/categories/entities/category';
 
 @ObjectType('Category')
-export class CategoryObj implements Omit<Category, 'organizationId'> {
+export class CategoryObj
+  implements Omit<Category, 'organizationId' | 'productIds'>
+{
   @Field()
   _id: string;
 

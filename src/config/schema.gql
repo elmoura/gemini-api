@@ -217,7 +217,7 @@ type CategoryWithProducts {
   productIds: [String!]!
   createdAt: DateTime!
   updatedAt: DateTime!
-  products: [Product!]!
+  products: [Product!]
 }
 
 type MenuObj {
@@ -246,7 +246,7 @@ type Query {
   findCategory(input: FindCategoryInput!): Category!
   listLocationTables: [TableObj!]!
   listTableOrders(input: ListTableOrdersInput!): ListTableOrdersOutput!
-  getLocationMenu: [MenuObj!]!
+  getLocationMenus: [MenuObj!]!
 }
 
 input ListProductsInput {
