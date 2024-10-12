@@ -34,7 +34,7 @@ export class UpdateProductInput
   @IsArray()
   @Type(() => ProductImageInput)
   @Field(() => [ProductImageInput], { nullable: true })
-  images: ProductImageInput[];
+  images?: ProductImageInput[];
 
   @Field({ nullable: true })
   @IsString()

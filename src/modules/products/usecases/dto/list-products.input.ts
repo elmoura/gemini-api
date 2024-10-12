@@ -4,6 +4,10 @@ import { IsNumber, IsOptional } from 'class-validator';
 
 @InputType()
 export class ListProductsInput implements Partial<IPaginationOptions> {
+  organizationId: string;
+
+  locationId: string;
+
   @IsNumber()
   @IsOptional()
   @Field({ nullable: true })

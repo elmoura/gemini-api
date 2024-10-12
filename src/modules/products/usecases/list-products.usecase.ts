@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { IBaseUseCase } from '@shared/interfaces/base-use-case';
-import { IOrganizationData } from '@shared/interfaces/organization-data';
 import { OrganizationExistsUseCase } from '@modules/organizations/usecases/organization-exists.usecase';
 import { OrganizationNotFoundException } from '@modules/organizations/errors/organization-not-found.exception';
 import { ListProductsInput } from './dto/list-products.input';
@@ -9,8 +8,7 @@ import { ProductDataSource } from '../datasources/product.datasource';
 
 @Injectable()
 export class ListProductsUseCase
-  implements
-    IBaseUseCase<ListProductsInput & IOrganizationData, ListProductsOutput>
+  implements IBaseUseCase<ListProductsInput, ListProductsOutput>
 {
   constructor(
     private productDataSource: ProductDataSource,
@@ -18,10 +16,11 @@ export class ListProductsUseCase
   ) {}
 
   async execute({
+    locationId,
     organizationId,
     limit = 20,
     offset = 0,
-  }: ListProductsInput & IOrganizationData): Promise<ListProductsOutput> {
+  }: ListProductsInput): Promise<ListProductsOutput> {
     const organizationExists = await this.organizationExistsUseCase.execute({
       organizationId,
     });
@@ -29,7 +28,7 @@ export class ListProductsUseCase
     if (!organizationExists) throw new OrganizationNotFoundException();
 
     const products = await this.productDataSource.listByOrganization(
-      organizationId,
+      { organizationId, locationId },
       { limit, offset },
     );
 

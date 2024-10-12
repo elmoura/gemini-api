@@ -20,8 +20,10 @@ export class CreateProductUseCase
   ) {}
 
   async execute(input: CreateProductInput): Promise<ProductObj> {
+    const { organizationId, locationId } = input;
+
     const organizationExists = await this.organizationDataSource.findById(
-      input.organizationId,
+      organizationId,
     );
 
     if (!organizationExists) {
@@ -35,16 +37,18 @@ export class CreateProductUseCase
 
     const productId = createdProduct._id;
 
-    const images = await this.moveProductImageUtil.execute({
-      productId,
-      organizationId: input.organizationId,
-      images: input.images,
-    });
+    if (input?.images?.length) {
+      const images = await this.moveProductImageUtil.execute({
+        productId,
+        organizationId: input.organizationId,
+        images: input.images,
+      });
 
-    await this.productDataSource.updateOne(
-      { organizationId: input.organizationId, productId },
-      { images },
-    );
+      await this.productDataSource.updateOne(
+        { organizationId, locationId, productId },
+        { images },
+      );
+    }
 
     return this.productDataSource.findById(productId);
   }

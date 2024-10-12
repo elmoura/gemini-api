@@ -23,6 +23,7 @@ export class ProductObj implements Product {
 
   organizationId: string;
 
+  @Field()
   locationId: string;
 
   @Field()

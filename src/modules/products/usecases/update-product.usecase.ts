@@ -16,7 +16,7 @@ export class UpdateProductUsecase
   ) {}
 
   async execute(input: UpdateProductInput): Promise<ProductObj> {
-    const { _id: productId, organizationId } = input;
+    const { _id: productId, organizationId, locationId } = input;
 
     const productExists = await this.productDataSource.findById(productId);
 
@@ -28,15 +28,18 @@ export class UpdateProductUsecase
     }
 
     // sempre mandar todo array de imagens na ordem certa
-    const images = await this.moveProductImageUtil.execute({
-      productId,
-      organizationId: input.organizationId,
-      images: input.images,
-    });
+    let images = [];
+    if (input?.images?.length) {
+      images = await this.moveProductImageUtil.execute({
+        productId,
+        organizationId: input.organizationId,
+        images: input.images,
+      });
+    }
 
     await this.productDataSource.updateOne(
-      { productId, organizationId },
-      { ...input, images },
+      { productId, organizationId, locationId },
+      { ...input, images: input?.images?.length ? images : undefined },
     );
 
     return this.productDataSource.findById(productId);

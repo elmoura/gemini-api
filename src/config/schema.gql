@@ -111,6 +111,7 @@ type ProductImageObj {
 
 type Product {
   _id: String!
+  locationId: String!
   isActive: Boolean!
   name: String!
   description: String

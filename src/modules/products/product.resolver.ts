@@ -25,8 +25,7 @@ export class ProductResolver {
     @CurrentUser() user: CurrentUserData,
     @Args('input') input: CreateProductInput,
   ): Promise<ProductObj> {
-    const { organizationId } = user;
-    return this.createProductUseCase.execute({ organizationId, ...input });
+    return this.createProductUseCase.execute({ ...user, ...input });
   }
 
   @Query(() => ListProductsOutput)
