@@ -1,6 +1,23 @@
 import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
+@Schema({ timestamps: true })
+export class ProductImage {
+  _id?: string;
+
+  // @Prop()
+  // index: number;
+
+  @Prop()
+  url: string;
+
+  createdAt?: string;
+
+  updatedAt?: string;
+}
+
+export const ProductImageSchema = SchemaFactory.createForClass(ProductImage);
+
 export type ProductDocument = Product & Document;
 
 @Schema({ timestamps: true })
@@ -9,6 +26,12 @@ export class Product {
 
   @Prop()
   organizationId: string;
+
+  @Prop()
+  locationId: string;
+
+  @Prop()
+  identifier?: string;
 
   @Prop()
   isActive: boolean;
@@ -27,6 +50,9 @@ export class Product {
 
   @Prop()
   promotionalPrice?: number;
+
+  @Prop({ type: [ProductImageSchema] })
+  images: ProductImage[];
 
   createdAt: Date;
 

@@ -1,5 +1,20 @@
-import { Product } from '@modules/products/entities/product';
+import { Product, ProductImage } from '@modules/products/entities/product';
 import { Field, ObjectType } from '@nestjs/graphql';
+
+@ObjectType()
+class ProductImageObj implements ProductImage {
+  @Field()
+  _id?: string;
+
+  @Field()
+  url: string;
+
+  @Field()
+  createdAt?: string;
+
+  @Field()
+  updatedAt?: string;
+}
 
 @ObjectType('Product')
 export class ProductObj implements Product {
@@ -7,6 +22,8 @@ export class ProductObj implements Product {
   _id: string;
 
   organizationId: string;
+
+  locationId: string;
 
   @Field()
   isActive: boolean;
@@ -25,6 +42,12 @@ export class ProductObj implements Product {
 
   @Field({ nullable: true })
   isPromotionalPriceEnabled?: boolean;
+
+  @Field({ nullable: true })
+  identifier?: string;
+
+  @Field(() => [ProductImageObj])
+  images: ProductImageObj[];
 
   @Field()
   createdAt: Date;

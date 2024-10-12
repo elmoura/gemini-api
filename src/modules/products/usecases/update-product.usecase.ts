@@ -4,7 +4,7 @@ import { UpdateProductInput } from './dto/update-product.input';
 import { ProductObj } from './dto/product.object';
 import { ProductDataSource } from '@modules/products/datasources/product.datasource';
 import { ProductNotFoundException } from '@modules/products/errors/product-not-found.exception';
-import { CategoryDataSource } from '@modules/categories/datasources/category.datasource';
+import { MoveProductImageUtil } from '../utils/move-product-images-util';
 
 @Injectable()
 export class UpdateProductUsecase
@@ -12,7 +12,7 @@ export class UpdateProductUsecase
 {
   constructor(
     private productDataSource: ProductDataSource,
-    private categoryDataSource: CategoryDataSource,
+    private moveProductImageUtil: MoveProductImageUtil,
   ) {}
 
   async execute(input: UpdateProductInput): Promise<ProductObj> {
@@ -27,9 +27,16 @@ export class UpdateProductUsecase
       throw new ProductNotFoundException(input._id);
     }
 
+    // sempre mandar todo array de imagens na ordem certa
+    const images = await this.moveProductImageUtil.execute({
+      productId,
+      organizationId: input.organizationId,
+      images: input.images,
+    });
+
     await this.productDataSource.updateOne(
       { productId, organizationId },
-      input,
+      { ...input, images },
     );
 
     return this.productDataSource.findById(productId);

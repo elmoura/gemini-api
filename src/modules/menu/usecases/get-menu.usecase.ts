@@ -30,6 +30,6 @@ export class GetLocationMenusUseCase
       locationId,
     });
 
-    return menu as MenuObj[];
+    return menu as any as MenuObj[];
   }
 }

@@ -18,6 +18,8 @@ import { AuthModule } from '@modules/auth/auth.module';
 import { ListProductsUseCase } from './usecases/list-products.usecase';
 import { OrganizationExistsUseCase } from '@modules/organizations/usecases/organization-exists.usecase';
 import { UpdateProductUsecase } from './usecases/update-product.usecase';
+import { MoveProductImageUtil } from './utils/move-product-images-util';
+import { UploadService } from '@shared/services/upload.service';
 
 /**
  * @todo
@@ -51,6 +53,8 @@ import { UpdateProductUsecase } from './usecases/update-product.usecase';
     OrganizationDataSource,
     OrganizationExistsUseCase,
     ListProductsUseCase,
+    MoveProductImageUtil,
+    UploadService,
   ],
 })
 export class ProductModule {}

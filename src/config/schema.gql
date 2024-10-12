@@ -102,6 +102,13 @@ type ListCategoriesOutput {
   data: [Category!]!
 }
 
+type ProductImageObj {
+  _id: String!
+  url: String!
+  createdAt: String!
+  updatedAt: String!
+}
+
 type Product {
   _id: String!
   isActive: Boolean!
@@ -110,6 +117,8 @@ type Product {
   originalPrice: Float!
   promotionalPrice: Float
   isPromotionalPriceEnabled: Boolean
+  identifier: String
+  images: [ProductImageObj!]!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -299,16 +308,24 @@ type Mutation {
 }
 
 input CreateProductInput {
+  identifier: String
   name: String!
   description: String
   isActive: Boolean!
   originalPrice: Float!
   promotionalPrice: Float
   isPromotionalPriceEnabled: Boolean
+  images: [ProductImageInput!]
+}
+
+input ProductImageInput {
+  url: String!
 }
 
 input UpdateProductInput {
   _id: String!
+  identifier: String
+  images: [ProductImageInput!]
   name: String
   originalPrice: Float
   promotionalPrice: Float

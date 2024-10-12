@@ -17,6 +17,16 @@ export class Organization {
   @Prop()
   businessRepresentantId?: string;
 
+  // horario de funcionamento
+
+  // cor primaria
+
+  // cor secundaria
+
+  // logoUrl
+
+  // taxas de entregas: array com raios de km e precificação
+
   @Prop({
     type: [
       { type: mongoose.Schema.Types.ObjectId, ref: OrganizationLocation.name },

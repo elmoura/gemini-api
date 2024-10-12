@@ -35,4 +35,7 @@ export class MenuResolver {
       ...user,
     });
   }
+
+  // Recebe organizationId e menuId
+  // async getPublicMenu() {}
 }

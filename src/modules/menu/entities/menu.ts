@@ -21,6 +21,8 @@ export class Menu {
   @Prop()
   locationId: string;
 
+  // pedidoMinimo
+
   @Prop()
   type: MenuTypes[];
 
