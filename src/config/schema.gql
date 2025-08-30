@@ -219,27 +219,16 @@ type ListTableOrdersOutput {
   orders: [TableOrderObj!]!
 }
 
-type CategoryWithProducts {
-  _id: String!
-  locationId: String!
-  name: String!
-  description: String
-  productIds: [String!]!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  products: [Product!]
-}
-
 type MenuObj {
   _id: String!
   isActive: Boolean
   locationId: String!
-  type: [MenuTypes!]!
+  types: [MenuTypes!]!
   name: String!
   description: String
   createdAt: DateTime!
   updatedAt: DateTime!
-  categories: [CategoryWithProducts!]!
+  categoryIds: [String!]
 }
 
 enum MenuTypes {
@@ -434,7 +423,7 @@ input TableOrderPaymentInput {
 }
 
 input CreateMenuInput {
-  type: [MenuTypes!]!
+  types: [MenuTypes!]!
   isActive: Boolean
   name: String!
   description: String

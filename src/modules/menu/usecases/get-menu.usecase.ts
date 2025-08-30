@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { IBaseUseCase } from '@shared/interfaces/base-use-case';
-import { MenuObj } from './dto/menu.object';
 import { GetLocationMenusInput } from './dto/get-menu.input';
 import { MenuDataSource } from '../datasources/menu.datasource';
 import { OrganizationExistsUseCase } from '@modules/organizations/usecases/organization-exists.usecase';
 import { OrganizationNotFoundException } from '@modules/organizations/errors/organization-not-found.exception';
+import { MenuWithCategoriesObj } from './dto/menu-with-categories.object';
 
 @Injectable()
 export class GetLocationMenusUseCase
-  implements IBaseUseCase<GetLocationMenusInput, MenuObj[]>
+  implements IBaseUseCase<GetLocationMenusInput, MenuWithCategoriesObj[]>
 {
   constructor(
     private menuDataSource: MenuDataSource,
@@ -18,7 +18,7 @@ export class GetLocationMenusUseCase
   async execute({
     organizationId,
     locationId,
-  }: GetLocationMenusInput): Promise<MenuObj[]> {
+  }: GetLocationMenusInput): Promise<MenuWithCategoriesObj[]> {
     const orgExists = await this.organizationExistsUseCase.execute({
       organizationId,
     });
@@ -30,6 +30,6 @@ export class GetLocationMenusUseCase
       locationId,
     });
 
-    return menu as any as MenuObj[];
+    return menu as unknown as MenuWithCategoriesObj[];
   }
 }

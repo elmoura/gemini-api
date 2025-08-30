@@ -24,7 +24,7 @@ export class CreateMenuInput
   @IsArray()
   @IsEnum(MenuTypes, { each: true })
   @Field(() => [MenuTypes])
-  type: MenuTypes[];
+  types: MenuTypes[];
 
   @IsBoolean()
   @IsOptional()

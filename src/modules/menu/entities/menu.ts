@@ -1,4 +1,3 @@
-import { ObjectId } from 'mongodb';
 import { Document } from 'mongoose';
 import { Category } from '@modules/categories/entities/category';
 import { Product } from '@modules/products/entities/product';
@@ -21,10 +20,8 @@ export class Menu {
   @Prop()
   locationId: string;
 
-  // pedidoMinimo
-
   @Prop()
-  type: MenuTypes[];
+  types: MenuTypes[];
 
   @Prop()
   isActive: boolean;
@@ -36,7 +33,7 @@ export class Menu {
   description?: string;
 
   @Prop()
-  categoryIds: ObjectId[];
+  categoryIds: string[];
 
   categories?: CategoryWithProducts[];
 

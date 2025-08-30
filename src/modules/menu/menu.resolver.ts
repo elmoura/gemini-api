@@ -6,6 +6,7 @@ import { CurrentUser, CurrentUserData } from '@shared/decorators/current-user';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@modules/auth/auth.guard';
 import { GetLocationMenusUseCase } from './usecases/get-menu.usecase';
+import { MenuWithCategoriesObj } from './usecases/dto/menu-with-categories.object';
 
 @Resolver()
 export class MenuResolver {
@@ -30,7 +31,7 @@ export class MenuResolver {
   @Query(() => [MenuObj])
   async getLocationMenus(
     @CurrentUser() user: CurrentUserData,
-  ): Promise<MenuObj[]> {
+  ): Promise<MenuWithCategoriesObj[]> {
     return this.getLocationMenusUseCase.execute({
       ...user,
     });
