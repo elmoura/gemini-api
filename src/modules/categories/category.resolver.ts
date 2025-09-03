@@ -12,6 +12,9 @@ import { FindCategoryInput } from './usecases/types/find-category.input';
 import { FindCategoryUseCase } from './usecases/find-category.usecase';
 import { UpdateCategoryUseCase } from './usecases/update-category.usecase';
 import { UpdateCategoryInput } from './usecases/types/update-category.input';
+import { SearchCategoryUseCase } from './usecases/search-category.usecase';
+import { SearchCategoryInput } from './usecases/types/search-category.input';
+import { SearchCategoryResultObject } from './usecases/types/search-category-result.object';
 
 @Resolver()
 @UseGuards(AuthGuard)
@@ -21,6 +24,7 @@ export class CategoryResolver {
     private listCategoriesUseCase: ListCategoriesUseCase,
     private findCategoryUseCase: FindCategoryUseCase,
     private updateCategoryUseCase: UpdateCategoryUseCase,
+    private searchCategoryUseCase: SearchCategoryUseCase,
   ) {}
 
   @Mutation(() => CategoryObj)
@@ -62,6 +66,17 @@ export class CategoryResolver {
     @Args('input') input: UpdateCategoryInput,
   ): Promise<CategoryObj> {
     return this.updateCategoryUseCase.execute({
+      ...input,
+      ...user,
+    });
+  }
+
+  @Query(() => SearchCategoryResultObject)
+  async searchCategory(
+    @CurrentUser() user: CurrentUserData,
+    @Args('input') input: SearchCategoryInput,
+  ): Promise<SearchCategoryResultObject> {
+    return this.searchCategoryUseCase.execute({
       ...input,
       ...user,
     });

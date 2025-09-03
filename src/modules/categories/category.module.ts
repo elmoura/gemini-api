@@ -15,6 +15,7 @@ import { ListCategoriesUseCase } from './usecases/list-categories.usecase';
 import { CategoryProductsValidation } from './validations/category-products-validation';
 import { UpdateCategoryUseCase } from './usecases/update-category.usecase';
 import { FindCategoryUseCase } from './usecases/find-category.usecase';
+import { SearchCategoryUseCase } from './usecases/search-category.usecase';
 import { Product, ProductSchema } from '@modules/products/entities/product';
 import { ProductDataSource } from '@modules/products/datasources/product.datasource';
 
@@ -47,6 +48,7 @@ import { ProductDataSource } from '@modules/products/datasources/product.datasou
     CategoryProductsValidation,
     UpdateCategoryUseCase,
     FindCategoryUseCase,
+    SearchCategoryUseCase,
   ],
 })
 export class CategoryModule {}

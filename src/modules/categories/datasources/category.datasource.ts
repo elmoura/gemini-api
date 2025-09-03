@@ -31,6 +31,10 @@ interface ICategoryDataSource {
   ): Promise<Category[]>;
   updateOne(categoryId: string, data: Partial<Category>): Promise<boolean>;
   findByIds(params: FindByIdsParams): Promise<Category[]>;
+  searchByName(
+    params: FilterParams & { name: RegExp },
+    paginationOptions: IPaginationOptions,
+  ): Promise<Category[]>;
 }
 
 @Injectable()
@@ -104,5 +108,26 @@ export class CategoryDataSource implements ICategoryDataSource {
     );
 
     return result.modifiedCount > 0;
+  }
+
+  async searchByName(
+    params: FilterParams & { name: RegExp },
+    paginationOptions: IPaginationOptions,
+  ): Promise<Category[]> {
+    const { name, ...filterParams } = params;
+
+    const result = await this.categoryModel.find(
+      {
+        ...filterParams,
+        name: { $regex: name },
+      },
+      {},
+      {
+        skip: paginationOptions.offset,
+        limit: paginationOptions.limit,
+      },
+    );
+
+    return result.map((item) => item.toObject());
   }
 }

@@ -102,6 +102,13 @@ type ListCategoriesOutput {
   data: [Category!]!
 }
 
+type SearchCategoryResultObject {
+  count: Float!
+  limit: Float!
+  offset: Float!
+  data: [Category!]!
+}
+
 type ProductImageObj {
   _id: String!
   url: String!
@@ -243,6 +250,7 @@ type Query {
   listOrganizationLocations(input: ListOrganizationLocationsInput!): [OrganizationLocationObj!]!
   listCategories(input: ListCategoriesInput!): ListCategoriesOutput!
   findCategory(input: FindCategoryInput!): Category!
+  searchCategory(input: SearchCategoryInput!): SearchCategoryResultObject!
   listLocationTables: [TableObj!]!
   listTableOrders(input: ListTableOrdersInput!): ListTableOrdersOutput!
   getLocationMenus: [MenuObj!]!
@@ -268,6 +276,12 @@ input ListCategoriesInput {
 
 input FindCategoryInput {
   _id: String!
+}
+
+input SearchCategoryInput {
+  limit: Float
+  offset: Float
+  name: String!
 }
 
 input ListTableOrdersInput {
