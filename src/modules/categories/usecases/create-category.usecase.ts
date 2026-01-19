@@ -55,6 +55,7 @@ export class CreateCategoryUseCase
     const category = await this.categoryDataSource.createOne({
       ...input,
       productIds,
+      isActive: input.isActive || true,
     });
 
     return {

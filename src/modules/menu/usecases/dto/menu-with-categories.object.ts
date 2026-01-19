@@ -1,4 +1,4 @@
-import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { CategoryObj } from '@modules/categories/usecases/types/category.object';
 import { ProductObj } from '@modules/products/usecases/dto/product.object';
 import { MenuTypes } from '@modules/menu/enums/menu-types';

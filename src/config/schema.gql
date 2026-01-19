@@ -87,6 +87,7 @@ type SetUserLocationOutput {
 
 type Category {
   _id: String!
+  isActive: Boolean
   locationId: String!
   name: String!
   description: String
@@ -243,6 +244,19 @@ enum MenuTypes {
   SERVICE
 }
 
+type MenuDetails {
+  _id: String!
+  isActive: Boolean
+  locationId: String!
+  types: [MenuTypes!]!
+  name: String!
+  description: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  categoryIds: [String!]
+  categories: [Category!]!
+}
+
 type Query {
   listProducts(input: ListProductsInput!): ListProductsOutput!
   me: GetUserOutput!
@@ -254,6 +268,7 @@ type Query {
   listLocationTables: [TableObj!]!
   listTableOrders(input: ListTableOrdersInput!): ListTableOrdersOutput!
   getLocationMenus: [MenuObj!]!
+  getMenuDetails(input: GetMenuDetailsInput!): MenuDetails!
 }
 
 input ListProductsInput {
@@ -289,6 +304,10 @@ input ListTableOrdersInput {
   offset: Float
   status: TableOrderStatuses
   creationDate: String
+}
+
+input GetMenuDetailsInput {
+  menuId: String!
 }
 
 type Mutation {
@@ -376,6 +395,7 @@ input CreateOrganizationLocationInput {
 }
 
 input CreateCategoryInput {
+  isActive: Boolean
   name: String!
   description: String
   productIds: [String!]

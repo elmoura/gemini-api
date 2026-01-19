@@ -9,6 +9,9 @@ export class Category {
   _id: string;
 
   @Prop()
+  isActive: boolean;
+
+  @Prop()
   organizationId: string;
 
   @Prop()

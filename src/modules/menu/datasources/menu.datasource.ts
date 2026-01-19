@@ -87,7 +87,7 @@ export class MenuDataSource implements IMenuDataSource {
     const [menu] = await this.menuModel.aggregate([
       {
         $match: {
-          _id: params._id,
+          _id: toObjectId(params._id),
         },
       },
       ...pipeline,

@@ -10,6 +10,9 @@ export class CategoryObj
 
   organizationId: string;
 
+  @Field({ nullable: true })
+  isActive: boolean;
+
   @Field()
   locationId: string;
 
