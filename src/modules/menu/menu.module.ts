@@ -16,6 +16,7 @@ import { CategoryDataSource } from '@modules/categories/datasources/category.dat
 import { AuthModule } from '@modules/auth/auth.module';
 import { GetLocationMenusUseCase } from './usecases/get-menu.usecase';
 import { GetMenuDetailsUseCase } from './usecases/get-menu-details.usecase';
+import { UpdateMenuUseCase } from './usecases/update-menu.usecase';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { GetMenuDetailsUseCase } from './usecases/get-menu-details.usecase';
     MenuCategoriesValidation,
     GetLocationMenusUseCase,
     GetMenuDetailsUseCase,
+    UpdateMenuUseCase,
     OrganizationExistsUseCase,
   ],
 })

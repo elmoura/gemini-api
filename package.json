@@ -12,13 +12,15 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "node dist/main.js",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "migrate:order-tabs": "ts-node scripts/migrate-table-orders-to-tabs.ts",
+    "migrate:order-tabs:dry-run": "ts-node scripts/migrate-table-orders-to-tabs.ts --dry-run"
   },
   "dependencies": {
     "@apollo/server": "^4.11.0",
@@ -30,18 +32,22 @@
     "@nestjs/graphql": "^12.2.0",
     "@nestjs/mongoose": "^9.2.0",
     "@nestjs/platform-express": "^9.0.0",
+    "@nestjs/platform-socket.io": "^9.4.3",
+    "@nestjs/websockets": "^9.4.3",
     "apollo-server-express": "^3.10.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "dotenv": "^16.0.3",
     "graphql": "^16.9.0",
+    "graphql-type-json": "^0.3.2",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^6.6.5",
     "nodemailer": "^6.8.0",
     "pug": "^3.0.2",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.2.0"
+    "rxjs": "^7.2.0",
+    "socket.io": "^4.8.3"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",
@@ -77,6 +83,10 @@
       "json",
       "ts"
     ],
+    "moduleNameMapper": {
+      "^@modules/(.*)$": "<rootDir>/modules/$1",
+      "^@shared/(.*)$": "<rootDir>/shared/$1"
+    },
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {

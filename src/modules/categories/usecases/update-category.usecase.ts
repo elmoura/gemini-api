@@ -69,10 +69,15 @@ export class UpdateCategoryUseCase
       });
     }
 
-    if (input.name || input.description) {
+    if (
+      input.name !== undefined ||
+      input.description !== undefined ||
+      input.isActive !== undefined
+    ) {
       await this.categoryDataSource.updateOne(_id, {
         name: input.name,
         description: input.description,
+        isActive: input.isActive,
       });
     }
 

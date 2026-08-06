@@ -110,6 +110,11 @@ type SearchCategoryResultObject {
   data: [Category!]!
 }
 
+type ProductComplementGroupObj {
+  complementGroupId: String!
+  label: String!
+}
+
 type ProductImageObj {
   _id: String!
   url: String!
@@ -128,6 +133,7 @@ type Product {
   isPromotionalPriceEnabled: Boolean
   identifier: String
   images: [ProductImageObj!]!
+  complementGroups: [ProductComplementGroupObj!]!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -137,6 +143,44 @@ type ListProductsOutput {
   limit: Float!
   offset: Float!
   data: [Product!]!
+}
+
+type SearchProductResultObject {
+  count: Float!
+  limit: Float!
+  offset: Float!
+  data: [Product!]!
+}
+
+type ComplementGroupObj {
+  _id: String!
+  organizationId: String!
+  locationId: String!
+  name: String!
+  minSelections: Float!
+  maxSelections: Float!
+  selectionType: ComplementSelectionType!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum ComplementSelectionType {
+  SINGLE
+  MULTIPLE
+}
+
+type ComplementObj {
+  _id: String!
+  organizationId: String!
+  locationId: String!
+  complementGroupId: String!
+  name: String!
+  additionalPrice: Float!
+  displayOrder: Float!
+  minQuantity: Float!
+  maxQuantity: Float!
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type CustomerObj {
@@ -175,6 +219,7 @@ type OrderPaymentInfo {
 
 enum TableOrderPaymentStatuses {
   PENDING
+  PARTIALLY_PAID
   PAID
 }
 
@@ -190,16 +235,46 @@ type TableInfo {
   identifier: String!
 }
 
+type TableOrderItemComplementObj {
+  complementId: String!
+  complementGroupId: String!
+  name: String!
+  unitPrice: Float!
+  quantity: Float!
+}
+
 type TableOrderItemObj {
   _id: String!
   quantity: Float!
   productId: String!
+  productName: String
   discount: Float!
   productPrice: Float!
   observation: String
+  complements: [TableOrderItemComplementObj!]
   total: Float!
   createdAt: DateTime!
   updatedAt: DateTime!
+}
+
+type OrderTabObj {
+  _id: String!
+  tableOrderId: String!
+  organizationId: String!
+  locationId: String!
+  sequence: Float!
+  status: OrderTabStatuses!
+  pricing: OrderPriceInfo!
+  payment: OrderPaymentInfo!
+  items: [TableOrderItemObj!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum OrderTabStatuses {
+  IN_ATTENDANCE
+  FINISHED
+  CANCELLED
 }
 
 type TableOrderObj {
@@ -210,7 +285,8 @@ type TableOrderObj {
   table: TableInfo!
   pricing: OrderPriceInfo!
   payment: OrderPaymentInfo!
-  items: [TableOrderItemObj!]!
+  tabIds: [String!]!
+  tabs: [OrderTabObj!]
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -225,6 +301,86 @@ type ListTableOrdersOutput {
   offset: Float!
   ordersCount: Float!
   orders: [TableOrderObj!]!
+}
+
+type LocationShiftObj {
+  _id: String!
+  organizationId: String!
+  locationId: String!
+  status: LocationShiftStatuses!
+  startedAt: DateTime!
+  finishedAt: DateTime
+  currentTableOrderQuantity: Float!
+  currentOrderTabsQuantity: Float!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum LocationShiftStatuses {
+  OPEN
+  CLOSED
+}
+
+type ListLocationShiftsOutput {
+  limit: Float!
+  offset: Float!
+  shiftsCount: Float!
+  shifts: [LocationShiftObj!]!
+}
+
+type PrintJobObj {
+  _id: String!
+  organizationId: String!
+  locationId: String!
+  orderTabId: String!
+  batchId: String
+  trigger: PrintJobTrigger!
+  targetStation: PrintStation!
+  sourceClientType: PrintClientType!
+  sourceDeviceId: String
+  assignedAgentId: String
+  status: PrintJobStatus!
+  payload: JSON!
+  idempotencyKey: String!
+  errorMessage: String
+  printedAt: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum PrintJobTrigger {
+  ITEMS_BATCH_ADDED
+  ORDER_TAB_PAID
+}
+
+enum PrintStation {
+  KITCHEN
+  BAR
+  EXPEDITION
+  CASHIER
+}
+
+enum PrintClientType {
+  DESKTOP
+  WAITER_APP
+  DELIVERY
+}
+
+enum PrintJobStatus {
+  PENDING
+  DELIVERED
+  PRINTED
+  FAILED
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+
+type ListPrintJobsOutput {
+  jobs: [PrintJobObj!]!
+  totalCount: Float!
 }
 
 type MenuObj {
@@ -259,6 +415,12 @@ type MenuDetails {
 
 type Query {
   listProducts(input: ListProductsInput!): ListProductsOutput!
+  findProduct(input: FindProductInput!): Product!
+  searchProduct(input: SearchProductInput!): SearchProductResultObject!
+  listComplementGroups: [ComplementGroupObj!]!
+  findComplementGroup(input: FindComplementGroupInput!): ComplementGroupObj!
+  listComplements(input: ListComplementsInput!): [ComplementObj!]!
+  findComplement(input: FindComplementInput!): ComplementObj!
   me: GetUserOutput!
   getOrganization(input: GetOrganizationInput!): OrganizationObj!
   listOrganizationLocations(input: ListOrganizationLocationsInput!): [OrganizationLocationObj!]!
@@ -266,7 +428,14 @@ type Query {
   findCategory(input: FindCategoryInput!): Category!
   searchCategory(input: SearchCategoryInput!): SearchCategoryResultObject!
   listLocationTables: [TableObj!]!
+  listAvailableLocationTables: [TableObj!]!
   listTableOrders(input: ListTableOrdersInput!): ListTableOrdersOutput!
+  findTableOrder(input: FindTableOrderInput!): TableOrderObj!
+  findOrderTab(input: FindOrderTabInput!): OrderTabObj!
+  listOrderTabs(input: ListOrderTabsInput!): [OrderTabObj!]!
+  getCurrentLocationShift: LocationShiftObj
+  listLocationShifts(input: ListLocationShiftsInput!): ListLocationShiftsOutput!
+  listPrintJobs(input: ListPrintJobsInput!): ListPrintJobsOutput!
   getLocationMenus: [MenuObj!]!
   getMenuDetails(input: GetMenuDetailsInput!): MenuDetails!
 }
@@ -274,6 +443,28 @@ type Query {
 input ListProductsInput {
   limit: Float
   offset: Float
+}
+
+input FindProductInput {
+  _id: String!
+}
+
+input SearchProductInput {
+  limit: Float
+  offset: Float
+  name: String!
+}
+
+input FindComplementGroupInput {
+  _id: String!
+}
+
+input ListComplementsInput {
+  complementGroupId: String!
+}
+
+input FindComplementInput {
+  _id: String!
 }
 
 input GetOrganizationInput {
@@ -306,6 +497,33 @@ input ListTableOrdersInput {
   creationDate: String
 }
 
+input FindTableOrderInput {
+  tableOrderId: String!
+}
+
+input FindOrderTabInput {
+  orderTabId: String!
+}
+
+input ListOrderTabsInput {
+  tableOrderId: String!
+}
+
+input ListLocationShiftsInput {
+  limit: Float
+  offset: Float
+  startedAtFrom: DateTime
+  startedAtTo: DateTime
+  finishedAtFrom: DateTime
+  finishedAtTo: DateTime
+}
+
+input ListPrintJobsInput {
+  status: PrintJobStatus
+  limit: Int! = 20
+  offset: Int! = 0
+}
+
 input GetMenuDetailsInput {
   menuId: String!
 }
@@ -313,6 +531,10 @@ input GetMenuDetailsInput {
 type Mutation {
   createProduct(input: CreateProductInput!): Product!
   updateProduct(input: UpdateProductInput!): Product!
+  createComplementGroup(input: CreateComplementGroupInput!): ComplementGroupObj!
+  updateComplementGroup(input: UpdateComplementGroupInput!): ComplementGroupObj!
+  createComplement(input: CreateComplementInput!): ComplementObj!
+  updateComplement(input: UpdateComplementInput!): ComplementObj!
   createUserInvitation(input: CreateUserInvitationInput!): CreateUserInvitationOutput!
   confirmAccount(input: AccountConfirmationInput!): AccountConfirmationOutput!
   setUserLocation(input: SetUserLocationInput!): SetUserLocationOutput!
@@ -323,11 +545,22 @@ type Mutation {
   updateCategory(input: UpdateCategoryInput!): Category!
   createCustomer(input: CreateCustomerInput!): CustomerObj!
   createTable(input: CreateTableInput!): TableObj!
+  updateTable(input: UpdateTableInput!): TableObj!
+  deleteTable(input: DeleteTableInput!): TableObj!
   createTableOrder(input: CreateTableOrderInput!): TableOrderObj!
+  createOrderTab(input: CreateOrderTabInput!): OrderTabObj!
+  addOrderTabItem(input: AddOrderTabItemInput!): OrderTabObj!
+  updateOrderTabItem(input: UpdateOrderTabItemInput!): OrderTabObj!
+  removeOrderTabItem(input: RemoveOrderTabItemInput!): OrderTabObj!
+  finishOrderTab(input: FinishOrderTabInput!): OrderTabObj!
+  finishTableOrder(input: FinishTableOrderInput!): TableOrderObj!
   addTableOrderItem(input: AddTableOrderItemInput!): TableOrderObj!
   removeTableOrderItem(input: RemoveTableOrderItemInput!): TableOrderObj!
-  finishTableOrder(input: FinishTableOrderInput!): TableOrderObj!
+  startLocationShift: LocationShiftObj!
+  finishLocationShift: LocationShiftObj!
+  acknowledgePrintJob(input: AcknowledgePrintJobInput!): PrintJobObj!
   createMenu(input: CreateMenuInput!): MenuObj!
+  updateMenu(input: UpdateMenuInput!): MenuObj!
 }
 
 input CreateProductInput {
@@ -339,10 +572,16 @@ input CreateProductInput {
   promotionalPrice: Float
   isPromotionalPriceEnabled: Boolean
   images: [ProductImageInput!]
+  complementGroups: [ProductComplementGroupInput!]
 }
 
 input ProductImageInput {
   url: String!
+}
+
+input ProductComplementGroupInput {
+  complementGroupId: String!
+  label: String!
 }
 
 input UpdateProductInput {
@@ -355,6 +594,40 @@ input UpdateProductInput {
   description: String
   isActive: Boolean
   isPromotionalPriceEnabled: Boolean
+  complementGroups: [ProductComplementGroupInput!]
+}
+
+input CreateComplementGroupInput {
+  name: String!
+  minSelections: Float
+  maxSelections: Float
+  selectionType: ComplementSelectionType
+}
+
+input UpdateComplementGroupInput {
+  _id: String!
+  name: String
+  minSelections: Float
+  maxSelections: Float
+  selectionType: ComplementSelectionType
+}
+
+input CreateComplementInput {
+  complementGroupId: String!
+  name: String!
+  additionalPrice: Float
+  displayOrder: Float
+  minQuantity: Float
+  maxQuantity: Float
+}
+
+input UpdateComplementInput {
+  _id: String!
+  name: String
+  additionalPrice: Float
+  displayOrder: Float
+  minQuantity: Float
+  maxQuantity: Float
 }
 
 input CreateUserInvitationInput {
@@ -405,6 +678,7 @@ input UpdateCategoryInput {
   _id: String!
   name: String
   description: String
+  isActive: Boolean
   productsToAdd: [String!]
   productsToRemove: [String!]
 }
@@ -422,8 +696,21 @@ input CreateTableInput {
   identifier: String!
 }
 
+input UpdateTableInput {
+  tableId: String!
+  identifier: String!
+}
+
+input DeleteTableInput {
+  tableId: String!
+}
+
 input CreateTableOrderInput {
   tableId: String!
+}
+
+input CreateOrderTabInput {
+  tableOrderId: String!
   items: [TableOrderItemInput!]!
 }
 
@@ -431,6 +718,47 @@ input TableOrderItemInput {
   productId: String!
   quantity: Float!
   observation: String
+  complements: [TableOrderItemComplementInput!]
+}
+
+input TableOrderItemComplementInput {
+  complementId: String!
+  quantity: Float!
+}
+
+input AddOrderTabItemInput {
+  orderTabId: String!
+  items: [TableOrderItemInput!]!
+}
+
+input UpdateOrderTabItemInput {
+  orderTabId: String!
+  itemId: String!
+  quantity: Float
+  observation: String
+  complements: [TableOrderItemComplementInput!]
+}
+
+input RemoveOrderTabItemInput {
+  orderTabId: String!
+  itemId: String!
+  quantity: Float
+}
+
+input FinishOrderTabInput {
+  orderTabId: String!
+  payServiceTax: Boolean!
+  payment: TableOrderPaymentInput!
+}
+
+input TableOrderPaymentInput {
+  instalments: Float!
+  method: PaymentMethods!
+  paymentStatus: TableOrderPaymentStatuses!
+}
+
+input FinishTableOrderInput {
+  tableOrderId: String!
 }
 
 input AddTableOrderItemInput {
@@ -444,16 +772,11 @@ input RemoveTableOrderItemInput {
   quantity: Float
 }
 
-input FinishTableOrderInput {
-  tableOrderId: String!
-  payServiceTax: Boolean!
-  payment: TableOrderPaymentInput!
-}
-
-input TableOrderPaymentInput {
-  instalments: Float!
-  method: PaymentMethods!
-  paymentStatus: TableOrderPaymentStatuses!
+input AcknowledgePrintJobInput {
+  jobId: String!
+  status: PrintJobStatus!
+  errorMessage: String
+  assignedAgentId: String
 }
 
 input CreateMenuInput {
@@ -461,5 +784,14 @@ input CreateMenuInput {
   isActive: Boolean
   name: String!
   description: String
+  categoryIds: [String!]
+}
+
+input UpdateMenuInput {
+  _id: String!
+  name: String
+  description: String
+  isActive: Boolean
+  types: [MenuTypes!]
   categoryIds: [String!]
 }

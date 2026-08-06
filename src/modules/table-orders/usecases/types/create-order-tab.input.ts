@@ -1,13 +1,11 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { Type } from 'class-transformer';
 import { IsArray, Validate, ValidateNested } from 'class-validator';
-import { TableOrderItemInput } from './create-table-order.input';
+import { TableOrderItemInput } from './table-order-item.input';
 import { IsObjectId } from '@shared/validations/is-object-id';
 
 @InputType()
-export class AddTableOrderItemInput {
-  organizationId: string;
-
+export class CreateOrderTabInput {
   @Field()
   @Validate(IsObjectId)
   tableOrderId: string;

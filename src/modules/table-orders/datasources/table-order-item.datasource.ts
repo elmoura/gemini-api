@@ -1,3 +1,4 @@
+/* LEGACY — operações de item migraram para OrderTabDataSource
 import { Injectable } from '@nestjs/common';
 import { TableOrderItem } from '../entities/table-order-item';
 import { InjectModel } from '@nestjs/mongoose';
@@ -69,3 +70,30 @@ export class TableOrderItemDataSource implements ITableOrderItemDataSource {
     return result.matchedCount > 0;
   }
 }
+*/
+
+import { Injectable } from '@nestjs/common';
+import { TableOrderItem } from '../entities/table-order-item';
+
+@Injectable()
+export class TableOrderItemDataSource {
+  async pushItem(): Promise<boolean> {
+    throw new Error(
+      'TableOrderItemDataSource is deprecated. Use OrderTabDataSource.',
+    );
+  }
+
+  async updateItem(): Promise<boolean> {
+    throw new Error(
+      'TableOrderItemDataSource is deprecated. Use OrderTabDataSource.',
+    );
+  }
+
+  async removeItem(): Promise<boolean> {
+    throw new Error(
+      'TableOrderItemDataSource is deprecated. Use OrderTabDataSource.',
+    );
+  }
+}
+
+export type { TableOrderItem };

@@ -21,12 +21,24 @@ interface ITableOrderDataSource {
     locationId: string,
     filters: IListTableOrdersFilters,
   ): Promise<TableOrder[]>;
-  findById(tableOrderId: string, organizationId: string): Promise<TableOrder>;
+  findById(
+    tableOrderId: string,
+    organizationId: string,
+  ): Promise<TableOrder | null>;
   updateOne(
     orderId: string,
     organizationId: string,
     data: DeepPartial<TableOrder>,
   ): Promise<boolean>;
+  pushTabId(
+    orderId: string,
+    organizationId: string,
+    tabId: string,
+  ): Promise<boolean>;
+  findOpenByTableId(
+    tableId: string,
+    organizationId: string,
+  ): Promise<TableOrder | null>;
 }
 
 @Injectable()
@@ -39,11 +51,13 @@ export class TableOrderDataSource implements ITableOrderDataSource {
   async findById(
     tableOrderId: string,
     organizationId: string,
-  ): Promise<TableOrder> {
+  ): Promise<TableOrder | null> {
     const tableOrder = await this.tableOrderModel.findOne({
       _id: tableOrderId,
       organizationId,
     });
+
+    if (!tableOrder) return null;
 
     return tableOrder.toObject();
   }
@@ -83,5 +97,33 @@ export class TableOrderDataSource implements ITableOrderDataSource {
     );
 
     return result.matchedCount > 0;
+  }
+
+  async pushTabId(
+    orderId: string,
+    organizationId: string,
+    tabId: string,
+  ): Promise<boolean> {
+    const result = await this.tableOrderModel.updateOne(
+      { _id: orderId, organizationId },
+      { $push: { tabIds: tabId } },
+    );
+
+    return result.matchedCount > 0;
+  }
+
+  async findOpenByTableId(
+    tableId: string,
+    organizationId: string,
+  ): Promise<TableOrder | null> {
+    const tableOrder = await this.tableOrderModel.findOne({
+      'table._id': tableId,
+      organizationId,
+      status: TableOrderStatuses.IN_ATTENDANCE,
+    });
+
+    if (!tableOrder) return null;
+
+    return tableOrder.toObject();
   }
 }

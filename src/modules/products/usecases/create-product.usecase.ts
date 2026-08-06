@@ -7,6 +7,7 @@ import { OrganizationDataSource } from '@modules/organizations/datasources/organ
 import { OrganizationNotFoundException } from '@modules/organizations/errors/organization-not-found.exception';
 import { MoveProductImageUtil } from '../utils/move-product-images-util';
 import { UploadService } from '@shared/services/upload.service';
+import { ProductComplementGroupsValidation } from '../validations/product-complement-groups.validation';
 
 @Injectable()
 export class CreateProductUseCase
@@ -17,6 +18,7 @@ export class CreateProductUseCase
     private productDataSource: ProductDataSource,
     private organizationDataSource: OrganizationDataSource,
     private moveProductImageUtil: MoveProductImageUtil,
+    private productComplementGroupsValidation: ProductComplementGroupsValidation,
   ) {}
 
   async execute(input: CreateProductInput): Promise<ProductObj> {
@@ -30,8 +32,17 @@ export class CreateProductUseCase
       throw new OrganizationNotFoundException();
     }
 
+    if (input.complementGroups?.length) {
+      await this.productComplementGroupsValidation.execute({
+        organizationId,
+        locationId,
+        complementGroups: input.complementGroups,
+      });
+    }
+
     const createdProduct = await this.productDataSource.createOne({
       ...input,
+      complementGroups: input.complementGroups ?? [],
       images: [],
     });
 

@@ -14,6 +14,9 @@ import { TablesModule } from '@modules/table/tables.module';
 import { TableOrdersModule } from '@modules/table-orders/table-orders.module';
 import { MenuModule } from '@modules/menu/menu.module';
 import { FilesModule } from '@modules/files/files.module';
+import { LocationShiftsModule } from '@modules/location-shifts/location-shifts.module';
+import { ComplementGroupsModule } from '@modules/complement-groups/complement-groups.module';
+import { PrintJobsModule } from '@modules/print-jobs/print-jobs.module';
 
 @Module({
   imports: [
@@ -30,6 +33,9 @@ import { FilesModule } from '@modules/files/files.module';
     CustomersModule,
     TablesModule,
     TableOrdersModule,
+    LocationShiftsModule,
+    ComplementGroupsModule,
+    PrintJobsModule,
     MenuModule,
     FilesModule,
   ],

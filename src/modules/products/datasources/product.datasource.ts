@@ -22,6 +22,10 @@ interface IProductDataSource {
     params: ContextMatchParams,
     paginationOptions: IPaginationOptions,
   ): Promise<Product[]>;
+  searchByName(
+    params: ContextMatchParams & { name: RegExp },
+    paginationOptions: IPaginationOptions,
+  ): Promise<Product[]>;
   updateOne(filter: MatchParams, data: Partial<Product>): Promise<boolean>;
 }
 
@@ -55,6 +59,27 @@ export class ProductDataSource implements IProductDataSource {
   ): Promise<Product[]> {
     const result = await this.productModel.find(
       params,
+      {},
+      {
+        skip: paginationOptions.offset,
+        limit: paginationOptions.limit,
+      },
+    );
+
+    return result.map((product) => product.toObject());
+  }
+
+  async searchByName(
+    params: ContextMatchParams & { name: RegExp },
+    paginationOptions: IPaginationOptions,
+  ): Promise<Product[]> {
+    const { name, ...filterParams } = params;
+
+    const result = await this.productModel.find(
+      {
+        ...filterParams,
+        name: { $regex: name },
+      },
       {},
       {
         skip: paginationOptions.offset,

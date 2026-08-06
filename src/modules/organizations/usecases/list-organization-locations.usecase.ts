@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { IBaseUseCase } from '@shared/interfaces/base-use-case';
+import { ForbiddenException, Injectable } from '@nestjs/common';
+import { CurrentUserData } from '@shared/decorators/current-user';
 import { ListOrganizationLocationsInput } from './types/list-organization-locations.input';
 import { OrganizationLocation } from '../entities/organization-location';
 import { OrganizationDataSource } from '../datasources/organization.datasource';
@@ -7,29 +7,28 @@ import { OrganizationLocationDataSource } from '../datasources/organization-loca
 import { OrganizationNotFoundException } from '../errors/organization-not-found.exception';
 
 @Injectable()
-export class ListOrganizationLocationsUseCase
-  implements
-    IBaseUseCase<ListOrganizationLocationsInput, OrganizationLocation[]>
-{
+export class ListOrganizationLocationsUseCase {
   constructor(
     private organizationDataSource: OrganizationDataSource,
     private organizationLocationDataSource: OrganizationLocationDataSource,
   ) {}
 
-  async execute({
-    organizationId,
-  }: ListOrganizationLocationsInput): Promise<OrganizationLocation[]> {
+  async execute(
+    { organizationId }: ListOrganizationLocationsInput,
+    currentUser: CurrentUserData,
+  ): Promise<OrganizationLocation[]> {
+    if (currentUser.organizationId !== organizationId) {
+      throw new ForbiddenException();
+    }
+
     const organization = await this.organizationDataSource.findById(
       organizationId,
     );
 
     if (!organization) throw new OrganizationNotFoundException();
 
-    const locations =
-      await this.organizationLocationDataSource.findLocationsByOrgId(
-        organizationId,
-      );
-
-    return locations;
+    return this.organizationLocationDataSource.findLocationsByOrgId(
+      organizationId,
+    );
   }
 }

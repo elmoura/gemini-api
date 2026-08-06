@@ -54,7 +54,8 @@ export class OrganizationResolver {
   @Query(() => [OrganizationLocationObj])
   async listOrganizationLocations(
     @Args('input') input: ListOrganizationLocationsInput,
+    @CurrentUser() currentUserData: CurrentUserData,
   ): Promise<OrganizationLocationObj[]> {
-    return this.listOrganizationLocationsUseCase.execute(input);
+    return this.listOrganizationLocationsUseCase.execute(input, currentUserData);
   }
 }

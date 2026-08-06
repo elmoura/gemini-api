@@ -3,6 +3,24 @@ import { IsObjectId } from '@shared/validations/is-object-id';
 import { IsInt, IsOptional, Validate } from 'class-validator';
 
 @InputType()
+export class RemoveOrderTabItemInput {
+  @Field()
+  @Validate(IsObjectId)
+  orderTabId: string;
+
+  @Field()
+  @Validate(IsObjectId)
+  itemId: string;
+
+  @IsInt()
+  @IsOptional()
+  @Field({ nullable: true })
+  quantity?: number;
+
+  organizationId: string;
+}
+
+@InputType()
 export class RemoveTableOrderItemInput {
   @Field()
   @Validate(IsObjectId)

@@ -5,5 +5,6 @@ export enum TableOrderStatuses {
 
 export enum TableOrderPaymentStatuses {
   PENDING = 'Pagamento pendente',
+  PARTIALLY_PAID = 'Pago parcialmente',
   PAID = 'Pago',
 }

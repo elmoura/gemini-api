@@ -7,32 +7,28 @@ import {
   TableOrder,
 } from '../entities/table-order';
 import { TableOrderDataSource } from '../datasources/table-order.datasource';
-import { ProductDataSource } from '@modules/products/datasources/product.datasource';
 import { TableOrderItem } from '../entities/table-order-item';
-import { Product } from '@modules/products/entities/product';
 import {
   TableOrderPaymentStatuses,
   TableOrderStatuses,
 } from '../enums/table-order-statuses';
 import { TableDataSource } from '../../table/datasources/table.datasource';
 import { TableNotFoundException } from '../../table/errors/table-not-found';
+import { TableAlreadyOpenException } from '../errors/table-already-open';
 import { CurrentUserData } from '@shared/decorators/current-user';
-import { formatOrderItem } from '../utils/format-order-item';
+import { LocationShiftDataSource } from '@modules/location-shifts/datasources/location-shift.datasource';
+import { NoOpenLocationShiftException } from '@modules/location-shifts/errors/no-open-location-shift';
 
 @Injectable()
 export class CreateTableOrderUseCase
   implements IBaseUseCase<CreateTableOrderInput & CurrentUserData, TableOrder>
 {
   constructor(
-    private productDataSource: ProductDataSource,
     private tableDataSource: TableDataSource,
     private tableOrderDataSource: TableOrderDataSource,
+    private locationShiftDataSource: LocationShiftDataSource,
   ) {}
 
-  /**
-   * @todo Adicionar validações mais especificas: descontos
-   * Adicionar adicionais do pedido
-   */
   async execute(
     input: CreateTableOrderInput & CurrentUserData,
   ): Promise<TableOrder> {
@@ -46,29 +42,21 @@ export class CreateTableOrderUseCase
 
     if (!table) throw new TableNotFoundException();
 
-    const productIds = input.items.map((item) => item.productId);
-    const products = await this.productDataSource.findManyByIds(productIds);
-
-    const productsMapById: Record<string, Product> = {};
-    products.forEach((product) => {
-      productsMapById[product._id] = product;
-    });
-
-    // possiblitar q exista mais de um item do mesmo id
-    // outro registro do mesmo produto diferenciado por: observação, adicionais
-    const items = input.items.map((item) =>
-      formatOrderItem(
-        {
-          quantity: item.quantity,
-          observation: item.observation,
-        },
-        productsMapById[item.productId],
-      ),
+    const existingOpen = await this.tableOrderDataSource.findOpenByTableId(
+      input.tableId,
+      input.organizationId,
     );
-    const payment = this.formatPaymentInfo(items);
-    const pricing = this.formatPricingInfo(items);
 
-    return this.tableOrderDataSource.createOne({
+    if (existingOpen) throw new TableAlreadyOpenException();
+
+    const openShift = await this.locationShiftDataSource.findOpenByLocation(
+      input.organizationId,
+      input.locationId,
+    );
+
+    if (!openShift) throw new NoOpenLocationShiftException();
+
+    const tableOrder = await this.tableOrderDataSource.createOne({
       organizationId: input.organizationId,
       locationId: input.locationId,
       table: {
@@ -76,12 +64,25 @@ export class CreateTableOrderUseCase
         identifier: table.identifier,
       },
       status: TableOrderStatuses.IN_ATTENDANCE,
-      items,
-      pricing,
-      payment,
+      tabIds: [],
+      pricing: { total: 0, discount: 0, fees: 0 },
+      payment: {
+        total: 0,
+        paidAmount: 0,
+        instalments: 0,
+        paymentStatus: TableOrderPaymentStatuses.PENDING,
+      },
     });
+
+    await this.locationShiftDataSource.incrementTableOrderQuantity(
+      openShift._id,
+      input.organizationId,
+    );
+
+    return tableOrder;
   }
 
+  /* LEGACY — lógica de items movida para create-order-tab.usecase.ts
   private formatPaymentInfo(items: TableOrderItem[]): TableOrderPayment {
     const total = items.reduce((accum, item) => accum + item.total, 0);
 
@@ -103,4 +104,7 @@ export class CreateTableOrderUseCase
       fees: 0,
     };
   }
+  */
 }
+
+export type { TableOrderItem, TableOrderPayment, TableOrderPricing };

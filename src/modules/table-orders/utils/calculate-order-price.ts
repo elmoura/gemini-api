@@ -1,30 +1,19 @@
-import { TableOrder, TableOrderPricing } from '../entities/table-order';
+import { TableOrderItem } from '../entities/table-order-item';
+import { calculateOrderItemsPrice } from './calculate-order-items-price';
 
-type PricingResult = TableOrderPricing & {
-  itemsPrice: number;
+type PricingResult = ReturnType<typeof calculateOrderItemsPrice>;
+
+type OrderWithItems = {
+  items: TableOrderItem[];
+  pricing: { discount?: number };
 };
 
 type Options = { payServiceTax: boolean };
 
+/** @deprecated Use calculateOrderTabPrice for OrderTab documents */
 export const calculateTableOrderPrice = (
-  tableOrder: TableOrder,
-  { payServiceTax }: Options,
+  order: OrderWithItems,
+  options: Options,
 ): PricingResult => {
-  const itemsPrice = tableOrder.items.reduce(
-    (total, currentItem) =>
-      total + currentItem.productPrice * currentItem.quantity,
-    0,
-  );
-
-  const discount = tableOrder.pricing.discount || 0;
-  let total = itemsPrice - discount;
-  const serviceTax = payServiceTax ? total * 0.1 : 0;
-  total = payServiceTax ? total + serviceTax : total;
-
-  return {
-    total,
-    itemsPrice,
-    discount,
-    fees: serviceTax,
-  };
+  return calculateOrderItemsPrice(order, options);
 };

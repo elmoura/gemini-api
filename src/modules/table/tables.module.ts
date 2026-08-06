@@ -9,8 +9,13 @@ import { Table, TableSchema } from './entities/table';
 import { TableDataSource } from './datasources/table.datasource';
 import { CreateTableUseCase } from './usecases/create-table.usecase';
 import { ListLocationTablesUseCase } from './usecases/list-location-tables.usecase';
-import { TableOrderDataSource } from '../table-orders/datasources/table-order.datasource';
-import { ProductDataSource } from '@modules/products/datasources/product.datasource';
+import { ListAvailableLocationTablesUseCase } from './usecases/list-available-location-tables.usecase';
+import { UpdateTableUseCase } from './usecases/update-table.usecase';
+import { DeleteTableUseCase } from './usecases/delete-table.usecase';
+import {
+  TableOrder,
+  TableOrderSchema,
+} from '@modules/table-orders/entities/table-order';
 
 /**
  * @description
@@ -24,13 +29,19 @@ import { ProductDataSource } from '@modules/products/datasources/product.datasou
   imports: [
     AuthModule,
     OrganizationEntitiesModule,
-    MongooseModule.forFeature([{ name: Table.name, schema: TableSchema }]),
+    MongooseModule.forFeature([
+      { name: Table.name, schema: TableSchema },
+      { name: TableOrder.name, schema: TableOrderSchema },
+    ]),
   ],
   providers: [
     TablesResolver,
     TableDataSource,
     CreateTableUseCase,
     ListLocationTablesUseCase,
+    ListAvailableLocationTablesUseCase,
+    UpdateTableUseCase,
+    DeleteTableUseCase,
     OrganizationExistsUseCase,
     OrganizationLocationExistsUseCase,
   ],

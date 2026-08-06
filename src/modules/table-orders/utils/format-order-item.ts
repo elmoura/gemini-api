@@ -1,9 +1,11 @@
 import { Product } from '@modules/products/entities/product';
-import { TableOrderItem } from '../entities/table-order-item';
+import { TableOrderItem, TableOrderItemComplement } from '../entities/table-order-item';
+import { calculateItemLineTotal } from './calculate-item-line-total';
 
 type OrderItemInfo = {
   quantity: number;
   observation?: string;
+  complements?: TableOrderItemComplement[];
 };
 
 export const formatOrderItem = (
@@ -15,15 +17,20 @@ export const formatOrderItem = (
     : product.originalPrice;
 
   const discount = product.originalPrice - productPrice;
+  const complements = itemInfo.complements ?? [];
 
-  // add createdAt updatedAt
-  // https://stackoverflow.com/questions/64385442/add-timestamp-to-a-new-subdocument-or-subschema-in-mongoose
-  return {
+  const item = {
     productId: product._id,
+    productName: product.name,
     discount,
     productPrice,
     quantity: itemInfo.quantity,
-    total: productPrice * itemInfo.quantity,
+    complements,
     observation: itemInfo.observation || '',
   } as TableOrderItem;
+
+  return {
+    ...item,
+    total: calculateItemLineTotal(item),
+  };
 };

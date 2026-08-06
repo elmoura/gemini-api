@@ -4,6 +4,7 @@ import { UpdateProductInput } from './dto/update-product.input';
 import { ProductObj } from './dto/product.object';
 import { ProductDataSource } from '@modules/products/datasources/product.datasource';
 import { ProductNotFoundException } from '@modules/products/errors/product-not-found.exception';
+import { ProductComplementGroupsValidation } from '@modules/products/validations/product-complement-groups.validation';
 import { MoveProductImageUtil } from '../utils/move-product-images-util';
 
 @Injectable()
@@ -13,6 +14,7 @@ export class UpdateProductUsecase
   constructor(
     private productDataSource: ProductDataSource,
     private moveProductImageUtil: MoveProductImageUtil,
+    private productComplementGroupsValidation: ProductComplementGroupsValidation,
   ) {}
 
   async execute(input: UpdateProductInput): Promise<ProductObj> {
@@ -27,19 +29,33 @@ export class UpdateProductUsecase
       throw new ProductNotFoundException(input._id);
     }
 
-    // sempre mandar todo array de imagens na ordem certa
-    let images = [];
-    if (input?.images?.length) {
-      images = await this.moveProductImageUtil.execute({
-        productId,
-        organizationId: input.organizationId,
-        images: input.images,
+    if (input.complementGroups !== undefined && input.complementGroups.length > 0) {
+      await this.productComplementGroupsValidation.execute({
+        organizationId,
+        locationId,
+        complementGroups: input.complementGroups,
       });
+    }
+
+    let images: ProductObj['images'] | undefined;
+    if (input.images !== undefined) {
+      if (input.images.length > 0) {
+        images = await this.moveProductImageUtil.execute({
+          productId,
+          organizationId: input.organizationId,
+          images: input.images,
+        });
+      } else {
+        images = [];
+      }
     }
 
     await this.productDataSource.updateOne(
       { productId, organizationId, locationId },
-      { ...input, images: input?.images?.length ? images : undefined },
+      {
+        ...input,
+        images,
+      },
     );
 
     return this.productDataSource.findById(productId);

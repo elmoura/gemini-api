@@ -1,0 +1,4 @@
+export enum PrintJobTrigger {
+  ITEMS_BATCH_ADDED = 'ITEMS_BATCH_ADDED',
+  ORDER_TAB_PAID = 'ORDER_TAB_PAID',
+}

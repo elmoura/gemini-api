@@ -1,5 +1,27 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
+@Schema({ _id: false })
+export class TableOrderItemComplement {
+  @Prop()
+  complementId: string;
+
+  @Prop()
+  complementGroupId: string;
+
+  @Prop()
+  name: string;
+
+  @Prop()
+  unitPrice: number;
+
+  @Prop()
+  quantity: number;
+}
+
+export const TableOrderItemComplementSchema = SchemaFactory.createForClass(
+  TableOrderItemComplement,
+);
+
 @Schema({ timestamps: true })
 export class TableOrderItem {
   _id: string;
@@ -9,6 +31,10 @@ export class TableOrderItem {
 
   @Prop()
   productId: string;
+
+  @Prop()
+  @Prop()
+  productName?: string;
 
   @Prop()
   discount: number;
@@ -22,7 +48,8 @@ export class TableOrderItem {
   @Prop()
   observation?: string;
 
-  // productAdditionals?: [];
+  @Prop({ type: [TableOrderItemComplementSchema], default: [] })
+  complements?: TableOrderItemComplement[];
 
   createdAt: Date;
 

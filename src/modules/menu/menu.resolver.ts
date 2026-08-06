@@ -8,8 +8,10 @@ import { AuthGuard } from '@modules/auth/auth.guard';
 import { GetLocationMenusUseCase } from './usecases/get-menu.usecase';
 import { MenuWithCategoriesObj } from './usecases/dto/menu-with-categories.object';
 import { GetMenuDetailsUseCase } from './usecases/get-menu-details.usecase';
+import { UpdateMenuUseCase } from './usecases/update-menu.usecase';
 import { GetMenuDetailsInput } from './usecases/dto/get-menu-details.input';
 import { MenuDetailsObj } from './usecases/dto/menu-details.object';
+import { UpdateMenuInput } from './usecases/dto/update-menu.input';
 
 @Resolver()
 export class MenuResolver {
@@ -17,6 +19,7 @@ export class MenuResolver {
     private createMenuUseCase: CreateMenuUseCase,
     private getLocationMenusUseCase: GetLocationMenusUseCase,
     private getMenuDetailsUseCase: GetMenuDetailsUseCase,
+    private updateMenuUseCase: UpdateMenuUseCase,
   ) {}
 
   @UseGuards(AuthGuard)
@@ -48,6 +51,18 @@ export class MenuResolver {
     @Args('input') input: GetMenuDetailsInput,
   ): Promise<MenuDetailsObj> {
     return this.getMenuDetailsUseCase.execute({
+      ...input,
+      ...user,
+    });
+  }
+
+  @UseGuards(AuthGuard)
+  @Mutation(() => MenuObj)
+  async updateMenu(
+    @CurrentUser() user: CurrentUserData,
+    @Args('input') input: UpdateMenuInput,
+  ): Promise<MenuObj> {
+    return this.updateMenuUseCase.execute({
       ...input,
       ...user,
     });

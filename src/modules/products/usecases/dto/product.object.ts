@@ -1,5 +1,6 @@
 import { Product, ProductImage } from '@modules/products/entities/product';
 import { Field, ObjectType } from '@nestjs/graphql';
+import { ProductComplementGroupObj } from './product-complement-group.dto';
 
 @ObjectType()
 class ProductImageObj implements ProductImage {
@@ -49,6 +50,9 @@ export class ProductObj implements Product {
 
   @Field(() => [ProductImageObj])
   images: ProductImageObj[];
+
+  @Field(() => [ProductComplementGroupObj])
+  complementGroups: ProductComplementGroupObj[];
 
   @Field()
   createdAt: Date;

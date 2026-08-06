@@ -1,5 +1,9 @@
 import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import {
+  ProductComplementGroup,
+  ProductComplementGroupSchema,
+} from './product-complement-group';
 
 @Schema({ timestamps: true })
 export class ProductImage {
@@ -53,6 +57,9 @@ export class Product {
 
   @Prop({ type: [ProductImageSchema] })
   images: ProductImage[];
+
+  @Prop({ type: [ProductComplementGroupSchema], default: [] })
+  complementGroups: ProductComplementGroup[];
 
   createdAt: Date;
 

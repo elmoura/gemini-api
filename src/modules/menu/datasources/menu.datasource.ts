@@ -28,6 +28,12 @@ interface IMenuDataSource {
     // options?: GetMenuOptions
   ): Promise<Menu>;
   insertCategoryIds(menuId: string, categoryIds: string[]): Promise<Menu>;
+  updateOne(
+    menuId: string,
+    data: Partial<
+      Pick<Menu, 'name' | 'description' | 'isActive' | 'types' | 'categoryIds'>
+    >,
+  ): Promise<boolean>;
 }
 
 @Injectable()
@@ -152,5 +158,29 @@ export class MenuDataSource implements IMenuDataSource {
     );
 
     return result.toObject();
+  }
+
+  async updateOne(
+    menuId: string,
+    data: Partial<
+      Pick<Menu, 'name' | 'description' | 'isActive' | 'types' | 'categoryIds'>
+    >,
+  ): Promise<boolean> {
+    const updateData: Partial<Menu> = {};
+
+    if (data.name !== undefined) updateData.name = data.name;
+    if (data.description !== undefined) updateData.description = data.description;
+    if (data.isActive !== undefined) updateData.isActive = data.isActive;
+    if (data.types !== undefined) updateData.types = data.types;
+    if (data.categoryIds !== undefined) {
+      updateData.categoryIds = data.categoryIds.map(toObjectId) as unknown as string[];
+    }
+
+    const result = await this.menuModel.updateOne(
+      { _id: toObjectId(menuId) },
+      updateData,
+    );
+
+    return result.modifiedCount > 0 || result.matchedCount > 0;
   }
 }

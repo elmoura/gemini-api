@@ -20,6 +20,10 @@ import { OrganizationExistsUseCase } from '@modules/organizations/usecases/organ
 import { UpdateProductUsecase } from './usecases/update-product.usecase';
 import { MoveProductImageUtil } from './utils/move-product-images-util';
 import { UploadService } from '@shared/services/upload.service';
+import { SearchProductUseCase } from './usecases/search-product.usecase';
+import { FindProductUseCase } from './usecases/find-product.usecase';
+import { ProductComplementGroupsValidation } from './validations/product-complement-groups.validation';
+import { ComplementGroupsModule } from '@modules/complement-groups/complement-groups.module';
 
 /**
  * @todo
@@ -29,6 +33,7 @@ import { UploadService } from '@shared/services/upload.service';
 @Module({
   imports: [
     AuthModule,
+    ComplementGroupsModule,
     MongooseModule.forFeature([
       {
         name: Organization.name,
@@ -53,6 +58,9 @@ import { UploadService } from '@shared/services/upload.service';
     OrganizationDataSource,
     OrganizationExistsUseCase,
     ListProductsUseCase,
+    SearchProductUseCase,
+    FindProductUseCase,
+    ProductComplementGroupsValidation,
     MoveProductImageUtil,
     UploadService,
   ],
