@@ -1,4 +1,9 @@
-import { Injectable, UnauthorizedException, Inject, forwardRef } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  Inject,
+  forwardRef,
+} from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { IBaseUseCase } from '@shared/interfaces/base-use-case';
 import { CurrentUserData } from '@shared/decorators/current-user';
@@ -158,6 +163,7 @@ export class CreateOrderTabUseCase
         orderTab: finalTab,
         batchId,
         affectedItems,
+        source: input.source,
       });
     }
 

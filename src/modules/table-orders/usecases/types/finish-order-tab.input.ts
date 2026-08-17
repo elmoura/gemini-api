@@ -11,6 +11,7 @@ import {
 } from 'class-validator';
 import { IsObjectId } from '@shared/validations/is-object-id';
 import { Type } from 'class-transformer';
+import { ClientSourceData } from '@modules/print-jobs/decorators/client-source.decorator';
 
 @InputType()
 export class TableOrderPaymentInput
@@ -33,6 +34,8 @@ export class TableOrderPaymentInput
 @InputType()
 export class FinishOrderTabInput {
   organizationId: string;
+
+  source?: ClientSourceData;
 
   @Field()
   @Validate(IsObjectId)

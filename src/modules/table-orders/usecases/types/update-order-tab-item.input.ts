@@ -11,11 +11,14 @@ import {
 } from 'class-validator';
 import { IsObjectId } from '@shared/validations/is-object-id';
 import { TableOrderItemComplementInput } from './table-order-item.input';
+import { ClientSourceData } from '@modules/print-jobs/decorators/client-source.decorator';
 
 @InputType()
 export class UpdateOrderTabItemInput {
   organizationId: string;
   locationId: string;
+
+  source?: ClientSourceData;
 
   @Field()
   @Validate(IsObjectId)

@@ -1,4 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  Inject,
+  forwardRef,
+} from '@nestjs/common';
+import { randomUUID } from 'crypto';
 import { IBaseUseCase } from '@shared/interfaces/base-use-case';
 import { OrderTab } from '../entities/order-tab';
 import { OrderTabDataSource } from '../datasources/order-tab.datasource';
@@ -13,6 +19,8 @@ import { OrderTabStatuses } from '../enums/order-tab-statuses';
 import { syncTableOrderFromTabs } from './helpers/sync-table-order-from-tabs';
 import { calculateOrderTabPrice } from '../utils/calculate-order-tab-price';
 import { buildOrderTabItem } from '../utils/build-order-tab-item';
+import { areItemComplementsEqual } from '../utils/complements-fingerprint';
+import { PrintJobService } from '@modules/print-jobs/services/print-job.service';
 
 @Injectable()
 export class UpdateOrderTabItemUseCase
@@ -24,6 +32,8 @@ export class UpdateOrderTabItemUseCase
     private productDataSource: ProductDataSource,
     private complementGroupDataSource: ComplementGroupDataSource,
     private complementDataSource: ComplementDataSource,
+    @Inject(forwardRef(() => PrintJobService))
+    private printJobService: PrintJobService,
   ) {}
 
   async execute(input: UpdateOrderTabItemInput): Promise<OrderTab> {
@@ -48,7 +58,9 @@ export class UpdateOrderTabItemUseCase
       throw new NotFoundException('Item da comanda não encontrado');
     }
 
-    const product = await this.productDataSource.findById(existingItem.productId);
+    const product = await this.productDataSource.findById(
+      existingItem.productId,
+    );
 
     if (!product || product.organizationId !== input.organizationId) {
       throw new NotFoundException('Produto do item não encontrado');
@@ -81,19 +93,24 @@ export class UpdateOrderTabItemUseCase
       complementDataSource: this.complementDataSource,
     });
 
-    await this.orderTabDataSource.updateItem(
-      input.orderTabId,
-      input.itemId,
-      {
-        quantity: rebuiltItem.quantity,
-        observation: rebuiltItem.observation,
-        complements: rebuiltItem.complements,
-        total: rebuiltItem.total,
-        productName: rebuiltItem.productName,
-        productPrice: rebuiltItem.productPrice,
-        discount: rebuiltItem.discount,
-      },
-    );
+    const hasChanged =
+      rebuiltItem.quantity !== existingItem.quantity ||
+      (rebuiltItem.observation ?? '').trim().toLowerCase() !==
+        (existingItem.observation ?? '').trim().toLowerCase() ||
+      !areItemComplementsEqual(
+        existingItem.complements,
+        rebuiltItem.complements ?? [],
+      );
+
+    await this.orderTabDataSource.updateItem(input.orderTabId, input.itemId, {
+      quantity: rebuiltItem.quantity,
+      observation: rebuiltItem.observation,
+      complements: rebuiltItem.complements,
+      total: rebuiltItem.total,
+      productName: rebuiltItem.productName,
+      productPrice: rebuiltItem.productPrice,
+      discount: rebuiltItem.discount,
+    });
 
     const tabWithUpdatedItem = await this.orderTabDataSource.findById(
       input.orderTabId,
@@ -104,17 +121,21 @@ export class UpdateOrderTabItemUseCase
       payServiceTax: false,
     });
 
-    await this.orderTabDataSource.updateOne(input.orderTabId, input.organizationId, {
-      pricing: {
-        discount: pricing.discount,
-        total: pricing.total,
-        fees: pricing.fees,
+    await this.orderTabDataSource.updateOne(
+      input.orderTabId,
+      input.organizationId,
+      {
+        pricing: {
+          discount: pricing.discount,
+          total: pricing.total,
+          fees: pricing.fees,
+        },
+        payment: {
+          ...tabWithUpdatedItem.payment,
+          total: pricing.total,
+        },
       },
-      payment: {
-        ...tabWithUpdatedItem.payment,
-        total: pricing.total,
-      },
-    });
+    );
 
     await syncTableOrderFromTabs(
       tab.tableOrderId,
@@ -123,9 +144,32 @@ export class UpdateOrderTabItemUseCase
       this.tableOrderDataSource,
     );
 
-    return this.orderTabDataSource.findById(
+    const finalTab = await this.orderTabDataSource.findById(
       input.orderTabId,
       input.organizationId,
     );
+
+    if (hasChanged) {
+      this.printJobService.enqueueItemUpdatedJob({
+        orderTab: finalTab,
+        itemId: input.itemId,
+        itemBefore: {
+          quantity: existingItem.quantity,
+          productName: existingItem.productName,
+          observation: existingItem.observation,
+          complements: existingItem.complements,
+        },
+        itemAfter: {
+          quantity: rebuiltItem.quantity,
+          productName: rebuiltItem.productName,
+          observation: rebuiltItem.observation,
+          complements: rebuiltItem.complements,
+        },
+        changeId: randomUUID(),
+        source: input.source,
+      });
+    }
+
+    return finalTab;
   }
 }

@@ -16,6 +16,9 @@ import { GetUserUseCase } from './usecases/get-user.usecase';
 import { SetUserLocationOutput } from './usecases/dto/set-user-location.output';
 import { SetUserLocationInput } from './usecases/dto/set-user-location.input';
 import { SetUserLocationUseCase } from './usecases/set-user-location.usecase';
+import { UpdateUserPreferencesOutput } from './usecases/dto/update-user-preferences.output';
+import { UpdateUserPreferencesInput } from './usecases/dto/update-user-preferences.input';
+import { UpdateUserPreferencesUseCase } from './usecases/update-user-preferences.usecase';
 
 @Resolver()
 export class UserResolver {
@@ -25,6 +28,7 @@ export class UserResolver {
     private setUserLocationUseCase: SetUserLocationUseCase,
     private creatUserInvitationUseCase: CreateUserInvitationUseCase,
     private accountConfirmationUseCase: AccountConfirmationUseCase,
+    private updateUserPreferencesUseCase: UpdateUserPreferencesUseCase,
   ) {}
 
   @UseGuards(AuthGuard)
@@ -65,5 +69,14 @@ export class UserResolver {
   async me(@CurrentUser() user: CurrentUserData): Promise<GetUserOutput> {
     const { userId } = user;
     return this.getUserUseCase.execute({ userId });
+  }
+
+  @UseGuards(AuthGuard)
+  @Mutation(() => UpdateUserPreferencesOutput)
+  async updateUserPreferences(
+    @Args('input') input: UpdateUserPreferencesInput,
+    @CurrentUser() currentUserData: CurrentUserData,
+  ): Promise<UpdateUserPreferencesOutput> {
+    return this.updateUserPreferencesUseCase.execute(input, currentUserData);
   }
 }

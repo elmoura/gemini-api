@@ -74,6 +74,7 @@ export class FinishOrderTabUseCase {
 
     this.printJobService.enqueueOrderTabPaidJob({
       orderTab: finalTab,
+      source: input.source,
     });
 
     return finalTab;

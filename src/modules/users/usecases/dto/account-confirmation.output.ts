@@ -1,5 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { AccountStatuses } from '@modules/users/enums/account-confirmation-statuses';
+import { ThemePreference } from '@modules/users/enums/theme-preference';
 import { User } from '@modules/users/entities/user';
 
 @ObjectType()
@@ -24,6 +25,9 @@ export class AccountConfirmationOutput implements Omit<User, 'password'> {
 
   @Field({ nullable: true })
   phoneNumber?: string;
+
+  @Field(() => ThemePreference)
+  themePreference: ThemePreference;
 
   @Field()
   createdAt: Date;

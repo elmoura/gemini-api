@@ -11,6 +11,7 @@ import { TokenService } from '@modules/auth/services/token.service';
 import { LoginUserUseCase } from './usecases/login-user.usecase';
 import { GetUserUseCase } from './usecases/get-user.usecase';
 import { SetUserLocationUseCase } from './usecases/set-user-location.usecase';
+import { UpdateUserPreferencesUseCase } from './usecases/update-user-preferences.usecase';
 import {
   Organization,
   OrganizationSchema,
@@ -48,6 +49,7 @@ import { OrganizationLocationDataSource } from '@modules/organizations/datasourc
     LoginUserUseCase,
     OrganizationLocationDataSource,
     SetUserLocationUseCase,
+    UpdateUserPreferencesUseCase,
     CreateUserInvitationUseCase,
     AccountConfirmationUseCase,
   ],

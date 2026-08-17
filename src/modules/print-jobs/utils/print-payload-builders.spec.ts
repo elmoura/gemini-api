@@ -1,5 +1,6 @@
 import { buildKitchenBatchPayload } from './build-kitchen-batch-payload';
 import { buildOrderTabReceiptPayload } from './build-order-tab-receipt-payload';
+import { buildItemChangePayload } from './build-item-change-payload';
 import { TableOrderPaymentStatuses } from '@modules/table-orders/enums/table-order-statuses';
 
 describe('print payload builders', () => {
@@ -70,5 +71,47 @@ describe('print payload builders', () => {
     expect(payload.template).toBe('ORDER_TAB_RECEIPT');
     expect(payload.items).toHaveLength(2);
     expect(payload.totals.total).toBe(25);
+  });
+
+  it('buildItemChangePayload monta ticket de atualização com quantidade anterior e nova', () => {
+    const payload = buildItemChangePayload({
+      changeType: 'UPDATED',
+      paperWidthMm: 80,
+      locationName: 'Centro',
+      tableIdentifier: 'Mesa 5',
+      orderTabSequence: 1,
+      item: {
+        itemId: 'i1',
+        productName: 'Burger',
+        complements: [],
+      },
+      previousQuantity: 1,
+      quantity: 3,
+    });
+
+    expect(payload.template).toBe('ITEM_UPDATED');
+    expect(payload.item.previousQuantity).toBe(1);
+    expect(payload.item.quantity).toBe(3);
+  });
+
+  it('buildItemChangePayload monta ticket de cancelamento com quantidade removida e restante', () => {
+    const payload = buildItemChangePayload({
+      changeType: 'REMOVED',
+      paperWidthMm: 80,
+      locationName: 'Centro',
+      tableIdentifier: 'Mesa 5',
+      orderTabSequence: 1,
+      item: {
+        itemId: 'i1',
+        productName: 'Burger',
+        complements: [],
+      },
+      quantity: 1,
+      remainingQuantity: 2,
+    });
+
+    expect(payload.template).toBe('ITEM_REMOVED');
+    expect(payload.item.quantity).toBe(1);
+    expect(payload.item.remainingQuantity).toBe(2);
   });
 });

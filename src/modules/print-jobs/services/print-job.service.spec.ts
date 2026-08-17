@@ -2,6 +2,7 @@ import { PrintJobService } from '../services/print-job.service';
 import { PrintJobTrigger } from '../enums/print-job-trigger';
 import { PrintJobStatus } from '../enums/print-job-status';
 import { PrintStation } from '../enums/print-station';
+import { PrintClientType } from '../enums/print-client-type';
 import { OrderTabStatuses } from '@modules/table-orders/enums/order-tab-statuses';
 import { TableOrderPaymentStatuses } from '@modules/table-orders/enums/table-order-statuses';
 
@@ -117,5 +118,95 @@ describe('PrintJobService', () => {
         }),
       }),
     );
+  });
+
+  it('createBatchAddedJob usa DESKTOP como default e propaga source informado', async () => {
+    await service.createBatchAddedJob({
+      orderTab: orderTab as never,
+      batchId: 'batch-1',
+      affectedItems: [
+        { itemId: 'i1', productName: 'Burger', quantity: 2, complements: [] },
+      ],
+    });
+
+    expect(printJobDataSource.createOne).toHaveBeenCalledWith(
+      expect.objectContaining({ sourceClientType: PrintClientType.DESKTOP }),
+    );
+
+    await service.createBatchAddedJob({
+      orderTab: orderTab as never,
+      batchId: 'batch-2',
+      affectedItems: [
+        { itemId: 'i1', productName: 'Burger', quantity: 2, complements: [] },
+      ],
+      source: {
+        sourceClientType: PrintClientType.MOBILE,
+        sourceDeviceId: 'device-1',
+      },
+    });
+
+    expect(printJobDataSource.createOne).toHaveBeenCalledWith(
+      expect.objectContaining({
+        sourceClientType: PrintClientType.MOBILE,
+        sourceDeviceId: 'device-1',
+      }),
+    );
+  });
+
+  it('createItemUpdatedJob cria job com quantidade anterior e nova', async () => {
+    printJobDataSource.createOne.mockResolvedValue({
+      _id: 'job-3',
+      trigger: PrintJobTrigger.ITEM_UPDATED,
+      targetStation: PrintStation.KITCHEN,
+    });
+
+    await service.createItemUpdatedJob({
+      orderTab: orderTab as never,
+      itemId: 'item-1',
+      itemBefore: { quantity: 1, productName: 'Burger', complements: [] },
+      itemAfter: { quantity: 3, productName: 'Burger', complements: [] },
+      changeId: 'change-1',
+    });
+
+    expect(printJobDataSource.createOne).toHaveBeenCalledWith(
+      expect.objectContaining({
+        trigger: PrintJobTrigger.ITEM_UPDATED,
+        idempotencyKey: 'tab-1:item-1:change-1:ITEM_UPDATED',
+        payload: expect.objectContaining({
+          template: 'ITEM_UPDATED',
+          item: expect.objectContaining({ previousQuantity: 1, quantity: 3 }),
+        }),
+      }),
+    );
+    expect(printJobsGateway.emitPrintJobCreated).toHaveBeenCalled();
+  });
+
+  it('createItemRemovedJob cria job com quantidade removida e restante', async () => {
+    printJobDataSource.createOne.mockResolvedValue({
+      _id: 'job-4',
+      trigger: PrintJobTrigger.ITEM_REMOVED,
+      targetStation: PrintStation.KITCHEN,
+    });
+
+    await service.createItemRemovedJob({
+      orderTab: orderTab as never,
+      itemId: 'item-1',
+      item: { quantity: 2, productName: 'Burger', complements: [] },
+      removedQuantity: 1,
+      remainingQuantity: 1,
+      changeId: 'change-2',
+    });
+
+    expect(printJobDataSource.createOne).toHaveBeenCalledWith(
+      expect.objectContaining({
+        trigger: PrintJobTrigger.ITEM_REMOVED,
+        idempotencyKey: 'tab-1:item-1:change-2:ITEM_REMOVED',
+        payload: expect.objectContaining({
+          template: 'ITEM_REMOVED',
+          item: expect.objectContaining({ quantity: 1, remainingQuantity: 1 }),
+        }),
+      }),
+    );
+    expect(printJobsGateway.emitPrintJobCreated).toHaveBeenCalled();
   });
 });

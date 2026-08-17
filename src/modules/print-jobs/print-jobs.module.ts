@@ -14,6 +14,7 @@ import { PrintJobsGateway } from './gateways/print-jobs.gateway';
 import { PrintJobsResolver } from './print-jobs.resolver';
 import { ListPrintJobsUseCase } from './usecases/list-print-jobs.usecase';
 import { AcknowledgePrintJobUseCase } from './usecases/acknowledge-print-job.usecase';
+import { GetPrintAgentPresenceUseCase } from './usecases/get-print-agent-presence.usecase';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { AcknowledgePrintJobUseCase } from './usecases/acknowledge-print-job.use
     PrintJobsGateway,
     ListPrintJobsUseCase,
     AcknowledgePrintJobUseCase,
+    GetPrintAgentPresenceUseCase,
   ],
   exports: [PrintJobService],
 })

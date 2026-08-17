@@ -84,6 +84,7 @@
       "ts"
     ],
     "moduleNameMapper": {
+      "^@config/(.*)$": "<rootDir>/config/$1",
       "^@modules/(.*)$": "<rootDir>/modules/$1",
       "^@shared/(.*)$": "<rootDir>/shared/$1"
     },

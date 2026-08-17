@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { AccountStatuses } from '../enums/account-confirmation-statuses';
+import { ThemePreference } from '../enums/theme-preference';
 import { IUserForInvitation } from './user-for-invitation';
 
 export type UserDocument = User & Document;
@@ -28,6 +29,9 @@ export class User implements IUserForInvitation {
 
   @Prop()
   phoneNumber?: string;
+
+  @Prop({ enum: ThemePreference, default: ThemePreference.SYSTEM })
+  themePreference: ThemePreference;
 
   createdAt: Date;
 

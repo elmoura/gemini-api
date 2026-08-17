@@ -10,3 +10,19 @@ export function buildBatchAddedIdempotencyKey(
 export function buildOrderTabPaidIdempotencyKey(orderTabId: string): string {
   return `${orderTabId}:${PrintJobTrigger.ORDER_TAB_PAID}`;
 }
+
+export function buildItemUpdatedIdempotencyKey(
+  orderTabId: string,
+  itemId: string,
+  changeId: string,
+): string {
+  return `${orderTabId}:${itemId}:${changeId}:${PrintJobTrigger.ITEM_UPDATED}`;
+}
+
+export function buildItemRemovedIdempotencyKey(
+  orderTabId: string,
+  itemId: string,
+  changeId: string,
+): string {
+  return `${orderTabId}:${itemId}:${changeId}:${PrintJobTrigger.ITEM_REMOVED}`;
+}

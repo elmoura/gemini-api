@@ -39,8 +39,15 @@ type AccountConfirmationOutput {
   lastName: String!
   email: String!
   phoneNumber: String
+  themePreference: ThemePreference!
   createdAt: DateTime!
   updatedAt: DateTime!
+}
+
+enum ThemePreference {
+  LIGHT
+  DARK
+  SYSTEM
 }
 
 type CreateUserInvitationOutput {
@@ -65,6 +72,7 @@ type LoginUserOutput {
   accountStatus: String!
   email: String!
   phoneNumber: String
+  themePreference: ThemePreference!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -77,12 +85,17 @@ type GetUserOutput {
   lastName: String!
   email: String!
   phoneNumber: String
+  themePreference: ThemePreference!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
 
 type SetUserLocationOutput {
   newAccessToken: String!
+}
+
+type UpdateUserPreferencesOutput {
+  themePreference: ThemePreference!
 }
 
 type Category {
@@ -351,6 +364,8 @@ type PrintJobObj {
 enum PrintJobTrigger {
   ITEMS_BATCH_ADDED
   ORDER_TAB_PAID
+  ITEM_UPDATED
+  ITEM_REMOVED
 }
 
 enum PrintStation {
@@ -362,6 +377,7 @@ enum PrintStation {
 
 enum PrintClientType {
   DESKTOP
+  MOBILE
   WAITER_APP
   DELIVERY
 }
@@ -381,6 +397,16 @@ scalar JSON
 type ListPrintJobsOutput {
   jobs: [PrintJobObj!]!
   totalCount: Float!
+}
+
+type PrintAgentConnectionObj {
+  station: PrintStation!
+  sourceDeviceId: String
+}
+
+type PrintAgentPresenceOutput {
+  online: Boolean!
+  agents: [PrintAgentConnectionObj!]!
 }
 
 type MenuObj {
@@ -436,6 +462,7 @@ type Query {
   getCurrentLocationShift: LocationShiftObj
   listLocationShifts(input: ListLocationShiftsInput!): ListLocationShiftsOutput!
   listPrintJobs(input: ListPrintJobsInput!): ListPrintJobsOutput!
+  printAgentPresence(input: PrintAgentPresenceInput!): PrintAgentPresenceOutput!
   getLocationMenus: [MenuObj!]!
   getMenuDetails(input: GetMenuDetailsInput!): MenuDetails!
 }
@@ -524,6 +551,10 @@ input ListPrintJobsInput {
   offset: Int! = 0
 }
 
+input PrintAgentPresenceInput {
+  station: PrintStation
+}
+
 input GetMenuDetailsInput {
   menuId: String!
 }
@@ -539,6 +570,7 @@ type Mutation {
   confirmAccount(input: AccountConfirmationInput!): AccountConfirmationOutput!
   setUserLocation(input: SetUserLocationInput!): SetUserLocationOutput!
   login(input: LoginUserInput!): LoginUserOutput!
+  updateUserPreferences(input: UpdateUserPreferencesInput!): UpdateUserPreferencesOutput!
   createOrganization(input: CreateOrganizationInput!): OrganizationObj!
   createOrganizationLocation(input: CreateOrganizationLocationInput!): OrganizationLocationObj!
   createCategory(input: CreateCategoryInput!): Category!
@@ -649,6 +681,10 @@ input SetUserLocationInput {
 input LoginUserInput {
   email: String!
   password: String!
+}
+
+input UpdateUserPreferencesInput {
+  themePreference: ThemePreference!
 }
 
 input CreateOrganizationInput {

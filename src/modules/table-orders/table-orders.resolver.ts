@@ -12,7 +12,10 @@ import { CreateTableOrderInput } from './usecases/types/create-table-order.input
 import { ListTableOrdersOutput } from './usecases/types/list-table-orders.output';
 import { ListTableOrdersUseCase } from './usecases/list-table-orders.usecase';
 import { ListTableOrdersInput } from './usecases/types/list-table-orders.input';
-import { OrderTabObj, TableOrderObj } from './usecases/types/table-order.object';
+import {
+  OrderTabObj,
+  TableOrderObj,
+} from './usecases/types/table-order.object';
 import {
   RemoveOrderTabItemInput,
   RemoveTableOrderItemInput,
@@ -38,6 +41,10 @@ import {
 } from './usecases/types/find-order-tab.input';
 import { UpdateOrderTabItemUseCase } from './usecases/update-order-tab-item.usecase';
 import { UpdateOrderTabItemInput } from './usecases/types/update-order-tab-item.input';
+import {
+  ClientSource,
+  ClientSourceData,
+} from '@modules/print-jobs/decorators/client-source.decorator';
 
 @Resolver()
 @UseGuards(AuthGuard)
@@ -73,10 +80,12 @@ export class TableOrdersResolver {
   async createOrderTab(
     @Args('input') input: CreateOrderTabInput,
     @CurrentUser() currentUserData: CurrentUserData,
+    @ClientSource() clientSource: ClientSourceData,
   ): Promise<OrderTabObj> {
     return this.createOrderTabUseCase.execute({
       ...input,
       ...currentUserData,
+      source: clientSource,
     });
   }
 
@@ -84,11 +93,13 @@ export class TableOrdersResolver {
   addOrderTabItem(
     @Args('input') input: AddOrderTabItemInput,
     @CurrentUser() currentUserData: CurrentUserData,
+    @ClientSource() clientSource: ClientSourceData,
   ): Promise<OrderTabObj> {
     return this.addOrderTabItemUseCase.execute({
       ...input,
       organizationId: currentUserData.organizationId,
       locationId: currentUserData.locationId,
+      source: clientSource,
     } as AddOrderTabItemInput & { locationId: string });
   }
 
@@ -96,10 +107,12 @@ export class TableOrdersResolver {
   updateOrderTabItem(
     @Args('input') input: UpdateOrderTabItemInput,
     @CurrentUser() currentUserData: CurrentUserData,
+    @ClientSource() clientSource: ClientSourceData,
   ): Promise<OrderTabObj> {
     return this.updateOrderTabItemUseCase.execute({
       ...input,
       ...currentUserData,
+      source: clientSource,
     });
   }
 
@@ -107,10 +120,12 @@ export class TableOrdersResolver {
   async removeOrderTabItem(
     @Args('input') input: RemoveOrderTabItemInput,
     @CurrentUser() currentUserData: CurrentUserData,
+    @ClientSource() clientSource: ClientSourceData,
   ): Promise<OrderTabObj> {
     return this.removeOrderTabItemUseCase.execute({
       ...input,
       organizationId: currentUserData.organizationId,
+      source: clientSource,
     });
   }
 
@@ -118,10 +133,12 @@ export class TableOrdersResolver {
   async finishOrderTab(
     @Args('input') input: FinishOrderTabInput,
     @CurrentUser() currentUserData: CurrentUserData,
+    @ClientSource() clientSource: ClientSourceData,
   ): Promise<OrderTabObj> {
     return this.finishOrderTabUseCase.execute({
       ...input,
       organizationId: currentUserData.organizationId,
+      source: clientSource,
     });
   }
 

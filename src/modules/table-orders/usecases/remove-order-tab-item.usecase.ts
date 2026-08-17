@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
+import { randomUUID } from 'crypto';
 import { IBaseUseCase } from '@shared/interfaces/base-use-case';
 import { RemoveOrderTabItemInput } from './types/remove-order-tab-item.input';
 import { OrderTab } from '../entities/order-tab';
@@ -10,6 +11,7 @@ import { OrderTabStatuses } from '../enums/order-tab-statuses';
 import { InvalidItemId } from '../errors/invalid-item-id';
 import { calculateOrderTabPrice } from '../utils/calculate-order-tab-price';
 import { syncTableOrderFromTabs } from './helpers/sync-table-order-from-tabs';
+import { PrintJobService } from '@modules/print-jobs/services/print-job.service';
 
 @Injectable()
 export class RemoveOrderTabItemUseCase
@@ -18,6 +20,8 @@ export class RemoveOrderTabItemUseCase
   constructor(
     private orderTabDataSource: OrderTabDataSource,
     private tableOrderDataSource: TableOrderDataSource,
+    @Inject(forwardRef(() => PrintJobService))
+    private printJobService: PrintJobService,
   ) {}
 
   async execute(input: RemoveOrderTabItemInput): Promise<OrderTab> {
@@ -48,10 +52,14 @@ export class RemoveOrderTabItemUseCase
     if (itemToRemoveIndex < 0) throw new InvalidItemId();
 
     const updatedItems = [...orderTab.items];
+    let removedQuantity: number;
+    let remainingQuantity: number;
 
     if (!input.quantity || input.quantity >= orderItem.quantity) {
       await this.orderTabDataSource.removeItem(orderTabId, itemId);
       updatedItems.splice(itemToRemoveIndex, 1);
+      removedQuantity = orderItem.quantity;
+      remainingQuantity = 0;
     } else {
       const targetQuantity = orderItem.quantity - input.quantity;
       const targetPrice = orderItem.productPrice * targetQuantity;
@@ -68,6 +76,8 @@ export class RemoveOrderTabItemUseCase
       );
 
       updatedItems[itemToRemoveIndex] = updatedOrderItem;
+      removedQuantity = input.quantity;
+      remainingQuantity = targetQuantity;
     }
 
     const tabForPricing = { ...orderTab, items: updatedItems };
@@ -94,6 +104,26 @@ export class RemoveOrderTabItemUseCase
       this.tableOrderDataSource,
     );
 
-    return this.orderTabDataSource.findById(orderTabId, organizationId);
+    const finalTab = await this.orderTabDataSource.findById(
+      orderTabId,
+      organizationId,
+    );
+
+    this.printJobService.enqueueItemRemovedJob({
+      orderTab: finalTab,
+      itemId,
+      item: {
+        quantity: orderItem.quantity,
+        productName: orderItem.productName,
+        observation: orderItem.observation,
+        complements: orderItem.complements,
+      },
+      removedQuantity,
+      remainingQuantity,
+      changeId: randomUUID(),
+      source: input.source,
+    });
+
+    return finalTab;
   }
 }

@@ -82,7 +82,9 @@ export class AddOrderTabItemUseCase
           );
         }
 
-        const product = await this.productDataSource.findById(newItem.productId);
+        const product = await this.productDataSource.findById(
+          newItem.productId,
+        );
 
         if (!product || product.organizationId !== organizationId) {
           throw new InvalidProductId(newItem.productId);
@@ -144,6 +146,7 @@ export class AddOrderTabItemUseCase
       orderTab: finalTab,
       batchId,
       affectedItems,
+      source: input.source,
     });
 
     return finalTab;

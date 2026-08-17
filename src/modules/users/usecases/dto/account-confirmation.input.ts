@@ -14,7 +14,8 @@ type AlreadySavedUserFields =
   | keyof IBaseCollection
   | 'accountStatus'
   | 'organizationId'
-  | 'email';
+  | 'email'
+  | 'themePreference';
 
 @InputType()
 export class AccountConfirmationInput
