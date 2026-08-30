@@ -28,6 +28,7 @@ describe('StartLocationShiftUseCase', () => {
     const result = await useCase.execute({
       userId: 'user-id',
       organizationId: 'org-id',
+      roles: [],
       locationId: 'location-id',
     });
 
@@ -53,6 +54,7 @@ describe('StartLocationShiftUseCase', () => {
       useCase.execute({
         userId: 'user-id',
         organizationId: 'org-id',
+        roles: [],
         locationId: 'location-id',
       }),
     ).rejects.toBeInstanceOf(LocationShiftAlreadyOpenException);
@@ -65,6 +67,7 @@ describe('StartLocationShiftUseCase', () => {
       useCase.execute({
         userId: 'user-id',
         organizationId: 'org-id',
+        roles: [],
         locationId: undefined,
       }),
     ).rejects.toBeInstanceOf(UnauthorizedException);

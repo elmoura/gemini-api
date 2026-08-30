@@ -40,6 +40,7 @@ type AccountConfirmationOutput {
   email: String!
   phoneNumber: String
   themePreference: ThemePreference!
+  roles: [OrganizationRole!]!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -50,13 +51,28 @@ enum ThemePreference {
   SYSTEM
 }
 
-type CreateUserInvitationOutput {
+enum OrganizationRole {
+  ADMIN
+  MANAGER
+  CASHIER
+  WAITER
+}
+
+type InvitationObject {
   _id: String!
-  organizationId: String!
   email: String!
-  accountStatus: String!
+  roles: [OrganizationRole!]!
+  status: InvitationStatus!
+  expiresAt: DateTime!
+  invitedByUserId: String
   createdAt: DateTime!
-  updatedAt: DateTime!
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  CANCELLED
+  EXPIRED
 }
 
 type UserAuthData {
@@ -73,6 +89,7 @@ type LoginUserOutput {
   email: String!
   phoneNumber: String
   themePreference: ThemePreference!
+  roles: [OrganizationRole!]!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -86,6 +103,7 @@ type GetUserOutput {
   email: String!
   phoneNumber: String
   themePreference: ThemePreference!
+  roles: [OrganizationRole!]!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -96,6 +114,13 @@ type SetUserLocationOutput {
 
 type UpdateUserPreferencesOutput {
   themePreference: ThemePreference!
+}
+
+type ListOrganizationUsersOutput {
+  data: [GetUserOutput!]!
+  page: Int!
+  limit: Int!
+  hasNextPage: Boolean!
 }
 
 type Category {
@@ -447,7 +472,9 @@ type Query {
   findComplementGroup(input: FindComplementGroupInput!): ComplementGroupObj!
   listComplements(input: ListComplementsInput!): [ComplementObj!]!
   findComplement(input: FindComplementInput!): ComplementObj!
+  listInvitations(input: ListInvitationsInput!): [InvitationObject!]!
   me: GetUserOutput!
+  listOrganizationUsers(input: ListOrganizationUsersInput!): ListOrganizationUsersOutput!
   getOrganization(input: GetOrganizationInput!): OrganizationObj!
   listOrganizationLocations(input: ListOrganizationLocationsInput!): [OrganizationLocationObj!]!
   listCategories(input: ListCategoriesInput!): ListCategoriesOutput!
@@ -492,6 +519,16 @@ input ListComplementsInput {
 
 input FindComplementInput {
   _id: String!
+}
+
+input ListInvitationsInput {
+  status: InvitationStatus
+}
+
+input ListOrganizationUsersInput {
+  search: String
+  page: Int = 1
+  limit: Int = 20
 }
 
 input GetOrganizationInput {
@@ -566,11 +603,14 @@ type Mutation {
   updateComplementGroup(input: UpdateComplementGroupInput!): ComplementGroupObj!
   createComplement(input: CreateComplementInput!): ComplementObj!
   updateComplement(input: UpdateComplementInput!): ComplementObj!
-  createUserInvitation(input: CreateUserInvitationInput!): CreateUserInvitationOutput!
+  createUserInvitation(input: CreateUserInvitationInput!): InvitationObject!
+  resendInvitation(input: ResendInvitationInput!): InvitationObject!
+  cancelInvitation(input: CancelInvitationInput!): InvitationObject!
   confirmAccount(input: AccountConfirmationInput!): AccountConfirmationOutput!
   setUserLocation(input: SetUserLocationInput!): SetUserLocationOutput!
   login(input: LoginUserInput!): LoginUserOutput!
   updateUserPreferences(input: UpdateUserPreferencesInput!): UpdateUserPreferencesOutput!
+  updateUserRoles(input: UpdateUserRolesInput!): GetUserOutput!
   createOrganization(input: CreateOrganizationInput!): OrganizationObj!
   createOrganizationLocation(input: CreateOrganizationLocationInput!): OrganizationLocationObj!
   createCategory(input: CreateCategoryInput!): Category!
@@ -664,10 +704,19 @@ input UpdateComplementInput {
 
 input CreateUserInvitationInput {
   email: String!
+  roles: [OrganizationRole!]!
+}
+
+input ResendInvitationInput {
+  invitationId: String!
+}
+
+input CancelInvitationInput {
+  invitationId: String!
 }
 
 input AccountConfirmationInput {
-  _id: String!
+  token: String!
   firstName: String!
   lastName: String!
   phoneNumber: String
@@ -685,6 +734,11 @@ input LoginUserInput {
 
 input UpdateUserPreferencesInput {
   themePreference: ThemePreference!
+}
+
+input UpdateUserRolesInput {
+  userId: String!
+  roles: [OrganizationRole!]!
 }
 
 input CreateOrganizationInput {

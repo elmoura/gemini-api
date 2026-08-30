@@ -1,15 +1,13 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { ArrayNotEmpty, IsEmail, IsEnum } from 'class-validator';
-import { Invitation } from '../../entities/invitation';
+import { ArrayNotEmpty, IsEnum, Validate } from 'class-validator';
+import { IsObjectId } from '@shared/validations/is-object-id';
 import { OrganizationRole } from '../../enums/organization-role';
 
 @InputType()
-export class CreateUserInvitationInput
-  implements Pick<Invitation, 'email' | 'roles'>
-{
+export class UpdateUserRolesInput {
   @Field()
-  @IsEmail()
-  email: string;
+  @Validate(IsObjectId)
+  userId: string;
 
   @Field(() => [OrganizationRole])
   @ArrayNotEmpty()

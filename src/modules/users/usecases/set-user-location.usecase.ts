@@ -29,6 +29,7 @@ export class SetUserLocationUseCase {
       locationId,
       userId: currentUserData.userId,
       organizationId: currentUserData.organizationId,
+      roles: currentUserData.roles,
     });
 
     return { newAccessToken: accessToken };

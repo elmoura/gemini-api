@@ -1,10 +1,12 @@
 import { Environment } from '@config/env';
 import { Injectable } from '@nestjs/common';
 import { sign, verify, Jwt, decode, JwtPayload } from 'jsonwebtoken';
+import { OrganizationRole } from '@modules/users/enums/organization-role';
 
 export interface GenerateTokenPayload {
   userId: string;
   organizationId: string;
+  roles: OrganizationRole[];
   locationId?: string;
 }
 

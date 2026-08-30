@@ -22,6 +22,7 @@ describe('ListAvailableLocationTablesUseCase', () => {
     organizationId: 'org-id',
     locationId: 'location-id',
     userId: 'user-id',
+    roles: [],
   };
 
   beforeEach(() => {

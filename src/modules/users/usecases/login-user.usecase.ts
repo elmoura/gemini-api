@@ -38,6 +38,7 @@ export class LoginUserUseCase
     const tokenPayload: Omit<GenerateTokenPayload, 'locationId'> = {
       userId: user._id,
       organizationId: user.organizationId,
+      roles: user.roles,
     };
 
     const { accessToken } = this.tokenService.generate(tokenPayload);

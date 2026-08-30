@@ -1,5 +1,4 @@
 import {
-  Validate,
   IsString,
   MinLength,
   IsOptional,
@@ -7,23 +6,14 @@ import {
 } from 'class-validator';
 import { Field, InputType } from '@nestjs/graphql';
 import { User } from '@modules/users/entities/user';
-import { IBaseCollection } from '@shared/interfaces/base-collection';
-import { IsObjectId } from '@shared/validations/is-object-id';
-
-type AlreadySavedUserFields =
-  | keyof IBaseCollection
-  | 'accountStatus'
-  | 'organizationId'
-  | 'email'
-  | 'themePreference';
 
 @InputType()
 export class AccountConfirmationInput
-  implements Omit<User, AlreadySavedUserFields>
+  implements Pick<User, 'firstName' | 'lastName' | 'phoneNumber' | 'password'>
 {
   @Field()
-  @Validate(IsObjectId)
-  _id: string;
+  @IsString()
+  token: string;
 
   @Field()
   @IsString()

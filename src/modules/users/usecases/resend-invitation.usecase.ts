@@ -6,28 +6,26 @@ import { Environment } from '@config/env';
 import { IBaseUseCase } from '@shared/interfaces/base-use-case';
 import { EmailService } from '@shared/services/email.service';
 import { IOrganizationData } from '@shared/interfaces/organization-data';
-import { UserDataSource } from '../datasources/user.datasource';
 import { InvitationDataSource } from '../datasources/invitation.datasource';
 import { InvitationStatus } from '../entities/invitation';
-import { CreateUserInvitationInput } from './dto/create-user-invitation.input';
+import { ResendInvitationInput } from './dto/resend-invitation.input';
 import { InvitationObject } from './dto/invitation.object';
-import { UserAlreadyExistsError } from '../errors/user-already-exists';
-import { InvitationAlreadyPendingError } from '../errors/invitation-already-pending';
+import { InvitationNotFoundError } from '../errors/invitation-not-found';
+import { InvitationAlreadyUsedError } from '../errors/invitation-already-used';
+import { InvitationCancelledError } from '../errors/invitation-cancelled';
+import { InvitationExpiredError } from '../errors/invitation-expired';
 
 const INVITATION_EXPIRATION_MS = 7 * 24 * 60 * 60 * 1000;
 
-type CreateUserInvitationUseCaseInput = CreateUserInvitationInput &
-  IOrganizationData & { invitedByUserId?: string };
-
 @Injectable()
-export class CreateUserInvitationUseCase
-  implements IBaseUseCase<CreateUserInvitationUseCaseInput, InvitationObject>
+export class ResendInvitationUseCase
+  implements
+    IBaseUseCase<ResendInvitationInput & IOrganizationData, InvitationObject>
 {
   private readonly invitationTemplatePath: string;
 
   constructor(
     private emailService: EmailService,
-    private userDataSource: UserDataSource,
     private invitationDataSource: InvitationDataSource,
   ) {
     this.invitationTemplatePath = join(
@@ -40,47 +38,47 @@ export class CreateUserInvitationUseCase
   }
 
   async execute(
-    input: CreateUserInvitationUseCaseInput,
+    input: ResendInvitationInput & IOrganizationData,
   ): Promise<InvitationObject> {
-    const { email, roles, organizationId, invitedByUserId } = input;
+    const { invitationId, organizationId } = input;
 
-    const userExists = await this.userDataSource.findByEmail(email);
+    const invitation = await this.invitationDataSource.findById(
+      invitationId,
+      organizationId,
+    );
 
-    if (userExists) {
-      throw new UserAlreadyExistsError();
+    if (!invitation) {
+      throw new InvitationNotFoundError();
     }
 
-    const pendingInvitation =
-      await this.invitationDataSource.findPendingByOrgAndEmail(
-        organizationId,
-        email,
-      );
+    if (invitation.status === InvitationStatus.CANCELLED) {
+      throw new InvitationCancelledError();
+    }
 
-    if (pendingInvitation) {
-      throw new InvitationAlreadyPendingError();
+    if (invitation.status === InvitationStatus.ACCEPTED) {
+      throw new InvitationAlreadyUsedError();
+    }
+
+    if (invitation.status === InvitationStatus.EXPIRED) {
+      throw new InvitationExpiredError();
     }
 
     const token = randomBytes(32).toString('hex');
     const expiresAt = new Date(Date.now() + INVITATION_EXPIRATION_MS);
 
-    const invitation = await this.invitationDataSource.createOne({
-      organizationId,
-      email,
-      roles,
-      token,
-      status: InvitationStatus.PENDING,
-      expiresAt,
-      invitedByUserId,
-    });
+    const updatedInvitation = await this.invitationDataSource.updateOne(
+      invitationId,
+      { token, expiresAt },
+    );
 
     const invitationUrl = `${Environment.frontendUrl}/accept-invitation?token=${token}`;
 
     await this.emailService.sendMail({
-      to: email,
+      to: invitation.email,
       subject: 'Você foi convidado para o Chefin!',
       html: renderFile(this.invitationTemplatePath, { invitationUrl }),
     });
 
-    return invitation;
+    return updatedInvitation;
   }
 }

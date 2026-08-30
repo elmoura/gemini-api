@@ -51,6 +51,7 @@ describe('CreateTableOrderUseCase', () => {
         organizationId: 'org-id',
         locationId: 'location-id',
         userId: 'user-id',
+        roles: [],
       }),
     ).rejects.toBeInstanceOf(NoOpenLocationShiftException);
 
@@ -66,6 +67,7 @@ describe('CreateTableOrderUseCase', () => {
       organizationId: 'org-id',
       locationId: 'location-id',
       userId: 'user-id',
+      roles: [],
     });
 
     expect(tableOrderDataSource.createOne).toHaveBeenCalledWith(

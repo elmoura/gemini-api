@@ -73,6 +73,7 @@ describe('CreateOrderTabUseCase', () => {
       organizationId: 'org-1',
       locationId: 'loc-1',
       userId: 'user-1',
+      roles: [],
     });
 
     expect(orderTabDataSource.createOne).toHaveBeenCalledWith(
@@ -127,6 +128,7 @@ describe('CreateOrderTabUseCase', () => {
       organizationId: 'org-1',
       locationId: 'loc-1',
       userId: 'user-1',
+      roles: [],
     });
 
     expect(orderTabDataSource.createOne).toHaveBeenCalledWith(
@@ -144,6 +146,7 @@ describe('CreateOrderTabUseCase', () => {
         organizationId: 'org-1',
         locationId: 'loc-1',
         userId: 'user-1',
+        roles: [],
       }),
     ).rejects.toBeInstanceOf(NoOpenLocationShiftException);
 

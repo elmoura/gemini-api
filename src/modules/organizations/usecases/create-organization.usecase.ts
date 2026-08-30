@@ -6,6 +6,7 @@ import { CreateOrganizationInput } from './types/create-organization.input';
 import { CreateUserInvitationUseCase } from '@modules/users/usecases/create-user-invitation.usecase';
 import { UserDataSource } from '@modules/users/datasources/user.datasource';
 import { UserAlreadyExistsError } from '@modules/users/errors/user-already-exists';
+import { OrganizationRole } from '@modules/users/enums/organization-role';
 
 @Injectable()
 export class CreateOrganizationUseCase
@@ -33,6 +34,7 @@ export class CreateOrganizationUseCase
       await this.createUserInvitationUseCase.execute({
         organizationId,
         email: input.representantEmail,
+        roles: [OrganizationRole.ADMIN],
       });
 
     const businessRepresentantId = businessRepresentantData._id;
