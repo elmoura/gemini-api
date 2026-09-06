@@ -135,7 +135,7 @@ export class PrintJobService {
         orderTabSequence: params.orderTab.sequence,
         items: params.orderTab.items,
         pricing: params.orderTab.pricing,
-        payment: params.orderTab.payment,
+        payments: params.orderTab.payments,
         operatorName: params.source?.operatorName,
       });
 

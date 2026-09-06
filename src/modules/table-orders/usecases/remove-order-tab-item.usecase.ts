@@ -10,6 +10,7 @@ import { OrderTabNotUpdated } from '../errors/order-tab-not-updated';
 import { OrderTabStatuses } from '../enums/order-tab-statuses';
 import { InvalidItemId } from '../errors/invalid-item-id';
 import { calculateOrderTabPrice } from '../utils/calculate-order-tab-price';
+import { deriveOrderTabPaymentStatus } from '../utils/derive-order-tab-payment-status';
 import { syncTableOrderFromTabs } from './helpers/sync-table-order-from-tabs';
 import { PrintJobService } from '@modules/print-jobs/services/print-job.service';
 
@@ -86,15 +87,15 @@ export class RemoveOrderTabItemUseCase
     });
 
     await this.orderTabDataSource.updateOne(orderTabId, organizationId, {
-      payment: {
-        ...orderTab.payment,
-        total: pricing.total,
-      },
       pricing: {
         discount: pricing.discount,
         fees: pricing.fees,
         total: pricing.total,
       },
+      paymentStatus: deriveOrderTabPaymentStatus(
+        orderTab.payments,
+        pricing.total,
+      ),
     });
 
     await syncTableOrderFromTabs(

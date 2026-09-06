@@ -24,7 +24,7 @@ describe('RemoveOrderTabItemUseCase', () => {
       status: OrderTabStatuses.IN_ATTENDANCE,
       items: [{ ...orderItem }],
       pricing: { total: 30, discount: 0, fees: 0 },
-      payment: { total: 30 },
+      payments: [],
     };
   }
 

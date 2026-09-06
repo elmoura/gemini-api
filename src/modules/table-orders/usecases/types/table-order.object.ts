@@ -41,13 +41,14 @@ export class OrderPaymentInfo implements TableOrderPayment {
   @Field()
   paidAmount: number;
 
-  @Field(() => TableOrderPaymentStatuses)
-  paymentStatus: TableOrderPaymentStatuses;
+  /** Significativo só no `payment` consolidado de `TableOrder` — ver entity. */
+  @Field(() => TableOrderPaymentStatuses, { nullable: true })
+  paymentStatus?: TableOrderPaymentStatuses;
 
   @Field(() => PaymentMethods, { nullable: true })
   method?: PaymentMethods;
 
-  @Field()
+  @Field({ nullable: true })
   instalments?: number;
 }
 
@@ -141,8 +142,11 @@ export class OrderTabObj implements OrderTab {
   @Field(() => OrderPriceInfo)
   pricing: OrderPriceInfo;
 
-  @Field(() => OrderPaymentInfo)
-  payment: OrderPaymentInfo;
+  @Field(() => [OrderPaymentInfo])
+  payments: OrderPaymentInfo[];
+
+  @Field(() => TableOrderPaymentStatuses)
+  paymentStatus: TableOrderPaymentStatuses;
 
   @Field(() => [TableOrderItemObj])
   items: TableOrderItemObj[];

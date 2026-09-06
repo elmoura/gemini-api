@@ -14,6 +14,7 @@ import { OrderTabStatuses } from '../enums/order-tab-statuses';
 import { InvalidProductId } from '../errors/invalid-product-id';
 import { syncTableOrderFromTabs } from './helpers/sync-table-order-from-tabs';
 import { calculateOrderTabPrice } from '../utils/calculate-order-tab-price';
+import { deriveOrderTabPaymentStatus } from '../utils/derive-order-tab-payment-status';
 import { buildOrderTabItem } from '../utils/build-order-tab-item';
 import { areItemComplementsEqual } from '../utils/complements-fingerprint';
 import { calculateItemLineTotal } from '../utils/calculate-item-line-total';
@@ -118,10 +119,10 @@ export class AddOrderTabItemUseCase
         total: pricing.total,
         fees: pricing.fees,
       },
-      payment: {
-        ...tabWithNewItems.payment,
-        total: pricing.total,
-      },
+      paymentStatus: deriveOrderTabPaymentStatus(
+        tabWithNewItems.payments,
+        pricing.total,
+      ),
     });
 
     await syncTableOrderFromTabs(

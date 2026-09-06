@@ -18,6 +18,7 @@ import { OrderTabNotUpdated } from '../errors/order-tab-not-updated';
 import { OrderTabStatuses } from '../enums/order-tab-statuses';
 import { syncTableOrderFromTabs } from './helpers/sync-table-order-from-tabs';
 import { calculateOrderTabPrice } from '../utils/calculate-order-tab-price';
+import { deriveOrderTabPaymentStatus } from '../utils/derive-order-tab-payment-status';
 import { buildOrderTabItem } from '../utils/build-order-tab-item';
 import { areItemComplementsEqual } from '../utils/complements-fingerprint';
 import { PrintJobService } from '@modules/print-jobs/services/print-job.service';
@@ -130,10 +131,10 @@ export class UpdateOrderTabItemUseCase
           total: pricing.total,
           fees: pricing.fees,
         },
-        payment: {
-          ...tabWithUpdatedItem.payment,
-          total: pricing.total,
-        },
+        paymentStatus: deriveOrderTabPaymentStatus(
+          tabWithUpdatedItem.payments,
+          pricing.total,
+        ),
       },
     );
 

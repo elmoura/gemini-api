@@ -250,9 +250,9 @@ type OrderPriceInfo {
 type OrderPaymentInfo {
   total: Float!
   paidAmount: Float!
-  paymentStatus: TableOrderPaymentStatuses!
+  paymentStatus: TableOrderPaymentStatuses
   method: PaymentMethods
-  instalments: Float!
+  instalments: Float
 }
 
 enum TableOrderPaymentStatuses {
@@ -303,7 +303,8 @@ type OrderTabObj {
   sequence: Float!
   status: OrderTabStatuses!
   pricing: OrderPriceInfo!
-  payment: OrderPaymentInfo!
+  payments: [OrderPaymentInfo!]!
+  paymentStatus: TableOrderPaymentStatuses!
   items: [TableOrderItemObj!]!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -339,6 +340,67 @@ type ListTableOrdersOutput {
   offset: Float!
   ordersCount: Float!
   orders: [TableOrderObj!]!
+}
+
+type CashMovementObj {
+  _id: String!
+  cashRegisterId: String!
+  organizationId: String!
+  locationId: String!
+  type: CashMovementType!
+  amount: Float!
+  reason: String
+  registeredByUserId: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum CashMovementType {
+  WITHDRAWAL
+  SUPPLY
+}
+
+type CashRegisterPaymentMethodTotalObj {
+  method: PaymentMethods!
+  total: Float!
+  count: Int!
+}
+
+type CashRegisterPaymentSummaryObj {
+  totalCashPayments: Float!
+  totalNonCashPayments: Float!
+  byMethod: [CashRegisterPaymentMethodTotalObj!]!
+  paymentsCount: Int!
+}
+
+type CashRegisterObj {
+  _id: String!
+  organizationId: String!
+  locationId: String!
+  status: CashRegisterStatus!
+  openedByUserId: String!
+  openingAmount: Float!
+  closedByUserId: String
+  closingAmount: Float
+  expectedClosingAmount: Float
+  difference: Float
+  summary: CashRegisterPaymentSummaryObj!
+  startedAt: DateTime!
+  finishedAt: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum CashRegisterStatus {
+  OPEN
+  CLOSED
+}
+
+type ListCashRegistersOutput {
+  limit: Float!
+  offset: Float!
+  cashRegistersCount: Float!
+  cashRegisters: [CashRegisterObj!]!
 }
 
 type LocationShiftObj {
@@ -488,6 +550,9 @@ type Query {
   listOrderTabs(input: ListOrderTabsInput!): [OrderTabObj!]!
   getCurrentLocationShift: LocationShiftObj
   listLocationShifts(input: ListLocationShiftsInput!): ListLocationShiftsOutput!
+  getCurrentCashRegister: CashRegisterObj
+  listCashRegisters(input: ListCashRegistersInput!): ListCashRegistersOutput!
+  listCashMovements(input: ListCashMovementsInput!): [CashMovementObj!]!
   listPrintJobs(input: ListPrintJobsInput!): ListPrintJobsOutput!
   printAgentPresence(input: PrintAgentPresenceInput!): PrintAgentPresenceOutput!
   getLocationMenus: [MenuObj!]!
@@ -582,6 +647,19 @@ input ListLocationShiftsInput {
   finishedAtTo: DateTime
 }
 
+input ListCashRegistersInput {
+  limit: Float
+  offset: Float
+  startedAtFrom: DateTime
+  startedAtTo: DateTime
+  finishedAtFrom: DateTime
+  finishedAtTo: DateTime
+}
+
+input ListCashMovementsInput {
+  cashRegisterId: ID!
+}
+
 input ListPrintJobsInput {
   status: PrintJobStatus
   limit: Int! = 20
@@ -625,11 +703,15 @@ type Mutation {
   updateOrderTabItem(input: UpdateOrderTabItemInput!): OrderTabObj!
   removeOrderTabItem(input: RemoveOrderTabItemInput!): OrderTabObj!
   finishOrderTab(input: FinishOrderTabInput!): OrderTabObj!
+  addOrderTabPayment(input: AddOrderTabPaymentInput!): OrderTabObj!
   finishTableOrder(input: FinishTableOrderInput!): TableOrderObj!
   addTableOrderItem(input: AddTableOrderItemInput!): TableOrderObj!
   removeTableOrderItem(input: RemoveTableOrderItemInput!): TableOrderObj!
   startLocationShift: LocationShiftObj!
   finishLocationShift: LocationShiftObj!
+  openCashRegister(input: OpenCashRegisterInput!): CashRegisterObj!
+  closeCashRegister(input: CloseCashRegisterInput!): CashRegisterObj!
+  registerCashMovement(input: RegisterCashMovementInput!): CashMovementObj!
   acknowledgePrintJob(input: AcknowledgePrintJobInput!): PrintJobObj!
   createMenu(input: CreateMenuInput!): MenuObj!
   updateMenu(input: UpdateMenuInput!): MenuObj!
@@ -838,13 +920,13 @@ input RemoveOrderTabItemInput {
 input FinishOrderTabInput {
   orderTabId: String!
   payServiceTax: Boolean!
-  payment: TableOrderPaymentInput!
 }
 
-input TableOrderPaymentInput {
-  instalments: Float!
+input AddOrderTabPaymentInput {
+  orderTabId: String!
   method: PaymentMethods!
-  paymentStatus: TableOrderPaymentStatuses!
+  amount: Float!
+  instalments: Int
 }
 
 input FinishTableOrderInput {
@@ -860,6 +942,20 @@ input RemoveTableOrderItemInput {
   tableOrderId: String!
   itemId: String!
   quantity: Float
+}
+
+input OpenCashRegisterInput {
+  openingAmount: Float!
+}
+
+input CloseCashRegisterInput {
+  closingAmount: Float!
+}
+
+input RegisterCashMovementInput {
+  type: CashMovementType!
+  amount: Float!
+  reason: String
 }
 
 input AcknowledgePrintJobInput {

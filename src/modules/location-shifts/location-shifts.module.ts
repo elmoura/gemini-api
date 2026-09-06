@@ -1,10 +1,8 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from '@modules/auth/auth.module';
-import {
-  LocationShift,
-  LocationShiftSchema,
-} from './entities/location-shift';
+import { CashRegistersModule } from '@modules/cash-registers/cash-registers.module';
+import { LocationShift, LocationShiftSchema } from './entities/location-shift';
 import { LocationShiftDataSource } from './datasources/location-shift.datasource';
 import { LocationShiftsResolver } from './location-shifts.resolver';
 import { StartLocationShiftUseCase } from './usecases/start-location-shift.usecase';
@@ -15,6 +13,7 @@ import { ListLocationShiftsUseCase } from './usecases/list-location-shifts.useca
 @Module({
   imports: [
     AuthModule,
+    CashRegistersModule,
     MongooseModule.forFeature([
       { name: LocationShift.name, schema: LocationShiftSchema },
     ]),

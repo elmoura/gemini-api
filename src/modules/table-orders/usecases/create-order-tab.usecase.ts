@@ -9,7 +9,7 @@ import { IBaseUseCase } from '@shared/interfaces/base-use-case';
 import { CurrentUserData } from '@shared/decorators/current-user';
 import { CreateOrderTabInput } from './types/create-order-tab.input';
 import { OrderTab } from '../entities/order-tab';
-import { TableOrderPayment, TableOrderPricing } from '../entities/table-order';
+import { TableOrderPricing } from '../entities/table-order';
 import { TableOrderItem } from '../entities/table-order-item';
 import { TableOrderDataSource } from '../datasources/table-order.datasource';
 import { OrderTabDataSource } from '../datasources/order-tab.datasource';
@@ -79,12 +79,6 @@ export class CreateOrderTabUseCase
 
     let items: TableOrderItem[] = [];
     let pricing: TableOrderPricing = { total: 0, discount: 0, fees: 0 };
-    let payment: TableOrderPayment = {
-      total: 0,
-      paidAmount: 0,
-      instalments: 0,
-      paymentStatus: TableOrderPaymentStatuses.PENDING,
-    };
 
     if (input.items.length > 0) {
       const productIds = input.items.map((item) => item.productId);
@@ -113,7 +107,6 @@ export class CreateOrderTabUseCase
           });
         }),
       );
-      payment = this.formatPaymentInfo(items);
       pricing = this.formatPricingInfo(items);
     }
 
@@ -125,7 +118,8 @@ export class CreateOrderTabUseCase
       status: OrderTabStatuses.IN_ATTENDANCE,
       items,
       pricing,
-      payment,
+      payments: [],
+      paymentStatus: TableOrderPaymentStatuses.PENDING,
     });
 
     await this.tableOrderDataSource.pushTabId(
@@ -168,17 +162,6 @@ export class CreateOrderTabUseCase
     }
 
     return finalTab;
-  }
-
-  private formatPaymentInfo(items: TableOrderItem[]): TableOrderPayment {
-    const total = items.reduce((accum, item) => accum + item.total, 0);
-
-    return {
-      total,
-      paidAmount: 0,
-      instalments: 0,
-      paymentStatus: TableOrderPaymentStatuses.PENDING,
-    };
   }
 
   private formatPricingInfo(items: TableOrderItem[]): TableOrderPricing {

@@ -14,7 +14,7 @@ import { InvitationObject } from './dto/invitation.object';
 import { UserAlreadyExistsError } from '../errors/user-already-exists';
 import { InvitationAlreadyPendingError } from '../errors/invitation-already-pending';
 
-const INVITATION_EXPIRATION_MS = 7 * 24 * 60 * 60 * 1000;
+const INVITATION_EXPIRATION_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 
 type CreateUserInvitationUseCaseInput = CreateUserInvitationInput &
   IOrganizationData & { invitedByUserId?: string };

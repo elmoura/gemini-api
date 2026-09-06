@@ -81,9 +81,8 @@ describe('CreateOrderTabUseCase', () => {
         sequence: 1,
         items: [],
         status: OrderTabStatuses.IN_ATTENDANCE,
-        payment: expect.objectContaining({
-          paymentStatus: TableOrderPaymentStatuses.PENDING,
-        }),
+        payments: [],
+        paymentStatus: TableOrderPaymentStatuses.PENDING,
       }),
     );
     expect(tableOrderDataSource.pushTabId).toHaveBeenCalledWith(
@@ -104,12 +103,8 @@ describe('CreateOrderTabUseCase', () => {
         _id: 'tab-existing',
         sequence: 1,
         pricing: { total: 10, discount: 0, fees: 0 },
-        payment: {
-          total: 10,
-          paidAmount: 0,
-          paymentStatus: TableOrderPaymentStatuses.PENDING,
-          instalments: 0,
-        },
+        payments: [],
+        paymentStatus: TableOrderPaymentStatuses.PENDING,
         status: OrderTabStatuses.IN_ATTENDANCE,
       },
     ]);

@@ -31,6 +31,8 @@ import { CreateOrderTabInput } from './usecases/types/create-order-tab.input';
 import { AddOrderTabItemUseCase } from './usecases/add-order-tab-item.usecase';
 import { RemoveOrderTabItemUseCase } from './usecases/remove-order-tab-item.usecase';
 import { FinishOrderTabUseCase } from './usecases/finish-order-tab.usecase';
+import { AddOrderTabPaymentUseCase } from './usecases/add-order-tab-payment.usecase';
+import { AddOrderTabPaymentInput } from './usecases/types/add-order-tab-payment.input';
 import { FindTableOrderUseCase } from './usecases/find-table-order.usecase';
 import { FindOrderTabUseCase } from './usecases/find-order-tab.usecase';
 import { ListOrderTabsUseCase } from './usecases/list-order-tabs.usecase';
@@ -56,6 +58,7 @@ export class TableOrdersResolver {
     private addOrderTabItemUseCase: AddOrderTabItemUseCase,
     private removeOrderTabItemUseCase: RemoveOrderTabItemUseCase,
     private finishOrderTabUseCase: FinishOrderTabUseCase,
+    private addOrderTabPaymentUseCase: AddOrderTabPaymentUseCase,
     private finishTableOrderUseCase: FinishTableOrderUseCase,
     private findTableOrderUseCase: FindTableOrderUseCase,
     private findOrderTabUseCase: FindOrderTabUseCase,
@@ -139,6 +142,18 @@ export class TableOrdersResolver {
       ...input,
       organizationId: currentUserData.organizationId,
       source: clientSource,
+    });
+  }
+
+  @Mutation(() => OrderTabObj)
+  addOrderTabPayment(
+    @Args('input') input: AddOrderTabPaymentInput,
+    @CurrentUser() currentUserData: CurrentUserData,
+  ): Promise<OrderTabObj> {
+    return this.addOrderTabPaymentUseCase.execute({
+      ...input,
+      organizationId: currentUserData.organizationId,
+      locationId: currentUserData.locationId,
     });
   }
 

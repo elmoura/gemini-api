@@ -1,11 +1,6 @@
 import { OrderTab } from '../entities/order-tab';
-import {
-  TableOrderPayment,
-  TableOrderPricing,
-} from '../entities/table-order';
-import {
-  TableOrderPaymentStatuses,
-} from '../enums/table-order-statuses';
+import { TableOrderPayment, TableOrderPricing } from '../entities/table-order';
+import { TableOrderPaymentStatuses } from '../enums/table-order-statuses';
 import { OrderTabStatuses } from '../enums/order-tab-statuses';
 
 type DerivePaymentStatusInput = {
@@ -26,13 +21,10 @@ export function derivePaymentStatus({
   const hasOpenTabWithBalance = tabs.some(
     (tab) =>
       tab.status === OrderTabStatuses.IN_ATTENDANCE &&
-      (tab.payment.paidAmount ?? 0) < tab.pricing.total,
+      tab.paymentStatus !== TableOrderPaymentStatuses.PAID,
   );
 
-  if (
-    paidAmount > 0 &&
-    (paidAmount < orderTotal || hasOpenTabWithBalance)
-  ) {
+  if (paidAmount > 0 && (paidAmount < orderTotal || hasOpenTabWithBalance)) {
     return TableOrderPaymentStatuses.PARTIALLY_PAID;
   }
 
@@ -62,7 +54,11 @@ export function consolidateTableOrderFromTabs(tabs: OrderTab[]): {
     fees: sum(tabs.map((tab) => tab.pricing.fees ?? 0)),
   };
 
-  const paidAmount = sum(tabs.map((tab) => tab.payment.paidAmount ?? 0));
+  const paidAmount = sum(
+    tabs.map((tab) =>
+      sum(tab.payments.map((payment) => payment.paidAmount ?? 0)),
+    ),
+  );
 
   const paymentStatus = derivePaymentStatus({
     orderTotal: pricing.total,
@@ -78,6 +74,11 @@ export function consolidateTableOrderFromTabs(tabs: OrderTab[]): {
       paymentStatus,
       instalments: 0,
       method: undefined,
+      // NUNCA propagar o carimbo de caixa para o pagamento DERIVADO da mesa:
+      // a apuração de caixa lê exclusivamente `order_tabs`; se `table_orders`
+      // também carregasse o id, tudo seria contado duas vezes (ADR-2).
+      cashRegisterId: undefined,
+      paidAt: undefined,
     },
   };
 }

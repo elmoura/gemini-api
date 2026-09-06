@@ -47,12 +47,14 @@ describe('PrintJobService', () => {
       },
     ],
     pricing: { total: 20, discount: 0, fees: 0 },
-    payment: {
-      total: 20,
-      paidAmount: 20,
-      paymentStatus: TableOrderPaymentStatuses.PAID,
-      instalments: 1,
-    },
+    payments: [
+      {
+        total: 20,
+        paidAmount: 20,
+        instalments: 1,
+      },
+    ],
+    paymentStatus: TableOrderPaymentStatuses.PAID,
   };
 
   beforeEach(() => {

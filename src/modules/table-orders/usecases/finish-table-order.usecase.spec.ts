@@ -40,12 +40,8 @@ describe('FinishTableOrderUseCase', () => {
       {
         status: OrderTabStatuses.FINISHED,
         pricing: { total: 0, discount: 0, fees: 0 },
-        payment: {
-          total: 0,
-          paidAmount: 0,
-          paymentStatus: TableOrderPaymentStatuses.PAID,
-          instalments: 0,
-        },
+        payments: [],
+        paymentStatus: TableOrderPaymentStatuses.PAID,
       },
     ]);
   });
@@ -74,12 +70,8 @@ describe('FinishTableOrderUseCase', () => {
       {
         status: OrderTabStatuses.FINISHED,
         pricing: { total: 50, discount: 0, fees: 0 },
-        payment: {
-          total: 50,
-          paidAmount: 0,
-          paymentStatus: TableOrderPaymentStatuses.PENDING,
-          instalments: 0,
-        },
+        payments: [],
+        paymentStatus: TableOrderPaymentStatuses.PENDING,
       },
     ]);
 

@@ -23,7 +23,7 @@ describe('UpdateOrderTabItemUseCase', () => {
     status: OrderTabStatuses.IN_ATTENDANCE,
     items: [existingItem],
     pricing: { total: 10, discount: 0, fees: 0 },
-    payment: { total: 10 },
+    payments: [],
   };
 
   const orderTabDataSource = {

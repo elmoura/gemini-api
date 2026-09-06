@@ -5,6 +5,7 @@ import { TableOrderDataSource } from '../datasources/table-order.datasource';
 import { FinishOrderTabInput } from './types/finish-order-tab.input';
 import { OrderTabNotFoundException } from '../errors/order-tab-not-found';
 import { OrderTabNotUpdated } from '../errors/order-tab-not-updated';
+import { OrderTabNotFullyPaidException } from '../errors/order-tab-not-fully-paid';
 import { OrderTabStatuses } from '../enums/order-tab-statuses';
 import { TableOrderPaymentStatuses } from '../enums/table-order-statuses';
 import { syncTableOrderFromTabs } from './helpers/sync-table-order-from-tabs';
@@ -33,6 +34,12 @@ export class FinishOrderTabUseCase {
       );
     }
 
+    // Gate financeiro migrou para addOrderTabPayment (B2) — aqui só se
+    // confere que a comanda já foi paga integralmente via payments[].
+    if (tab.paymentStatus !== TableOrderPaymentStatuses.PAID) {
+      throw new OrderTabNotFullyPaidException();
+    }
+
     let totalTabPrice = tab.pricing.total;
     const serviceTax = input.payServiceTax ? totalTabPrice * 0.1 : 0;
 
@@ -49,13 +56,6 @@ export class FinishOrderTabUseCase {
           ...tab.pricing,
           fees: serviceTax,
           total: totalTabPrice,
-        },
-        payment: {
-          instalments: input.payment.instalments,
-          method: input.payment.method,
-          paidAmount: totalTabPrice,
-          total: totalTabPrice,
-          paymentStatus: TableOrderPaymentStatuses.PAID,
         },
       },
     );

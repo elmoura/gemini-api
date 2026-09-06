@@ -24,7 +24,7 @@ export type OrderTabReceiptPayload = {
     discount: number;
     fees: number;
     total: number;
-    paymentMethod?: string;
+    payments: Array<{ method: string; amount: number }>;
     paidAmount: number;
   };
   footer: {
@@ -39,7 +39,7 @@ export function buildOrderTabReceiptPayload(params: {
   orderTabSequence: number;
   items: TableOrderItem[];
   pricing: TableOrderPricing;
-  payment: TableOrderPayment;
+  payments: TableOrderPayment[];
   operatorName?: string;
 }): OrderTabReceiptPayload {
   return {
@@ -67,8 +67,14 @@ export function buildOrderTabReceiptPayload(params: {
       discount: params.pricing.discount,
       fees: params.pricing.fees,
       total: params.pricing.total,
-      paymentMethod: params.payment.method,
-      paidAmount: params.payment.paidAmount,
+      payments: params.payments.map((payment) => ({
+        method: payment.method,
+        amount: payment.paidAmount,
+      })),
+      paidAmount: params.payments.reduce(
+        (sum, payment) => sum + (payment.paidAmount ?? 0),
+        0,
+      ),
     },
     footer: {
       operatorName: params.operatorName,

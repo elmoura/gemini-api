@@ -17,6 +17,7 @@ import { CreateOrderTabUseCase } from './usecases/create-order-tab.usecase';
 import { AddOrderTabItemUseCase } from './usecases/add-order-tab-item.usecase';
 import { RemoveOrderTabItemUseCase } from './usecases/remove-order-tab-item.usecase';
 import { FinishOrderTabUseCase } from './usecases/finish-order-tab.usecase';
+import { AddOrderTabPaymentUseCase } from './usecases/add-order-tab-payment.usecase';
 import { FindTableOrderUseCase } from './usecases/find-table-order.usecase';
 import { FindOrderTabUseCase } from './usecases/find-order-tab.usecase';
 import { ListOrderTabsUseCase } from './usecases/list-order-tabs.usecase';
@@ -28,6 +29,7 @@ import { AuthModule } from '@modules/auth/auth.module';
 import { RemoveTableOrderItemUseCase } from './usecases/remove-table-order-item.usecase';
 import { FinishTableOrderUseCase } from './usecases/finish-table-order.usecase';
 import { LocationShiftsModule } from '@modules/location-shifts/location-shifts.module';
+import { CashRegistersModule } from '@modules/cash-registers/cash-registers.module';
 import { ComplementGroupsModule } from '@modules/complement-groups/complement-groups.module';
 import { UpdateOrderTabItemUseCase } from './usecases/update-order-tab-item.usecase';
 import { PrintJobsModule } from '@modules/print-jobs/print-jobs.module';
@@ -36,6 +38,7 @@ import { PrintJobsModule } from '@modules/print-jobs/print-jobs.module';
   imports: [
     AuthModule,
     LocationShiftsModule,
+    CashRegistersModule,
     ComplementGroupsModule,
     forwardRef(() => PrintJobsModule),
     MongooseModule.forFeature([
@@ -74,6 +77,7 @@ import { PrintJobsModule } from '@modules/print-jobs/print-jobs.module';
     AddOrderTabItemUseCase,
     RemoveOrderTabItemUseCase,
     FinishOrderTabUseCase,
+    AddOrderTabPaymentUseCase,
     FindTableOrderUseCase,
     FindOrderTabUseCase,
     ListOrderTabsUseCase,

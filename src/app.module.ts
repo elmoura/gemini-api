@@ -15,6 +15,7 @@ import { TableOrdersModule } from '@modules/table-orders/table-orders.module';
 import { MenuModule } from '@modules/menu/menu.module';
 import { FilesModule } from '@modules/files/files.module';
 import { LocationShiftsModule } from '@modules/location-shifts/location-shifts.module';
+import { CashRegistersModule } from '@modules/cash-registers/cash-registers.module';
 import { ComplementGroupsModule } from '@modules/complement-groups/complement-groups.module';
 import { PrintJobsModule } from '@modules/print-jobs/print-jobs.module';
 
@@ -34,6 +35,7 @@ import { PrintJobsModule } from '@modules/print-jobs/print-jobs.module';
     TablesModule,
     TableOrdersModule,
     LocationShiftsModule,
+    CashRegistersModule,
     ComplementGroupsModule,
     PrintJobsModule,
     MenuModule,
