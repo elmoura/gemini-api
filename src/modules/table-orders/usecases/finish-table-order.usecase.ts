@@ -54,14 +54,16 @@ export class FinishTableOrderUseCase {
 
     const consolidated = consolidateTableOrderFromTabs(tabs);
 
-    if (consolidated.payment.paymentStatus !== TableOrderPaymentStatuses.PAID) {
+    if (
+      consolidated.payments[0].paymentStatus !== TableOrderPaymentStatuses.PAID
+    ) {
       throw new TableOrderNotUpdated('Pagamento pendente');
     }
 
     await this.tableOrderDataSource.updateOne(tableOrderId, organizationId, {
       status: TableOrderStatuses.FINISHED,
       pricing: consolidated.pricing,
-      payment: consolidated.payment,
+      payments: consolidated.payments,
     });
 
     return this.tableOrderDataSource.findById(tableOrderId, organizationId);

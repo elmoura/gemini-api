@@ -16,11 +16,11 @@ export class TableOrderPricing {
 }
 
 /**
- * `@Schema()` próprio (não só uma classe TS) porque B2 passa a usar esta
- * classe também como elemento de array (`OrderTab.payments[]`) — Mongoose
- * exige um schema de verdade para subdocumentos dentro de array, ao
- * contrário do embutido singular (`TableOrder.payment`), que aceita a classe
- * "crua". Ganha `_id` implícito de subdocumento (default do Mongoose).
+ * `@Schema()` próprio (não só uma classe TS) porque esta classe é usada como
+ * elemento de array tanto em `OrderTab.payments[]` quanto em
+ * `TableOrder.payments[]` — Mongoose exige um schema de verdade para
+ * subdocumentos dentro de array. Ganha `_id` implícito de subdocumento
+ * (default do Mongoose).
  */
 @Schema()
 export class TableOrderPayment {
@@ -31,10 +31,10 @@ export class TableOrderPayment {
   paidAmount: number;
 
   /**
-   * Só é significativo no `payment` consolidado de `TableOrder` (derivado de
-   * todas as tabs). Em `OrderTab.payments[]` (B2/multi-pagamento) cada
-   * elemento é uma transação isolada — o status agregado da comanda mora em
-   * `OrderTab.paymentStatus`, não aqui.
+   * Só é significativo no elemento único de `TableOrder.payments[]`
+   * (consolidado, derivado de todas as tabs). Em `OrderTab.payments[]`
+   * (multi-pagamento) cada elemento é uma transação isolada — o status
+   * agregado da comanda mora em `OrderTab.paymentStatus`, não aqui.
    */
   @Prop()
   paymentStatus?: TableOrderPaymentStatuses;
@@ -44,6 +44,15 @@ export class TableOrderPayment {
 
   @Prop()
   instalments?: number;
+
+  /**
+   * Só significativo quando `method === CASH`: valor em espécie entregue
+   * pelo cliente. O troco (`receivedAmount - paidAmount`) é derivado, nunca
+   * persistido — a apuração de caixa (ADR-4) soma sempre `paidAmount`
+   * (valor da venda), nunca este campo.
+   */
+  @Prop()
+  receivedAmount?: number;
 
   /**
    * Caixa ao qual este pagamento pertence (ADR-2). Só é carimbado em
@@ -86,8 +95,8 @@ export class TableOrder {
   @Prop({ type: TableOrderPricing })
   pricing: TableOrderPricing;
 
-  @Prop({ type: TableOrderPaymentSchema })
-  payment: TableOrderPayment;
+  @Prop({ type: [TableOrderPaymentSchema], default: [] })
+  payments: TableOrderPayment[];
 
   @Prop({ type: [String], default: [] })
   tabIds: Types.ObjectId[];

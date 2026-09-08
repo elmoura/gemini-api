@@ -48,6 +48,8 @@ describe('CloseCashRegisterUseCase', () => {
   const cashOnlySummary = {
     totalCashPayments: 200,
     totalNonCashPayments: 0,
+    totalCashReceived: 200,
+    totalChangeGiven: 0,
     byMethod: [{ method: PaymentMethods.CASH, total: 200, count: 2 }],
     paymentsCount: 2,
   };

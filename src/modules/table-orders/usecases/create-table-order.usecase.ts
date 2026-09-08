@@ -66,12 +66,14 @@ export class CreateTableOrderUseCase
       status: TableOrderStatuses.IN_ATTENDANCE,
       tabIds: [],
       pricing: { total: 0, discount: 0, fees: 0 },
-      payment: {
-        total: 0,
-        paidAmount: 0,
-        instalments: 0,
-        paymentStatus: TableOrderPaymentStatuses.PENDING,
-      },
+      payments: [
+        {
+          total: 0,
+          paidAmount: 0,
+          instalments: 0,
+          paymentStatus: TableOrderPaymentStatuses.PENDING,
+        },
+      ],
     });
 
     await this.locationShiftDataSource.incrementTableOrderQuantity(

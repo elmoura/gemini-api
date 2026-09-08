@@ -33,6 +33,14 @@ export class CashRegisterPaymentSummaryObj
   @Field()
   totalNonCashPayments: number;
 
+  /** Informativo — total recebido fisicamente em espécie (antes do troco). */
+  @Field()
+  totalCashReceived: number;
+
+  /** Informativo — troco total devolvido (`totalCashReceived - totalCashPayments`). */
+  @Field()
+  totalChangeGiven: number;
+
   /** Informativo — quebrado por método efetivamente usado. */
   @Field(() => [CashRegisterPaymentMethodTotalObj])
   byMethod: CashRegisterPaymentMethodTotalObj[];

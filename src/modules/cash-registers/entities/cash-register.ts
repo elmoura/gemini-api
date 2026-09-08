@@ -24,12 +24,19 @@ export class CashRegisterPaymentMethodTotal {
 /**
  * Resumo de entradas do caixa. `totalCashPayments` é o único campo
  * load-bearing: é o que entra na conferência de fechamento (ADR-4).
- * `totalNonCashPayments` e `byMethod` são exclusivamente informativos.
+ * `totalNonCashPayments`, `byMethod`, `totalCashReceived` e
+ * `totalChangeGiven` são exclusivamente informativos.
  */
 export class CashRegisterPaymentSummary {
   totalCashPayments: number;
 
   totalNonCashPayments: number;
+
+  /** Informativo: total recebido fisicamente em espécie (antes do troco). */
+  totalCashReceived: number;
+
+  /** Informativo: total de troco devolvido (`totalCashReceived - totalCashPayments`). */
+  totalChangeGiven: number;
 
   byMethod: CashRegisterPaymentMethodTotal[];
 

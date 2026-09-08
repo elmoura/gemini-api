@@ -8,7 +8,9 @@ import { AddOrderTabPaymentInput } from './types/add-order-tab-payment.input';
 import { OrderTabNotFoundException } from '../errors/order-tab-not-found';
 import { OrderTabNotUpdated } from '../errors/order-tab-not-updated';
 import { PaymentExceedsTotalException } from '../errors/payment-exceeds-total';
+import { InvalidReceivedAmountException } from '../errors/invalid-received-amount';
 import { OrderTabStatuses } from '../enums/order-tab-statuses';
+import { PaymentMethods } from '@shared/enums/payment-methods';
 import { deriveOrderTabPaymentStatus } from '../utils/derive-order-tab-payment-status';
 
 /** Tolerância de ponto flutuante para não rejeitar overpayment por ruído de centavos. */
@@ -54,6 +56,14 @@ export class AddOrderTabPaymentUseCase
       throw new PaymentExceedsTotalException();
     }
 
+    if (
+      input.receivedAmount !== undefined &&
+      (input.method !== PaymentMethods.CASH ||
+        input.receivedAmount < input.amount - OVERPAYMENT_TOLERANCE)
+    ) {
+      throw new InvalidReceivedAmountException();
+    }
+
     const payments = [
       ...tab.payments,
       {
@@ -61,6 +71,8 @@ export class AddOrderTabPaymentUseCase
         paidAmount: input.amount,
         method: input.method,
         instalments: input.instalments ?? 0,
+        receivedAmount:
+          input.method === PaymentMethods.CASH ? input.receivedAmount : undefined,
         cashRegisterId: cashRegister._id,
         paidAt: new Date(),
       },

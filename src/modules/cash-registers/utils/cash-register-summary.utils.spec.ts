@@ -17,6 +17,8 @@ describe('buildEmptyCashRegisterSummary', () => {
     expect(buildEmptyCashRegisterSummary()).toEqual({
       totalCashPayments: 0,
       totalNonCashPayments: 0,
+      totalCashReceived: 0,
+      totalChangeGiven: 0,
       byMethod: [],
       paymentsCount: 0,
     });

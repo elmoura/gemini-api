@@ -1,6 +1,7 @@
 import { TableOrderItem } from '@modules/table-orders/entities/table-order-item';
 import { TableOrderPayment } from '@modules/table-orders/entities/table-order';
 import { TableOrderPricing } from '@modules/table-orders/entities/table-order';
+import { PaymentMethods } from '@shared/enums/payment-methods';
 
 export type OrderTabReceiptPayload = {
   template: 'ORDER_TAB_RECEIPT';
@@ -24,7 +25,12 @@ export type OrderTabReceiptPayload = {
     discount: number;
     fees: number;
     total: number;
-    payments: Array<{ method: string; amount: number }>;
+    payments: Array<{
+      method: string;
+      amount: number;
+      receivedAmount?: number;
+      changeAmount?: number;
+    }>;
     paidAmount: number;
   };
   footer: {
@@ -70,6 +76,12 @@ export function buildOrderTabReceiptPayload(params: {
       payments: params.payments.map((payment) => ({
         method: payment.method,
         amount: payment.paidAmount,
+        ...(payment.method === PaymentMethods.CASH && payment.receivedAmount != null
+          ? {
+              receivedAmount: payment.receivedAmount,
+              changeAmount: payment.receivedAmount - payment.paidAmount,
+            }
+          : {}),
       })),
       paidAmount: params.payments.reduce(
         (sum, payment) => sum + (payment.paidAmount ?? 0),

@@ -20,7 +20,9 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "migrate:order-tabs": "ts-node scripts/migrate-table-orders-to-tabs.ts",
-    "migrate:order-tabs:dry-run": "ts-node scripts/migrate-table-orders-to-tabs.ts --dry-run"
+    "migrate:order-tabs:dry-run": "ts-node scripts/migrate-table-orders-to-tabs.ts --dry-run",
+    "migrate:payments-to-array": "ts-node scripts/migrate-payments-to-array.ts",
+    "migrate:payments-to-array:dry-run": "ts-node scripts/migrate-payments-to-array.ts --dry-run"
   },
   "dependencies": {
     "@apollo/server": "^4.11.0",

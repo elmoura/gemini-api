@@ -15,6 +15,8 @@ export function buildEmptyCashRegisterSummary(): CashRegisterPaymentSummary {
   return {
     totalCashPayments: 0,
     totalNonCashPayments: 0,
+    totalCashReceived: 0,
+    totalChangeGiven: 0,
     byMethod: [],
     paymentsCount: 0,
   };

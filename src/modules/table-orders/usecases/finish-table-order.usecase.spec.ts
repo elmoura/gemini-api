@@ -33,7 +33,7 @@ describe('FinishTableOrderUseCase', () => {
       .mockResolvedValueOnce({
         ...finishedTableOrder,
         status: TableOrderStatuses.FINISHED,
-        payment: { paymentStatus: TableOrderPaymentStatuses.PAID },
+        payments: [{ paymentStatus: TableOrderPaymentStatuses.PAID }],
       });
     tableOrderDataSource.updateOne.mockResolvedValue(true);
     orderTabDataSource.findByTableOrderId.mockResolvedValue([
@@ -58,9 +58,11 @@ describe('FinishTableOrderUseCase', () => {
       'org-id',
       expect.objectContaining({
         status: TableOrderStatuses.FINISHED,
-        payment: expect.objectContaining({
-          paymentStatus: TableOrderPaymentStatuses.PAID,
-        }),
+        payments: [
+          expect.objectContaining({
+            paymentStatus: TableOrderPaymentStatuses.PAID,
+          }),
+        ],
       }),
     );
   });

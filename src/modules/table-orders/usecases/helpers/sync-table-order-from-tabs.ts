@@ -16,6 +16,6 @@ export async function syncTableOrderFromTabs(
 
   await tableOrderDataSource.updateOne(tableOrderId, organizationId, {
     pricing: consolidated.pricing,
-    payment: consolidated.payment,
+    payments: consolidated.payments,
   });
 }

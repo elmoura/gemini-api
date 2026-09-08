@@ -33,4 +33,10 @@ export class AddOrderTabPaymentInput {
   @IsInt()
   @IsOptional()
   instalments?: number;
+
+  /** Só aceito quando `method === CASH` — validado no usecase. */
+  @Field({ nullable: true })
+  @IsNumber()
+  @IsOptional()
+  receivedAmount?: number;
 }

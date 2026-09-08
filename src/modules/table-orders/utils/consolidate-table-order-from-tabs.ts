@@ -43,7 +43,7 @@ export function derivePaymentStatus({
 
 export function consolidateTableOrderFromTabs(tabs: OrderTab[]): {
   pricing: TableOrderPricing;
-  payment: TableOrderPayment;
+  payments: TableOrderPayment[];
 } {
   const sum = (values: number[]) =>
     values.reduce((accum, value) => accum + value, 0);
@@ -68,17 +68,19 @@ export function consolidateTableOrderFromTabs(tabs: OrderTab[]): {
 
   return {
     pricing,
-    payment: {
-      total: pricing.total,
-      paidAmount,
-      paymentStatus,
-      instalments: 0,
-      method: undefined,
-      // NUNCA propagar o carimbo de caixa para o pagamento DERIVADO da mesa:
-      // a apuração de caixa lê exclusivamente `order_tabs`; se `table_orders`
-      // também carregasse o id, tudo seria contado duas vezes (ADR-2).
-      cashRegisterId: undefined,
-      paidAt: undefined,
-    },
+    payments: [
+      {
+        total: pricing.total,
+        paidAmount,
+        paymentStatus,
+        instalments: 0,
+        method: undefined,
+        // NUNCA propagar o carimbo de caixa para o pagamento DERIVADO da mesa:
+        // a apuração de caixa lê exclusivamente `order_tabs`; se `table_orders`
+        // também carregasse o id, tudo seria contado duas vezes (ADR-2).
+        cashRegisterId: undefined,
+        paidAt: undefined,
+      },
+    ],
   };
 }

@@ -73,9 +73,11 @@ describe('CreateTableOrderUseCase', () => {
     expect(tableOrderDataSource.createOne).toHaveBeenCalledWith(
       expect.objectContaining({
         status: TableOrderStatuses.IN_ATTENDANCE,
-        payment: expect.objectContaining({
-          paymentStatus: TableOrderPaymentStatuses.PENDING,
-        }),
+        payments: [
+          expect.objectContaining({
+            paymentStatus: TableOrderPaymentStatuses.PENDING,
+          }),
+        ],
       }),
     );
     expect(

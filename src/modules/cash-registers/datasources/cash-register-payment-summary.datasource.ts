@@ -19,6 +19,7 @@ type PaymentMethodBucket = {
   _id: PaymentMethods | null;
   total: number;
   count: number;
+  receivedTotal: number;
 };
 
 interface ICashRegisterPaymentSummaryDataSource {
@@ -72,11 +73,16 @@ export class CashRegisterPaymentSummaryDataSource
           _id: '$payments.method',
           total: { $sum: '$payments.paidAmount' },
           count: { $sum: 1 },
+          // Informativo (troco): pagamentos sem `receivedAmount` (legados ou
+          // sem troco) caem para `paidAmount` — recebido == pago.
+          receivedTotal: {
+            $sum: { $ifNull: ['$payments.receivedAmount', '$payments.paidAmount'] },
+          },
         },
       },
     ]);
 
-    return buckets.reduce<CashRegisterPaymentSummary>((summary, bucket) => {
+    const summary = buckets.reduce<CashRegisterPaymentSummary>((summary, bucket) => {
       const total = roundToCents(bucket.total ?? 0);
       const count = bucket.count ?? 0;
 
@@ -94,9 +100,21 @@ export class CashRegisterPaymentSummaryDataSource
         totalNonCashPayments: roundToCents(
           summary.totalNonCashPayments + (isCash ? 0 : total),
         ),
+        // Informativos (troco) — nunca entram na conferência (ADR-4).
+        totalCashReceived: roundToCents(
+          summary.totalCashReceived + (isCash ? roundToCents(bucket.receivedTotal ?? 0) : 0),
+        ),
+        totalChangeGiven: 0,
         byMethod,
         paymentsCount: summary.paymentsCount + count,
       };
     }, buildEmptyCashRegisterSummary());
+
+    return {
+      ...summary,
+      totalChangeGiven: roundToCents(
+        summary.totalCashReceived - summary.totalCashPayments,
+      ),
+    };
   }
 }

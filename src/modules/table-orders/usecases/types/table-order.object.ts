@@ -41,7 +41,7 @@ export class OrderPaymentInfo implements TableOrderPayment {
   @Field()
   paidAmount: number;
 
-  /** Significativo só no `payment` consolidado de `TableOrder` — ver entity. */
+  /** Significativo só no `payments[0]` consolidado de `TableOrder` — ver entity. */
   @Field(() => TableOrderPaymentStatuses, { nullable: true })
   paymentStatus?: TableOrderPaymentStatuses;
 
@@ -50,6 +50,10 @@ export class OrderPaymentInfo implements TableOrderPayment {
 
   @Field({ nullable: true })
   instalments?: number;
+
+  /** Só preenchido quando `method === CASH`. */
+  @Field({ nullable: true })
+  receivedAmount?: number;
 }
 
 @ObjectType()
@@ -178,8 +182,8 @@ export class TableOrderObj implements TableOrder {
   @Field(() => OrderPriceInfo)
   pricing: OrderPriceInfo;
 
-  @Field(() => OrderPaymentInfo)
-  payment: OrderPaymentInfo;
+  @Field(() => [OrderPaymentInfo])
+  payments: OrderPaymentInfo[];
 
   @Field(() => [String])
   tabIds: Types.ObjectId[];

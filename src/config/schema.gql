@@ -253,6 +253,7 @@ type OrderPaymentInfo {
   paymentStatus: TableOrderPaymentStatuses
   method: PaymentMethods
   instalments: Float
+  receivedAmount: Float
 }
 
 enum TableOrderPaymentStatuses {
@@ -323,7 +324,7 @@ type TableOrderObj {
   status: TableOrderStatuses!
   table: TableInfo!
   pricing: OrderPriceInfo!
-  payment: OrderPaymentInfo!
+  payments: [OrderPaymentInfo!]!
   tabIds: [String!]!
   tabs: [OrderTabObj!]
   createdAt: DateTime!
@@ -369,6 +370,8 @@ type CashRegisterPaymentMethodTotalObj {
 type CashRegisterPaymentSummaryObj {
   totalCashPayments: Float!
   totalNonCashPayments: Float!
+  totalCashReceived: Float!
+  totalChangeGiven: Float!
   byMethod: [CashRegisterPaymentMethodTotalObj!]!
   paymentsCount: Int!
 }
@@ -927,6 +930,7 @@ input AddOrderTabPaymentInput {
   method: PaymentMethods!
   amount: Float!
   instalments: Int
+  receivedAmount: Float
 }
 
 input FinishTableOrderInput {

@@ -5,6 +5,7 @@ import { TableOrderPaymentStatuses } from '../enums/table-order-statuses';
 import { OrderTabNotFoundException } from '../errors/order-tab-not-found';
 import { OrderTabNotUpdated } from '../errors/order-tab-not-updated';
 import { PaymentExceedsTotalException } from '../errors/payment-exceeds-total';
+import { InvalidReceivedAmountException } from '../errors/invalid-received-amount';
 import { AddOrderTabPaymentUseCase } from './add-order-tab-payment.usecase';
 
 describe('AddOrderTabPaymentUseCase', () => {
@@ -140,6 +141,55 @@ describe('AddOrderTabPaymentUseCase', () => {
     await expect(useCase.execute(input as never)).rejects.toBeInstanceOf(
       OrderTabNotUpdated,
     );
+
+    expect(orderTabDataSource.updateOne).not.toHaveBeenCalled();
+  });
+
+  it('grava receivedAmount quando o pagamento em dinheiro informa valor recebido', async () => {
+    await useCase.execute({
+      ...input,
+      method: PaymentMethods.CASH,
+      amount: 40,
+      receivedAmount: 50,
+    } as never);
+
+    expect(orderTabDataSource.updateOne).toHaveBeenCalledWith(
+      'tab-id',
+      'org-id',
+      expect.objectContaining({
+        payments: [
+          expect.objectContaining({
+            method: PaymentMethods.CASH,
+            paidAmount: 40,
+            receivedAmount: 50,
+          }),
+        ],
+      }),
+    );
+  });
+
+  it('rejeita receivedAmount menor que o valor pago em dinheiro', async () => {
+    await expect(
+      useCase.execute({
+        ...input,
+        method: PaymentMethods.CASH,
+        amount: 40,
+        receivedAmount: 30,
+      } as never),
+    ).rejects.toBeInstanceOf(InvalidReceivedAmountException);
+
+    expect(orderTabDataSource.updateOne).not.toHaveBeenCalled();
+  });
+
+  it('rejeita receivedAmount quando o método não é dinheiro', async () => {
+    await expect(
+      useCase.execute({
+        ...input,
+        method: PaymentMethods.PIX,
+        amount: 40,
+        receivedAmount: 50,
+      } as never),
+    ).rejects.toBeInstanceOf(InvalidReceivedAmountException);
 
     expect(orderTabDataSource.updateOne).not.toHaveBeenCalled();
   });

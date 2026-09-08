@@ -29,7 +29,7 @@ describe('consolidateTableOrderFromTabs', () => {
     const result = consolidateTableOrderFromTabs([]);
 
     expect(result.pricing).toEqual({ total: 0, discount: 0, fees: 0 });
-    expect(result.payment).toMatchObject({
+    expect(result.payments[0]).toMatchObject({
       total: 0,
       paidAmount: 0,
       paymentStatus: TableOrderPaymentStatuses.PAID,
@@ -46,8 +46,8 @@ describe('consolidateTableOrderFromTabs', () => {
     ]);
 
     expect(result.pricing.total).toBe(50);
-    expect(result.payment.paidAmount).toBe(0);
-    expect(result.payment.paymentStatus).toBe(
+    expect(result.payments[0].paidAmount).toBe(0);
+    expect(result.payments[0].paymentStatus).toBe(
       TableOrderPaymentStatuses.PENDING,
     );
   });
@@ -65,8 +65,8 @@ describe('consolidateTableOrderFromTabs', () => {
       }),
     ]);
 
-    expect(result.payment.paidAmount).toBe(100);
-    expect(result.payment.paymentStatus).toBe(TableOrderPaymentStatuses.PAID);
+    expect(result.payments[0].paidAmount).toBe(100);
+    expect(result.payments[0].paymentStatus).toBe(TableOrderPaymentStatuses.PAID);
   });
 
   it('retorna PARTIALLY_PAID quando uma tab foi paga e outra permanece aberta', () => {
@@ -88,8 +88,8 @@ describe('consolidateTableOrderFromTabs', () => {
     ]);
 
     expect(result.pricing.total).toBe(50);
-    expect(result.payment.paidAmount).toBe(30);
-    expect(result.payment.paymentStatus).toBe(
+    expect(result.payments[0].paidAmount).toBe(30);
+    expect(result.payments[0].paymentStatus).toBe(
       TableOrderPaymentStatuses.PARTIALLY_PAID,
     );
   });
@@ -113,8 +113,8 @@ describe('consolidateTableOrderFromTabs', () => {
     ]);
 
     expect(result.pricing.total).toBe(80);
-    expect(result.payment.paidAmount).toBe(80);
-    expect(result.payment.paymentStatus).toBe(TableOrderPaymentStatuses.PAID);
+    expect(result.payments[0].paidAmount).toBe(80);
+    expect(result.payments[0].paymentStatus).toBe(TableOrderPaymentStatuses.PAID);
   });
 
   it('retorna PAID quando tab finalizada tem total zerado', () => {
@@ -128,8 +128,8 @@ describe('consolidateTableOrderFromTabs', () => {
     ]);
 
     expect(result.pricing.total).toBe(0);
-    expect(result.payment.paidAmount).toBe(0);
-    expect(result.payment.paymentStatus).toBe(TableOrderPaymentStatuses.PAID);
+    expect(result.payments[0].paidAmount).toBe(0);
+    expect(result.payments[0].paymentStatus).toBe(TableOrderPaymentStatuses.PAID);
   });
 
   it('NÃO propaga cashRegisterId nem paidAt para o pagamento derivado da mesa', () => {
@@ -153,9 +153,9 @@ describe('consolidateTableOrderFromTabs', () => {
       }),
     ]);
 
-    expect(result.payment.cashRegisterId).toBeUndefined();
-    expect(result.payment.paidAt).toBeUndefined();
-    expect(result.payment.method).toBeUndefined();
+    expect(result.payments[0].cashRegisterId).toBeUndefined();
+    expect(result.payments[0].paidAt).toBeUndefined();
+    expect(result.payments[0].method).toBeUndefined();
   });
 });
 
